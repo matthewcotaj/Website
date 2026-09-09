@@ -1,0 +1,1389 @@
+<title>Matthew Cotaj</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,600;1,300;1,400&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* ---------- tokens : light (default) ---------- */
+:root{
+  --ground:#edeee9;
+  --paper:#f8f9f6;
+  --paper-2:#e4e6df;
+  --ink:#131715;
+  --ink-2:#59635e;
+  --ink-3:#8a938d;
+  --rule:#d2d6cf;
+  --rule-soft:#dfe2db;
+  --eu:#b83a26;          /* europium - 612 nm, and the Eu channel of his EDS maps */
+  --eu-wash:rgba(184,58,38,.09);
+  --s:#2a5d8f;           /* sulfur channel */
+  --cu:#3f7a4a;          /* copper channel */
+  --gd:#6b4a8f;          /* gadolinium, the substituent */
+  --rod:rgba(19,23,21,.13);
+  --grid:rgba(19,23,21,.10);
+  --shadow:0 1px 0 rgba(19,23,21,.05);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#0f1311;
+    --paper:#161b18;
+    --paper-2:#1e2420;
+    --ink:#e7eae4;
+    --ink-2:#98a29b;
+    --ink-3:#6d766f;
+    --rule:#2a312d;
+    --rule-soft:#222824;
+    --eu:#ff7052;
+    --eu-wash:rgba(255,112,82,.10);
+    --s:#6fabe2;
+    --cu:#71c281;
+    --gd:#b18ed8;
+    --rod:rgba(231,234,228,.13);
+    --grid:rgba(231,234,228,.10);
+    --shadow:0 1px 0 rgba(0,0,0,.3);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0f1311;
+  --paper:#161b18;
+  --paper-2:#1e2420;
+  --ink:#e7eae4;
+  --ink-2:#98a29b;
+  --ink-3:#6d766f;
+  --rule:#2a312d;
+  --rule-soft:#222824;
+  --eu:#ff7052;
+  --eu-wash:rgba(255,112,82,.10);
+  --s:#6fabe2;
+  --cu:#71c281;
+  --gd:#b18ed8;
+  --rod:rgba(231,234,228,.13);
+  --grid:rgba(231,234,228,.10);
+  --shadow:0 1px 0 rgba(0,0,0,.3);
+}
+
+/* ---------- base ---------- */
+*{box-sizing:border-box}
+body{
+  background:var(--ground);
+  color:var(--ink);
+  font-family:"IBM Plex Sans","Segoe UI",Helvetica,Arial,sans-serif;
+  font-size:16px;
+  line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4,p,ul,ol,figure{margin:0}
+ul{padding:0;list-style:none}
+a{color:var(--eu);text-decoration:none;border-bottom:1px solid color-mix(in srgb,var(--eu) 35%,transparent);transition:border-color .18s,color .18s}
+a:hover{border-bottom-color:var(--eu)}
+a:focus-visible,button:focus-visible{outline:2px solid var(--eu);outline-offset:3px;border-radius:2px}
+
+.wrap{max-width:1140px;margin:0 auto;padding:0 clamp(20px,5vw,56px)}
+.measure{max-width:66ch}
+
+/* ---------- type roles ---------- */
+.mono{font-family:"IBM Plex Mono",ui-monospace,Consolas,monospace}
+.eyebrow{
+  font-family:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+  font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ink-3);
+}
+.display{
+  font-family:Spectral,Georgia,"Times New Roman",serif;
+  font-weight:300;line-height:1.02;letter-spacing:-.018em;
+  text-wrap:balance;
+}
+h2.sec-title{
+  font-family:Spectral,Georgia,serif;font-weight:400;
+  font-size:clamp(1.65rem,3.1vw,2.35rem);line-height:1.14;letter-spacing:-.012em;
+  text-wrap:balance;
+}
+.lede{
+  font-family:Spectral,Georgia,serif;font-weight:300;
+  font-size:clamp(1.08rem,1.7vw,1.3rem);line-height:1.58;color:var(--ink-2);
+}
+.sub{color:var(--ink-2)}
+em{font-family:Spectral,Georgia,serif;font-style:italic}
+
+/* ---------- nav ---------- */
+nav{
+  position:sticky;top:0;z-index:30;
+  background:color-mix(in srgb,var(--ground) 88%,transparent);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--rule-soft);
+}
+.nav-in{display:flex;align-items:center;gap:22px;height:60px}
+.tile{
+  width:34px;height:34px;flex:none;border:1px solid var(--ink);
+  display:grid;align-content:center;justify-items:center;line-height:1;
+  background:var(--paper);
+}
+.tile .z{font-family:"IBM Plex Mono",monospace;font-size:.44rem;color:var(--ink-2);letter-spacing:.02em}
+.tile .sym{font-family:Spectral,Georgia,serif;font-size:1.02rem;font-weight:400;margin-top:1px}
+.nav-name{font-family:"IBM Plex Mono",monospace;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;margin-right:auto}
+.nav-links{display:flex;gap:16px}
+.nav-links a{
+  font-family:"IBM Plex Mono",monospace;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-2);border-bottom:1px solid transparent;padding-bottom:2px;
+}
+.nav-links a:hover{color:var(--ink);border-bottom-color:var(--eu)}
+@media(max-width:1010px){.nav-links{display:none}}
+
+/* ---------- hero ---------- */
+header.hero{position:relative;overflow:hidden;border-bottom:1px solid var(--rule)}
+#field{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.hero-in{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.02fr);gap:clamp(28px,5vw,64px);
+  align-items:center;padding:clamp(52px,8vw,96px) 0 clamp(44px,6vw,72px)}
+@media(max-width:940px){.hero-in{grid-template-columns:1fr;gap:36px}}
+.hero h1{font-size:clamp(2.9rem,7.4vw,5.1rem);margin:14px 0 0}
+.hero h1 .given{display:block;color:var(--ink-2);font-size:.44em;letter-spacing:.01em;font-weight:300}
+.hero-lede{margin-top:22px}
+.hero-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px}
+.chip{
+  font-family:"IBM Plex Mono",monospace;font-size:.72rem;letter-spacing:.03em;
+  border:1px solid var(--rule);background:var(--paper);color:var(--ink-2);
+  padding:6px 11px;
+}
+.chip a{color:inherit;border:0}
+.chip a:hover{color:var(--eu)}
+.chip.hot{border-color:color-mix(in srgb,var(--eu) 45%,var(--rule));color:var(--eu);background:var(--eu-wash)}
+
+/* ---------- figure / chart ---------- */
+figure.plot{background:var(--paper);border:1px solid var(--rule);padding:16px 16px 14px;box-shadow:var(--shadow)}
+figure.plot svg{display:block;width:100%;height:auto}
+figcaption{
+  font-family:"IBM Plex Mono",monospace;font-size:.68rem;line-height:1.55;color:var(--ink-3);
+  margin-top:12px;padding-top:10px;border-top:1px solid var(--rule-soft);
+}
+.ax-label{font-family:"IBM Plex Mono",monospace;font-size:13px;fill:var(--ink-3)}
+.ax-title{font-family:"IBM Plex Sans",sans-serif;font-size:14px;fill:var(--ink-2)}
+.trace-label{font-family:"IBM Plex Mono",monospace;font-size:14px;font-weight:500}
+
+/* ---------- section scaffolding ---------- */
+section{padding:clamp(56px,8vw,96px) 0;border-bottom:1px solid var(--rule)}
+section:last-of-type{border-bottom:0}
+.sec-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.35fr);gap:clamp(24px,5vw,60px);align-items:start;margin-bottom:clamp(32px,4vw,52px)}
+@media(max-width:860px){.sec-head{grid-template-columns:1fr;gap:14px}}
+.sec-head .eyebrow{margin-bottom:12px;display:block}
+
+/* PXRD-tick divider */
+.pxrd{display:block;width:100%;height:26px;margin:0 0 28px;overflow:visible}
+.pxrd line{stroke:var(--rule);stroke-width:1.4}
+.pxrd line.hi{stroke:var(--eu)}
+
+/* ---------- key figures ---------- */
+.figures{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);margin-top:8px}
+@media(max-width:800px){.figures{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.fig{background:var(--paper);padding:22px 20px 20px;display:flex;flex-direction:column;gap:6px}
+.fig .val{font-family:Spectral,Georgia,serif;font-weight:300;font-size:clamp(1.85rem,3.4vw,2.6rem);line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.fig .val small{font-size:.42em;letter-spacing:0;color:var(--ink-2);font-family:"IBM Plex Mono",monospace}
+.fig .cap{font-size:.85rem;color:var(--ink-2);line-height:1.45}
+.fig .k{color:var(--eu)}
+
+/* ---------- synthesis scheme ---------- */
+.scheme{background:var(--paper);border:1px solid var(--rule);padding:28px 24px 22px;overflow-x:auto}
+.scheme-row{display:flex;align-items:center;gap:22px;min-width:640px}
+.species{font-family:Spectral,Georgia,serif;font-size:1.18rem;white-space:nowrap}
+.species .lig{color:var(--ink-2);font-size:.88em}
+.plus{color:var(--ink-3);font-size:1.1rem}
+.arrow{flex:1;min-width:190px;display:grid;justify-items:center;gap:4px}
+.arrow .above,.arrow .below{font-family:"IBM Plex Mono",monospace;font-size:.7rem;letter-spacing:.04em;color:var(--ink-2);text-align:center;line-height:1.45}
+.arrow .above{color:var(--ink)}
+.arrow svg{display:block;width:100%;height:12px}
+.scheme-note{font-family:"IBM Plex Mono",monospace;font-size:.68rem;line-height:1.7;color:var(--ink-3);margin-top:18px;padding-top:12px;border-top:1px solid var(--rule-soft)}
+
+/* ---------- element tiles ---------- */
+.elements{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.el{
+  width:78px;height:82px;border:1px solid var(--rule);background:var(--paper);
+  padding:8px 9px;display:flex;flex-direction:column;justify-content:space-between;
+  border-top:2px solid var(--el,var(--ink-3));
+}
+.el .z{font-family:"IBM Plex Mono",monospace;font-size:.62rem;color:var(--ink-3)}
+.el .sym{font-family:Spectral,Georgia,serif;font-size:1.6rem;line-height:1;color:var(--el,var(--ink))}
+.el .nm{font-family:"IBM Plex Mono",monospace;font-size:.58rem;letter-spacing:.04em;color:var(--ink-2);text-transform:uppercase}
+
+/* ---------- characterization chain ---------- */
+.chain{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);margin-top:28px}
+@media(max-width:760px){.chain{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.chain .node{background:var(--paper);padding:18px 18px 16px;display:flex;flex-direction:column;gap:7px}
+.chain .t{font-family:"IBM Plex Mono",monospace;font-size:.74rem;letter-spacing:.08em;color:var(--eu)}
+.chain .d{font-size:.87rem;color:var(--ink-2);line-height:1.5}
+
+/* ---------- entries (experience) ---------- */
+.entries{display:flex;flex-direction:column}
+.entry{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.9fr);gap:clamp(20px,4vw,56px);
+  padding:30px 0;border-top:1px solid var(--rule-soft)}
+.entry:first-child{border-top:1px solid var(--rule)}
+@media(max-width:860px){.entry{grid-template-columns:1fr;gap:12px}}
+.entry .org{font-family:Spectral,Georgia,serif;font-size:1.3rem;line-height:1.24;letter-spacing:-.008em;font-weight:400}
+.entry .when{font-family:"IBM Plex Mono",monospace;font-size:.71rem;letter-spacing:.05em;color:var(--ink-3);margin-top:8px}
+.entry .role{font-size:.96rem;font-weight:600;margin-bottom:12px}
+.entry .role .tag-inline{
+  font-family:"IBM Plex Mono",monospace;font-weight:400;font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--eu);border:1px solid color-mix(in srgb,var(--eu) 40%,var(--rule));padding:2px 7px;margin-left:10px;white-space:nowrap;
+}
+.bullets li{position:relative;padding-left:20px;margin-bottom:9px;color:var(--ink-2);font-size:.95rem}
+.bullets li:last-child{margin-bottom:0}
+.bullets li::before{content:"";position:absolute;left:0;top:.66em;width:9px;height:1px;background:var(--eu)}
+.bullets strong{color:var(--ink);font-weight:600}
+
+/* ---------- citation ---------- */
+.cite{background:var(--paper);border:1px solid var(--rule);border-left:2px solid var(--eu);padding:22px 24px}
+.cite p{font-family:Spectral,Georgia,serif;font-size:1.05rem;line-height:1.6}
+.cite .status{font-family:"IBM Plex Mono",monospace;font-size:.68rem;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);margin-top:12px}
+.talks{margin-top:26px;display:flex;flex-direction:column}
+.talk{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px;align-items:baseline;padding:15px 0;border-top:1px solid var(--rule-soft)}
+.talk .venue{color:var(--ink-2);font-size:.86rem;display:block;margin-top:3px}
+.talk .yr{font-family:"IBM Plex Mono",monospace;font-size:.72rem;color:var(--ink-3);white-space:nowrap}
+@media(max-width:640px){.talk{grid-template-columns:1fr;gap:4px}}
+
+/* ---------- technique grid ---------- */
+.tech-group{padding:26px 0;border-top:1px solid var(--rule-soft);display:grid;grid-template-columns:minmax(0,220px) minmax(0,1fr);gap:clamp(18px,4vw,48px)}
+.tech-group:first-of-type{border-top:1px solid var(--rule)}
+@media(max-width:760px){.tech-group{grid-template-columns:1fr;gap:12px}}
+.tech-group h3{font-family:Spectral,Georgia,serif;font-weight:400;font-size:1.12rem}
+.tech-group .n{font-family:"IBM Plex Mono",monospace;font-size:.68rem;color:var(--ink-3);display:block;margin-top:4px}
+.tags{display:flex;flex-wrap:wrap;gap:7px}
+.tag{font-family:"IBM Plex Mono",monospace;font-size:.73rem;border:1px solid var(--rule);background:var(--paper);
+  padding:5px 9px;color:var(--ink-2);transition:border-color .16s,color .16s}
+.tag:hover{border-color:var(--eu);color:var(--ink)}
+
+/* ---------- interests ---------- */
+.interests{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule)}
+@media(max-width:860px){.interests{grid-template-columns:1fr}}
+.topic{background:var(--paper);padding:24px 24px 26px;display:flex;flex-direction:column;gap:10px}
+.topic h3{font-family:Spectral,Georgia,serif;font-weight:400;font-size:1.24rem;line-height:1.25;letter-spacing:-.008em}
+.topic h3::before{content:"";display:block;width:26px;height:2px;background:var(--dot,var(--eu));margin-bottom:12px}
+.topic p{font-size:.9rem;line-height:1.6;color:var(--ink-2)}
+
+/* ---------- education ---------- */
+.edu{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule)}
+@media(max-width:760px){.edu{grid-template-columns:1fr}}
+.edu .card{background:var(--paper);padding:26px 24px;display:flex;flex-direction:column;gap:8px}
+.edu .school{font-family:Spectral,Georgia,serif;font-size:1.35rem;line-height:1.22;font-weight:400}
+.edu .deg{color:var(--ink-2);font-size:.95rem}
+.edu .stat{display:flex;gap:22px;margin-top:10px;padding-top:14px;border-top:1px solid var(--rule-soft)}
+.edu .stat div{display:flex;flex-direction:column;gap:3px}
+.edu .stat b{font-family:Spectral,Georgia,serif;font-weight:400;font-size:1.45rem;font-variant-numeric:tabular-nums;line-height:1}
+.two-col{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(24px,5vw,56px);margin-top:38px}
+@media(max-width:760px){.two-col{grid-template-columns:1fr;gap:32px}}
+.list-rule li{padding:11px 0;border-top:1px solid var(--rule-soft);font-size:.93rem;color:var(--ink-2)}
+.list-rule li:first-child{border-top:1px solid var(--rule)}
+.list-rule li b{color:var(--ink);font-weight:600}
+h3.minor{font-family:"IBM Plex Mono",monospace;font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);margin-bottom:6px;font-weight:500}
+
+/* ---------- footer ---------- */
+footer{background:var(--paper);border-top:1px solid var(--rule);padding:clamp(56px,8vw,88px) 0 44px}
+.foot-grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:clamp(28px,5vw,60px);align-items:end}
+@media(max-width:760px){.foot-grid{grid-template-columns:1fr;gap:32px;align-items:start}}
+.foot-grid h2{font-family:Spectral,Georgia,serif;font-weight:300;font-size:clamp(2rem,4.6vw,3.1rem);line-height:1.08;letter-spacing:-.018em}
+.contact-list li{padding:11px 0;border-top:1px solid var(--rule-soft);display:flex;gap:16px;align-items:baseline}
+.contact-list li:first-child{border-top:1px solid var(--rule)}
+.contact-list .lab{font-family:"IBM Plex Mono",monospace;font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);width:64px;flex:none}
+.colophon{margin-top:52px;padding-top:20px;border-top:1px solid var(--rule);
+  font-family:"IBM Plex Mono",monospace;font-size:.67rem;line-height:1.6;color:var(--ink-3);display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between}
+
+/* ---------- 3D viewers ---------- */
+.viz{background:var(--paper);border:1px solid var(--rule);box-shadow:var(--shadow)}
+.viz-stage{position:relative;width:100%;aspect-ratio:16/9;min-height:300px;touch-action:pan-y}
+.viz-stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:grab}
+.viz-stage canvas:active{cursor:grabbing}
+.viz-hud{
+  position:absolute;top:16px;left:16px;pointer-events:none;
+  font-family:"IBM Plex Mono",monospace;line-height:1.5;
+}
+.viz-hud .phase{font-size:1.02rem;color:var(--ink);letter-spacing:.01em}
+.viz-hud .msat{font-size:.72rem;color:var(--ink-2);margin-top:4px}
+.viz-hud .msat b{font-weight:500;font-variant-numeric:tabular-nums;color:var(--eu)}
+.viz-hint{
+  position:absolute;right:16px;bottom:14px;pointer-events:none;
+  font-family:"IBM Plex Mono",monospace;font-size:.64rem;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--ink-3);
+}
+.viz-bar{
+  border-top:1px solid var(--rule);padding:14px 16px;
+  display:flex;flex-wrap:wrap;gap:14px 22px;align-items:center;justify-content:space-between;
+}
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px}
+.legend span{display:flex;align-items:center;gap:7px;font-family:"IBM Plex Mono",monospace;font-size:.69rem;color:var(--ink-2)}
+.legend i{width:11px;height:11px;border-radius:50%;background:var(--sw);flex:none}
+.swap{
+  font-family:"IBM Plex Mono",monospace;font-size:.71rem;letter-spacing:.09em;text-transform:uppercase;
+  border:1px solid var(--eu);background:var(--eu-wash);color:var(--eu);
+  padding:9px 15px;cursor:pointer;transition:background .18s,color .18s;
+}
+.swap:hover{background:var(--eu);color:var(--paper)}
+.orb-labels{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--rule)}
+.orb-labels div{padding:13px 10px;text-align:center;border-left:1px solid var(--rule-soft)}
+.orb-labels div:first-child{border-left:0}
+.orb-labels b{display:block;font-family:Spectral,Georgia,serif;font-weight:400;font-size:1.02rem}
+.orb-labels span{font-family:"IBM Plex Mono",monospace;font-size:.64rem;letter-spacing:.06em;color:var(--ink-3)}
+
+/* ---------- configuration cards ---------- */
+.configs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);margin-top:30px}
+@media(max-width:760px){.configs{grid-template-columns:1fr}}
+.config{background:var(--paper);padding:22px 24px 24px;display:flex;flex-direction:column;gap:14px}
+.config .ion{font-family:Spectral,Georgia,serif;font-size:1.22rem;line-height:1.2}
+.config .ion em{color:var(--cfg,var(--ink-2));font-style:normal;font-family:"IBM Plex Mono",monospace;font-size:.7rem;letter-spacing:.09em;text-transform:uppercase;display:block;margin-top:5px}
+.config svg{display:block;width:100%;max-width:270px;height:auto}
+.config .term{display:flex;gap:20px;align-items:baseline;border-top:1px solid var(--rule-soft);padding-top:13px;margin-top:auto}
+.config .term b{font-family:Spectral,Georgia,serif;font-weight:400;font-size:1.3rem;color:var(--cfg,var(--ink))}
+.config .term span{font-size:.85rem;color:var(--ink-2);line-height:1.45}
+.box-cell{fill:none;stroke:var(--rule);stroke-width:1.2}
+.box-arrow{stroke:var(--cfg,var(--ink));stroke-width:1.6;fill:none;stroke-linecap:round}
+
+/* ---------- superexchange chain ---------- */
+.exchange{margin-top:30px;background:var(--paper);border:1px solid var(--rule);padding:24px 24px 20px;overflow-x:auto}
+.exchange svg{display:block;width:100%;min-width:560px;height:auto}
+.ex-node{font-family:"IBM Plex Mono",monospace;font-size:13px;fill:var(--ink-2)}
+.ex-cap{font-family:"IBM Plex Mono",monospace;font-size:12px;fill:var(--ink-3);letter-spacing:.08em;text-transform:uppercase}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<nav>
+  <div class="wrap nav-in">
+    <div class="tile"><span class="z">115</span><span class="sym">Mc</span></div>
+    <span class="nav-name">Matthew&nbsp;A.&nbsp;Cotaj</span>
+    <div class="nav-links">
+      <a href="#thesis">Thesis</a>
+      <a href="#structure">Structure</a>
+      <a href="#experience">Experience</a>
+      <a href="#work">Publications</a>
+      <a href="#methods">Methods</a>
+      <a href="#interests">Interests</a>
+      <a href="#education">Education</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <canvas id="field" aria-hidden="true"></canvas>
+  <div class="wrap hero-in">
+    <div>
+      <span class="eyebrow">Materials chemistry &middot; f-electron magnetism</span>
+      <h1 class="display"><span class="given">Matthew A.</span>Cotaj</h1>
+      <p class="lede hero-lede measure">I grow lanthanide chalcogenide nanocrystals in a flask &mdash; and make their magnetism a question of composition rather than of size.</p>
+      <div class="hero-meta">
+        <span class="chip hot">Pfizer &middot; Drug Product Design</span>
+        <span class="chip">B.S. Chemistry (Honors), Georgetown</span>
+        <span class="chip">Stamford, CT</span>
+        <span class="chip"><a href="mailto:cotajmatthew@gmail.com">cotajmatthew@gmail.com</a></span>
+      </div>
+    </div>
+
+    <figure class="plot">
+      <svg viewBox="0 0 760 470" role="img" aria-label="Magnetization versus applied field at 2 kelvin. EuGdCuS3 nanorods saturate near 78 emu per gram; Eu2CuS3 nanorods saturate at 47.8 emu per gram.">
+        <g stroke="var(--grid)" stroke-width="1">
+          <line x1="104" y1="34" x2="104" y2="388"></line>
+          <line x1="259" y1="34" x2="259" y2="388"></line>
+          <line x1="569" y1="34" x2="569" y2="388"></line>
+          <line x1="724" y1="34" x2="724" y2="388"></line>
+          <line x1="104" y1="57.6" x2="724" y2="57.6" stroke-dasharray="2 5"></line>
+          <line x1="104" y1="117" x2="724" y2="117" stroke-dasharray="2 5"></line>
+          <line x1="104" y1="305" x2="724" y2="305" stroke-dasharray="2 5"></line>
+          <line x1="104" y1="364.4" x2="724" y2="364.4" stroke-dasharray="2 5"></line>
+        </g>
+        <g stroke="var(--ink-3)" stroke-width="1.2">
+          <line x1="414" y1="34" x2="414" y2="388"></line>
+          <line x1="104" y1="211" x2="724" y2="211"></line>
+        </g>
+        <g class="ax-label" text-anchor="end">
+          <text x="94" y="62">78</text>
+          <text x="94" y="121">47.8</text>
+          <text x="94" y="215">0</text>
+          <text x="94" y="309">&#8722;47.8</text>
+          <text x="94" y="368">&#8722;78</text>
+        </g>
+        <g class="ax-label" text-anchor="middle">
+          <text x="104" y="411">&#8722;7</text>
+          <text x="259" y="411">&#8722;3.5</text>
+          <text x="569" y="411">3.5</text>
+          <text x="724" y="411">7</text>
+        </g>
+        <text class="ax-title" x="414" y="443" text-anchor="middle">Applied field H (T)</text>
+        <text class="ax-title" x="26" y="211" text-anchor="middle" transform="rotate(-90 26 211)">Magnetization M (emu g&#8315;&#185;)</text>
+
+        <polyline fill="none" stroke="var(--eu)" stroke-width="2" stroke-dasharray="6 4" stroke-linecap="round" stroke-linejoin="round"
+          points="104.0,305.0 132.4,305.0 160.8,305.0 189.2,305.0 217.7,305.0 246.1,305.0 274.5,305.0 302.9,305.0 315.8,304.9 328.8,304.8 336.5,304.7 344.2,304.4 352.0,303.9 357.2,303.3 362.3,302.3 367.5,301.0 372.7,298.9 377.8,295.8 383.0,291.3 388.2,284.9 393.3,275.9 398.5,263.9 403.7,248.6 408.8,230.6 414.0,211.0 419.2,191.4 424.3,173.4 429.5,158.1 434.7,146.1 439.8,137.1 445.0,130.7 450.2,126.2 455.3,123.1 460.5,121.0 465.7,119.7 470.8,118.7 476.0,118.1 481.2,117.7 488.9,117.4 496.7,117.2 504.4,117.1 517.3,117.0 530.2,117.0 558.7,117.0 587.1,117.0 615.5,117.0 643.9,117.0 672.3,117.0 700.8,117.0 724.0,117.0"></polyline>
+        <polyline fill="none" stroke="var(--gd)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"
+          points="104.0,363.3 116.9,363.1 129.8,362.9 142.8,362.6 155.7,362.2 168.6,361.8 181.5,361.3 194.4,360.7 207.3,360.0 220.2,359.2 233.2,358.2 246.1,357.1 259.0,355.7 271.9,354.2 284.8,352.4 297.8,350.4 310.7,348.1 323.6,345.4 336.5,342.2 344.2,339.9 352.0,337.1 359.8,333.5 367.5,328.6 375.2,321.6 380.4,315.1 385.6,306.7 390.8,295.7 395.9,281.8 401.1,264.7 406.2,244.7 411.4,222.5 414.0,211.0 416.6,199.5 421.8,177.3 426.9,157.3 432.1,140.2 437.2,126.3 442.4,115.3 447.6,106.9 452.8,100.4 457.9,95.5 463.1,91.6 468.2,88.5 473.4,86.0 478.6,83.9 483.7,82.1 491.5,79.8 499.3,77.8 507.0,76.0 514.8,74.4 522.5,72.9 532.8,71.2 543.2,69.6 556.1,67.8 569.0,66.3 584.5,64.7 600.0,63.4 618.1,62.2 636.2,61.2 656.8,60.3 677.5,59.6 700.8,59.1 724.0,58.7"></polyline>
+
+        <g>
+          <line x1="628" y1="52" x2="656" y2="52" stroke="var(--gd)" stroke-width="2.4"></line>
+          <text class="trace-label" x="664" y="57" fill="var(--gd)">EuGdCuS&#8323;</text>
+          <line x1="628" y1="142" x2="656" y2="142" stroke="var(--eu)" stroke-width="2" stroke-dasharray="6 4"></line>
+          <text class="trace-label" x="664" y="147" fill="var(--eu)">Eu&#8322;CuS&#8323;</text>
+        </g>
+        <text class="ax-label" x="118" y="52" text-anchor="start">M vs. H &#183; T = 2 K</text>
+      </svg>
+      <figcaption>Saturation magnetization rises from 47.8 to ~78 emu g&#8315;&#185; when Gd&#179;&#8314; replaces half the Eu&#178;&#8314; on the lanthanide sublattice &mdash; a ~63% gain, and a broader, more field-tunable approach to saturation. Traces reconstructed to the values reported in the thesis (Fig. 13); SQUID magnetometry.</figcaption>
+    </figure>
+  </div>
+</header>
+
+<main>
+
+<section id="thesis">
+  <div class="wrap">
+    <svg class="pxrd" viewBox="0 0 1000 26" preserveAspectRatio="none" aria-hidden="true">
+      <line x1="0" y1="26" x2="1000" y2="26"></line>
+      <line class="hi" x1="62" y1="26" x2="62" y2="4"></line>
+      <line x1="96" y1="26" x2="96" y2="17"></line>
+      <line x1="150" y1="26" x2="150" y2="9"></line>
+      <line class="hi" x1="188" y1="26" x2="188" y2="0"></line>
+      <line x1="214" y1="26" x2="214" y2="19"></line>
+      <line x1="266" y1="26" x2="266" y2="13"></line>
+      <line x1="312" y1="26" x2="312" y2="21"></line>
+      <line class="hi" x1="352" y1="26" x2="352" y2="7"></line>
+      <line x1="396" y1="26" x2="396" y2="18"></line>
+      <line x1="430" y1="26" x2="430" y2="11"></line>
+      <line x1="486" y1="26" x2="486" y2="20"></line>
+      <line x1="524" y1="26" x2="524" y2="15"></line>
+      <line x1="566" y1="26" x2="566" y2="22"></line>
+      <line x1="604" y1="26" x2="604" y2="12"></line>
+      <line x1="648" y1="26" x2="648" y2="19"></line>
+      <line x1="690" y1="26" x2="690" y2="21"></line>
+      <line x1="736" y1="26" x2="736" y2="16"></line>
+      <line x1="778" y1="26" x2="778" y2="22"></line>
+      <line x1="820" y1="26" x2="820" y2="18"></line>
+      <line x1="866" y1="26" x2="866" y2="23"></line>
+      <line x1="912" y1="26" x2="912" y2="20"></line>
+      <line x1="958" y1="26" x2="958" y2="23"></line>
+    </svg>
+
+    <div class="sec-head">
+      <div>
+        <span class="eyebrow">Senior honors thesis &middot; Stoll Research Group</span>
+        <h2 class="sec-title">A hard acid, a soft base, and three years of getting them to agree</h2>
+      </div>
+      <div>
+        <p class="lede">Trivalent lanthanides are hard Lewis acids. Chalcogenides are soft bases. That mismatch is why colloidal Ln&ndash;S chemistry stays stubborn &mdash; and why the reaction would rather hand you an oxysulfide than the phase you asked for.</p>
+        <p class="sub" style="margin-top:18px">My thesis works around it with air-stable single-source dithiocarbamate precursors, an HSAB-informed choice of copper source, and a degassing protocol strict enough to keep EuOS out of the pattern. The payoff is a lanthanide sublattice you can rewrite: swap Gd&#179;&#8314; for half the Eu&#178;&#8314; and the magnetism follows.</p>
+      </div>
+    </div>
+
+    <div class="figures">
+      <div class="fig"><span class="val">3.6 <small>K</small></span><span class="cap">Ferromagnetic ordering temperature <span class="k">T<sub>C</sub></span> of Eu&#8322;CuS&#8323; nanorods, by SQUID &mdash; against 3.4 K in the bulk</span></div>
+      <div class="fig"><span class="val">+63 <small>%</small></span><span class="cap">Gain in saturation magnetization on Gd&#179;&#8314; substitution &mdash; matching the additive spin-only prediction</span></div>
+      <div class="fig"><span class="val">1 : 1</span><span class="cap">Eu&#8239;:&#8239;Gd stoichiometry confirmed by ICP-MS and EDS, with homogeneous elemental distribution</span></div>
+      <div class="fig"><span class="val">First</span><span class="cap">Colloidal synthesis and magnetic characterization of phase-pure EuGdCuS&#8323; nanorods</span></div>
+    </div>
+
+    <h3 class="minor" style="margin-top:52px">The reaction</h3>
+    <div class="scheme">
+      <div class="scheme-row">
+        <span class="species">Eu(DTC)&#8323;(phen) <span class="lig">0.20 mmol</span></span>
+        <span class="plus">+</span>
+        <span class="species">CuI <span class="lig">0.10 mmol</span></span>
+        <div class="arrow">
+          <span class="above">oleylamine, freshly distilled</span>
+          <svg viewBox="0 0 200 12" preserveAspectRatio="none" aria-hidden="true">
+            <line x1="0" y1="6" x2="192" y2="6" stroke="var(--ink)" stroke-width="1.2"></line>
+            <path d="M192 6 L182 2.2 L182 9.8 Z" fill="var(--ink)"></path>
+          </svg>
+          <span class="below">330&#8239;&deg;C, 30 min, inert &middot; degas 115&#8239;&deg;C</span>
+        </div>
+        <span class="species" style="color:var(--eu)">Eu&#8322;CuS&#8323; nanorods</span>
+      </div>
+      <p class="scheme-note">Cu&#8314; from CuI is a soft acid, well matched to the sulfur donors of the DTC ligand and the growing sulfide lattice, where Cu&#178;&#8314; from Cu(acac)&#8322; is not; the iodide released during reaction adsorbs selectively on specific crystal faces and directs the anisotropic growth. Half-substituting Eu(DTC)&#8323;(phen) with the Gd analogue gives EuGdCuS&#8323; on the same route.</p>
+    </div>
+
+    <div class="elements" aria-label="Elements in the system">
+      <div class="el" style="--el:var(--eu)"><span class="z">63</span><span class="sym">Eu</span><span class="nm">Europium</span></div>
+      <div class="el" style="--el:var(--gd)"><span class="z">64</span><span class="sym">Gd</span><span class="nm">Gadolinium</span></div>
+      <div class="el" style="--el:var(--cu)"><span class="z">29</span><span class="sym">Cu</span><span class="nm">Copper</span></div>
+      <div class="el" style="--el:var(--s)"><span class="z">16</span><span class="sym">S</span><span class="nm">Sulfur</span></div>
+      <div class="el"><span class="z">60</span><span class="sym">Nd</span><span class="nm">Neodymium</span></div>
+    </div>
+
+    <h3 class="minor" style="margin-top:52px">How the claim is supported</h3>
+    <div class="chain">
+      <div class="node"><span class="t">PXRD</span><span class="d">Phase purity against PDF#04-016-1598 &mdash; and the EuOS impurity that dogged the early runs absent from the optimized pattern.</span></div>
+      <div class="node"><span class="t">ICP-MS &amp; EDS</span><span class="d">1:1 Eu:Gd stoichiometry, with S, Eu and Cu co-localized across individual rods rather than phase-segregated.</span></div>
+      <div class="node"><span class="t">TEM / HRTEM</span><span class="d">Anisotropic rod morphology with resolved lattice fringes &mdash; crystalline product, not aggregated amorphous material.</span></div>
+      <div class="node"><span class="t">SQUID</span><span class="d">&#967; vs. T and M vs. H from 2 K: the ordering transition, and the saturation magnetization that carries the compositional argument.</span></div>
+    </div>
+
+    <p class="sub measure" style="margin-top:32px"><em>Stated as an open question:</em> the specific spin-ordering type in EuGdCuS&#8323; cannot be assigned from &#967; vs. T and M vs. H alone. Settling it needs sub-2&#8239;K magnetometry, Curie&ndash;Weiss analysis, &#185;&#8309;&#185;Eu M&ouml;ssbauer spectroscopy, and neutron diffraction on the rods.</p>
+  </div>
+</section>
+
+<section id="structure">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <span class="eyebrow">Why the substitution works</span>
+        <h2 class="sec-title">Two sites, seven electrons</h2>
+      </div>
+      <div>
+        <p class="lede">Eu&#8322;CuS&#8323; has two crystallographically distinct lanthanide sites. Only one of them is doing any magnetic work.</p>
+        <p class="sub" style="margin-top:18px">Eu&#178;&#8314; sits at the seven-coordinate Eu(2) site: 4f&#8311;, half-filled, S&nbsp;=&nbsp;7/2, and it carries the moment. Eu&#179;&#8314; sits at the six-coordinate Eu(1) site with a 4f&#8310; configuration whose J&nbsp;=&nbsp;0 ground state gives no first-order moment &mdash; a structural spectator. Gd&#179;&#8314; is also 4f&#8311;. Putting it on the Eu(1) site swaps the spectator for a second spin-active sublattice, which is why the magnetization goes up without the framework changing.</p>
+      </div>
+    </div>
+
+    <figure class="viz">
+      <div class="viz-stage" id="lattice-stage">
+        <canvas id="lattice"></canvas>
+        <div class="viz-hud">
+          <div class="phase" id="phase-name">Eu&#178;&#8314;Eu&#179;&#8314;CuS&#8323;</div>
+          <div class="msat">M<sub>sat</sub> &middot; <b id="msat-val">47.8</b> emu g&#8315;&#185; &middot; <span id="phase-note">one magnetic sublattice</span></div>
+        </div>
+        <div class="viz-hint">Drag to rotate</div>
+      </div>
+      <div class="viz-bar">
+        <div class="legend">
+          <span style="--sw:var(--eu)"><i></i>Eu&#178;&#8314; &middot; Eu(2), 7-coordinate</span>
+          <span style="--sw:var(--ink-3)" id="site1-legend"><i></i>Eu&#179;&#8314; &middot; Eu(1), 6-coordinate</span>
+        </div>
+        <button class="swap" id="swap-btn" type="button">Substitute Gd&#179;&#8314; at Eu(1)</button>
+      </div>
+      <figcaption style="padding:0 16px 14px">Schematic of the two lanthanide sublattices &mdash; site geometry and occupancy after the thesis assignment, not a refined crystal structure. Arrows mark sites carrying a spin; the Cu&ndash;S framework is omitted for legibility. The site-ordered mixed-valent formulation shown here is the targeted composition; &#185;&#8309;&#185;Eu M&ouml;ssbauer spectroscopy is the test that would distinguish it from a statistical solid solution.</figcaption>
+    </figure>
+
+    <h3 class="minor" style="margin-top:52px">Three of the seven 4f orbitals</h3>
+    <figure class="viz">
+      <div class="viz-stage" id="orbital-stage" style="aspect-ratio:2.8/1;min-height:170px">
+        <canvas id="orbitals"></canvas>
+      </div>
+      <div class="orb-labels">
+        <div><b>4f<sub>z&#179;</sub></b><span>m = 0</span></div>
+        <div><b>4f<sub>xyz</sub></b><span>cubic set</span></div>
+        <div><b>4f<sub>x(x&#178;&#8722;3y&#178;)</sub></b><span>m = &plusmn;3</span></div>
+      </div>
+      <figcaption style="padding:0 16px 14px">Angular parts of the 4f wavefunctions, colored by the sign of the lobe. These orbitals are spatially contracted and shielded by the filled 5s and 5p shells &mdash; which is exactly why neighboring lanthanide ions cannot couple directly.</figcaption>
+    </figure>
+
+    <div class="configs">
+      <article class="config" style="--cfg:var(--ink-3)">
+        <div class="ion">Eu&#179;&#8314; &middot; 4f&#8310;<em>Eu(1) site &middot; the spectator</em></div>
+        <svg viewBox="0 0 246 46" role="img" aria-label="Six of seven 4f orbitals singly occupied by spin-up electrons">
+          <rect class="box-cell" x="0.6" y="0.6" width="30" height="44"></rect><path class="box-arrow" d="M15.6 40 V8 M11.6 12 L15.6 8 L19.6 12"></path>
+          <rect class="box-cell" x="36.6" y="0.6" width="30" height="44"></rect><path class="box-arrow" d="M51.6 40 V8 M47.6 12 L51.6 8 L55.6 12"></path>
+          <rect class="box-cell" x="72.6" y="0.6" width="30" height="44"></rect><path class="box-arrow" d="M87.6 40 V8 M83.6 12 L87.6 8 L91.6 12"></path>
+          <rect class="box-cell" x="108.6" y="0.6" width="30" height="44"></rect><path class="box-arrow" d="M123.6 40 V8 M119.6 12 L123.6 8 L127.6 12"></path>
+          <rect class="box-cell" x="144.6" y="0.6" width="30" height="44"></rect><path class="box-arrow" d="M159.6 40 V8 M155.6 12 L159.6 8 L163.6 12"></path>
+          <rect class="box-cell" x="180.6" y="0.6" width="30" height="44"></rect><path class="box-arrow" d="M195.6 40 V8 M191.6 12 L195.6 8 L199.6 12"></path>
+          <rect class="box-cell" x="216.6" y="0.6" width="28.8" height="44"></rect>
+        </svg>
+        <div class="term"><b>&#8311;F&#8320;</b><span>L = 3, S = 3, J = 0 &mdash; no first-order moment. Contributes nothing to the ordered magnetization.</span></div>
+      </article>
+      <article class="config" style="--cfg:var(--eu)">
+        <div class="ion">Eu&#178;&#8314; and Gd&#179;&#8314; &middot; 4f&#8311;<em>Eu(2) and Eu(1) sites &middot; the carriers</em></div>
+        <svg viewBox="0 0 246 46" role="img" aria-label="All seven 4f orbitals singly occupied by spin-up electrons, a half-filled shell">
+          <rect class="box-cell" x="0.6" y="0.6" width="30" height="44"></rect><path class="box-arrow" d="M15.6 40 V8 M11.6 12 L15.6 8 L19.6 12"></path>
+          <rect class="box-cell" x="36.6" y="0.6" width="30" height="44"></rect><path class="box-arrow" d="M51.6 40 V8 M47.6 12 L51.6 8 L55.6 12"></path>
+          <rect class="box-cell" x="72.6" y="0.6" width="30" height="44"></rect><path class="box-arrow" d="M87.6 40 V8 M83.6 12 L87.6 8 L91.6 12"></path>
+          <rect class="box-cell" x="108.6" y="0.6" width="30" height="44"></rect><path class="box-arrow" d="M123.6 40 V8 M119.6 12 L123.6 8 L127.6 12"></path>
+          <rect class="box-cell" x="144.6" y="0.6" width="30" height="44"></rect><path class="box-arrow" d="M159.6 40 V8 M155.6 12 L159.6 8 L163.6 12"></path>
+          <rect class="box-cell" x="180.6" y="0.6" width="30" height="44"></rect><path class="box-arrow" d="M195.6 40 V8 M191.6 12 L195.6 8 L199.6 12"></path>
+          <rect class="box-cell" x="216.6" y="0.6" width="28.8" height="44"></rect><path class="box-arrow" d="M231 40 V8 M227 12 L231 8 L235 12"></path>
+        </svg>
+        <div class="term"><b>&#8312;S<sub>7/2</sub></b><span>Half-filled shell: L = 0, S = 7/2, and a 7.94 &mu;<sub>B</sub> spin-only moment. Both ions carry it identically.</span></div>
+      </article>
+    </div>
+
+    <div class="exchange">
+      <svg viewBox="0 0 760 168" role="img" aria-label="Superexchange pathway from europium 4f through sulfur 3p and copper 3d to a second europium centre">
+        <text class="ex-cap" x="0" y="14">Superexchange pathway &#183; T&#8330; = 3.6 K</text>
+        <g stroke="var(--ink-3)" stroke-width="1.4">
+          <line x1="86" y1="76" x2="194" y2="76"></line>
+          <line x1="246" y1="76" x2="354" y2="76"></line>
+          <line x1="406" y1="76" x2="514" y2="76"></line>
+          <line x1="566" y1="76" x2="674" y2="76"></line>
+        </g>
+        <circle cx="60" cy="76" r="26" fill="var(--eu)"></circle>
+        <circle cx="220" cy="76" r="17" fill="var(--s)"></circle>
+        <circle cx="380" cy="76" r="21" fill="var(--cu)"></circle>
+        <circle cx="540" cy="76" r="17" fill="var(--s)"></circle>
+        <circle cx="700" cy="76" r="26" fill="var(--eu)"></circle>
+        <g class="ex-node" text-anchor="middle">
+          <text x="60" y="128">Eu&#178;&#8314; 4f&#8311;</text>
+          <text x="220" y="128">S 3p</text>
+          <text x="380" y="128">Cu 3d&#185;&#8304;</text>
+          <text x="540" y="128">S 3p</text>
+          <text x="700" y="128">Eu&#178;&#8314; 4f&#8311;</text>
+        </g>
+        <g class="ex-node" text-anchor="middle" font-size="11" fill="var(--ink-3)">
+          <text x="60" y="146">spin carrier</text>
+          <text x="220" y="146">bridge</text>
+          <text x="380" y="146">filled &#183; not a spin carrier</text>
+          <text x="540" y="146">bridge</text>
+          <text x="700" y="146">spin carrier</text>
+        </g>
+      </svg>
+      <p class="scheme-note" style="margin-top:16px;padding-top:14px">Direct 4f&ndash;4f overlap between neighboring Eu&#178;&#8314; ions is negligible, so coupling has to run the long way round: the 4f spin polarizes a bridging S 3p orbital, passes through the diamagnetic Cu 3d&#185;&#8304; sublattice acting as a ligand bridge rather than a spin carrier, and out through a second S 3p bridge. A long chain of filled intermediate orbitals makes for weak exchange &mdash; and a correspondingly low ordering temperature.</p>
+    </div>
+  </div>
+</section>
+
+<section id="experience">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <span class="eyebrow">Research &amp; industry</span>
+        <h2 class="sec-title">Where the work has been done</h2>
+      </div>
+      <div><p class="lede">Four years across academic materials synthesis, pharmaceutical formulation, consumer product development and seed-stage biotech &mdash; the same analytical instinct, pointed at very different molecules.</p></div>
+    </div>
+
+    <div class="entries">
+
+      <article class="entry">
+        <div>
+          <h3 class="org">Pfizer</h3>
+          <div class="when">Jun 2026 &ndash; present &middot; Groton, CT</div>
+        </div>
+        <div>
+          <p class="role">Biopharmaceutics Intern, Drug Product Design<span class="tag-inline">Pfizer Futures</span></p>
+          <ul class="bullets">
+            <li>Characterized V1/V2 biorelevant media across <strong>20+ conditions</strong> by dynamic light scattering and tensiometry, standardizing media preparation across four functions</li>
+            <li>Correlated colloidal media properties to the solubility and dissolution of five model compounds, improving in&nbsp;vitro&ndash;in&nbsp;vivo translation by <strong>~30%</strong></li>
+            <li>Identified surfactant&ndash;bile micelle interactions forming solubility-limiting complexes, flagging excipient risks in early-phase formulations</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="entry">
+        <div>
+          <h3 class="org">Stoll Research Group<br><span class="sub" style="font-size:.86rem">Georgetown University</span></h3>
+          <div class="when">Feb 2023 &ndash; May 2026 &middot; Washington, DC</div>
+        </div>
+        <div>
+          <p class="role">Honors Thesis Researcher &amp; Materials Science Undergraduate Research Fellow<span class="tag-inline">Adv. S.&nbsp;L.&nbsp;Stoll</span></p>
+          <ul class="bullets">
+            <li>Achieved the <strong>first colloidal synthesis and magnetic characterization of phase-pure EuGdCuS&#8323; nanorods</strong>, using single-source dithiocarbamate precursors under air-free conditions (Schlenk line, glovebox)</li>
+            <li>Demonstrated compositional control of magnetism by substituting Gd&#179;&#8314; for Eu&#178;&#8314;, raising saturation magnetization from <strong>47.8 to ~78 emu g&#8315;&#185;</strong></li>
+            <li>Screened lanthanide halide and sulfur precursors to phase-control binary (Nd&#8323;S&#8324;, Gd&#8323;S&#8324;) and ternary nanomaterials, verifying composition and morphology by PXRD, ICP-MS, EDS and HRTEM</li>
+            <li>Analyzed f-electron configurations and ligand-field effects to interpret nanoscale magnetic and electronic phenomena in lanthanide systems</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="entry">
+        <div>
+          <h3 class="org">Henkel</h3>
+          <div class="when">May &ndash; Aug 2025 &middot; Stamford, CT</div>
+        </div>
+        <div>
+          <p class="role">Product Development Intern</p>
+          <ul class="bullets">
+            <li>Developed and validated a method to differentiate liquid soap formulations, driving data-backed innovation for a <strong>$440M product line</strong></li>
+            <li>Optimized formulation variables through data analysis, improving foam performance <strong>23%</strong> across all Dial products</li>
+            <li>Supported antibacterial and non-antibacterial soap development under FDA and OTC compliance</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="entry">
+        <div>
+          <h3 class="org">Georgetown University<br><span class="sub" style="font-size:.86rem">Department of Chemistry</span></h3>
+          <div class="when">Aug 2025 &ndash; May 2026 &middot; Washington, DC</div>
+        </div>
+        <div>
+          <p class="role">General Chemistry I &amp; II Laboratory Teaching Assistant</p>
+          <ul class="bullets">
+            <li>Guided students through theoretical and wet-chemistry experiments, reinforcing safe and accurate laboratory technique</li>
+            <li>Set up and maintained equipment and reagents across weekly lab sections, and supported instructors in running sessions</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="entry">
+        <div>
+          <h3 class="org">CG Pharmaceuticals</h3>
+          <div class="when">Mar &ndash; Jul 2024 &middot; Washington, DC</div>
+        </div>
+        <div>
+          <p class="role">Rare Disease Therapeutics R&amp;D Intern</p>
+          <ul class="bullets">
+            <li>Researched alternative treatments for neurodegenerative disorders &mdash; Friedreich&rsquo;s ataxia and Fragile X syndrome &mdash; evaluating drug targets and biological pathways</li>
+            <li>Conducted scientific and intellectual-property research supporting seed-stage biotech strategy, weighing feasibility against IP ownership and clinical relevance</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="entry">
+        <div>
+          <h3 class="org">ANAMA Package &amp; Container Testing</h3>
+          <div class="when">Summers 2022 &ndash; 2024 &middot; Stamford, CT</div>
+        </div>
+        <div>
+          <p class="role">Project Manager Intern &middot; Package Testing Technician</p>
+          <ul class="bullets">
+            <li>Developed and executed UN/USDOT/ISTA testing protocols for clients including Bloomberg, Duracell and the U.S. Army</li>
+            <li>Managed resources and budgets to <strong>double per-diem project completion</strong></li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="entry">
+        <div>
+          <h3 class="org">Georgetown University<br><span class="sub" style="font-size:.86rem">Alumni Association</span></h3>
+          <div class="when">Aug 2024 &ndash; Sep 2025 &middot; Washington, DC</div>
+        </div>
+        <div>
+          <p class="role">Operations &amp; Marketing Associate</p>
+          <ul class="bullets">
+            <li>Managed platform operations and user access, built alumni&ndash;student connections through events, and used data analytics to guide organizational decisions</li>
+          </ul>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<section id="work">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <span class="eyebrow">Publications &amp; presentations</span>
+        <h2 class="sec-title">On the record</h2>
+      </div>
+      <div>
+        <div class="cite">
+          <p>Hartman,&nbsp;T.; <strong>Cotaj,&nbsp;M.</strong>; El&nbsp;Jamal,&nbsp;E.&nbsp;S.; Stoll,&nbsp;S.&nbsp;L.* &ldquo;Magnetic and magneto-optical properties of mixed cation and mixed valent EuLnCuQ&#8323; (Q&nbsp;=&nbsp;S, Se) nanorods.&rdquo;</p>
+          <p class="status">Manuscript in preparation</p>
+        </div>
+        <div class="talks">
+          <div class="talk">
+            <div><strong>Senior Honors Thesis presentation</strong><span class="venue">Department of Chemistry, Georgetown University &middot; Washington, DC</span></div>
+            <span class="yr">Spring 2026</span>
+          </div>
+          <div class="talk">
+            <div><strong>Formulation strategies and theoretical basis for a next-generation foaming chassis</strong><span class="venue">Henkel Executive R&amp;D Board Meeting &middot; Trumbull, CT</span></div>
+            <span class="yr">Aug 2025</span>
+          </div>
+          <div class="talk">
+            <div><strong>Weekly research talks on nanorod synthesis and characterization</strong><span class="venue">Stoll Research Group, Georgetown University</span></div>
+            <span class="yr">2024&ndash;2026</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="methods">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <span class="eyebrow">Instrumentation &amp; methods</span>
+        <h2 class="sec-title">What I can run unsupervised</h2>
+      </div>
+      <div><p class="lede">Hands-on across synthesis, characterization and analysis &mdash; from a Schlenk line at 330&#8239;&deg;C, to a SQUID at 2&#8239;K, to the long business of arguing with a diffraction pattern.</p></div>
+    </div>
+
+    <div class="tech-group">
+      <div><h3>Synthesis &amp; fabrication</h3><span class="n">7 methods</span></div>
+      <div class="tags">
+        <span class="tag">Air-free synthesis &mdash; Schlenk line</span><span class="tag">Glovebox</span><span class="tag">Colloidal nanomaterial synthesis</span><span class="tag">Single-source precursor design</span><span class="tag">CVD</span><span class="tag">Sputtering &amp; thin-film deposition</span><span class="tag">Photolithography &amp; etching</span>
+      </div>
+    </div>
+    <div class="tech-group">
+      <div><h3>Structural &amp; imaging</h3><span class="n">7 techniques</span></div>
+      <div class="tags">
+        <span class="tag">PXRD (Rigaku Ultima IV)</span><span class="tag">TEM / HRTEM</span><span class="tag">HAADF-STEM</span><span class="tag">SEM</span><span class="tag">AFM</span><span class="tag">EDX / EDS mapping</span><span class="tag">XPS</span>
+      </div>
+    </div>
+    <div class="tech-group">
+      <div><h3>Magnetic, optical &amp; electrochemical</h3><span class="n">7 techniques</span></div>
+      <div class="tags">
+        <span class="tag">SQUID magnetometry</span><span class="tag">UV-Vis</span><span class="tag">IR / FTIR</span><span class="tag">Raman</span><span class="tag">Surface plasmon resonance</span><span class="tag">Cyclic voltammetry</span><span class="tag">Tensiometry</span>
+      </div>
+    </div>
+    <div class="tech-group">
+      <div><h3>Separations &amp; elemental</h3><span class="n">8 techniques</span></div>
+      <div class="tags">
+        <span class="tag">ICP-MS</span><span class="tag">ICP-OES</span><span class="tag">HPLC / UPLC</span><span class="tag">LC-MS</span><span class="tag">GC-MS</span><span class="tag">NMR</span><span class="tag">DLS</span><span class="tag">RT-PCR &amp; gel electrophoresis</span>
+      </div>
+    </div>
+    <div class="tech-group">
+      <div><h3>Computational &amp; data</h3><span class="n">11 tools</span></div>
+      <div class="tags">
+        <span class="tag">Python</span><span class="tag">R</span><span class="tag">OriginLab</span><span class="tag">JMP</span><span class="tag">Snowflake</span><span class="tag">ChemDraw</span><span class="tag">Gaussian</span><span class="tag">Spartan</span><span class="tag">MDI Jade</span><span class="tag">Cambridge Structural Database</span><span class="tag">SpinWorks &middot; MEGA</span>
+      </div>
+    </div>
+    <div class="tech-group">
+      <div><h3>Certified training</h3><span class="n">5 programs</span></div>
+      <div class="tags">
+        <span class="tag">GxP</span><span class="tag">HAZMAT</span><span class="tag">Highly Potent Compounds</span><span class="tag">Laser safety</span><span class="tag">Radioactive Materials</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="interests">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <span class="eyebrow">Intellectual interests</span>
+        <h2 class="sec-title">The reading that pulls me forward</h2>
+      </div>
+      <div><p class="lede">Where the curiosity actually sits &mdash; concentrated in the physics and chemistry of correlated and magnetic matter, with a persistent side interest in how markets price risk.</p></div>
+    </div>
+
+    <div class="interests">
+      <article class="topic" style="--dot:var(--gd)">
+        <h3>Quantum information systems</h3>
+        <p>Superconducting (transmon) and spin qubits, defect color centers, rare-earth-ion and molecular spin qubits; coherence and decoherence, spin-lattice (T&#8321;) and spin-spin (T&#8322;) relaxation, hyperfine and spin&ndash;orbit coupling, clock transitions and decoherence-free subspaces; entanglement and the DiVincenzo criteria, cavity and circuit QED coupling, error correction and surface codes &mdash; and the materials chemistry underneath platforms such as IBM Quantum.</p>
+      </article>
+      <article class="topic" style="--dot:var(--s)">
+        <h3>Quantum materials</h3>
+        <p>BCS and unconventional (cuprate, iron-based) superconductivity and Cooper pairing; band topology, Berry curvature, Chern numbers and Z&#8322; invariants in topological insulators and Weyl and Dirac semimetals; charge- and spin-density-wave order and the Peierls instability; kagome lattices, geometric frustration, flat bands and van Hove singularities; the Hubbard model, Mott insulators, Kondo physics and heavy fermions; quantum criticality and emergent phases from competing orders.</p>
+      </article>
+      <article class="topic" style="--dot:var(--eu)">
+        <h3>Magnetism &amp; magnetic materials</h3>
+        <p>Direct exchange, superexchange and the Goodenough&ndash;Kanamori rules, double exchange, RKKY and Dzyaloshinskii&ndash;Moriya interactions; the Heisenberg and Ising models and mean-field theory; ferro-, antiferro- and ferrimagnetic ordering with their Curie and N&eacute;el transitions; rare-earth 4f magnetism, crystal-field splitting, Hund&rsquo;s rules and single-ion anisotropy; magnetocrystalline anisotropy and spin&ndash;orbit coupling; magneto-optical Faraday and Kerr effects and magnetic circular dichroism; frustration, and the resolution of magnetic structure by neutron diffraction.</p>
+      </article>
+      <article class="topic" style="--dot:var(--cu)">
+        <h3>Synthesis, structure &amp; property relationships</h3>
+        <p>Solid-state and colloidal synthesis, LaMer nucleation and growth, and single-source precursor design; thermodynamic versus kinetic control and phase-diagram reasoning; crystal-field and ligand-field theory; cation site substitution, aliovalent doping and Vegard&rsquo;s law; point-defect chemistry in Kr&ouml;ger&ndash;Vink terms; and the Goldschmidt tolerance factor and related structure&ndash;property descriptors linking composition to electronic, magnetic and optical behavior.</p>
+      </article>
+      <article class="topic" style="--dot:var(--gd)">
+        <h3>Nanoelectronics &amp; spintronics</h3>
+        <p>Giant and tunnel magnetoresistance, magnetic tunnel junctions and spin transport; spin-transfer and spin&ndash;orbit torque, the Rashba effect and the spin Hall effect; spin injection and spin-diffusion length; and the interfacial phenomena in thin-film heterostructures that couple magnetic order to charge transport.</p>
+      </article>
+      <article class="topic" style="--dot:var(--s)">
+        <h3>Energy storage &amp; conversion</h3>
+        <p>Electrochemical intercalation and ion transport, the redox chemistry of electrode materials, ionic conductivity in solid-state electrolytes, and overpotential and electrocatalysis in energy conversion.</p>
+      </article>
+      <article class="topic" style="--dot:var(--ink-3)">
+        <h3>Financial markets &amp; analysis</h3>
+        <p>Discounted-cash-flow and dividend-discount valuation, relative and multiples-based valuation, and fundamental and financial-statement analysis; the efficient-market hypothesis and its limits; modern portfolio theory and mean-variance optimization; and CAPM, arbitrage pricing theory and multi-factor (Fama&ndash;French) models linking risk to expected return.</p>
+      </article>
+      <article class="topic" style="--dot:var(--ink-3)">
+        <h3>Trading &amp; market behavior</h3>
+        <p>Market microstructure, price formation, liquidity and the bid&ndash;ask spread; the random-walk hypothesis, momentum and mean reversion; implied and realized volatility and Black&ndash;Scholes option pricing; and behavioral finance, prospect theory and cognitive biases &mdash; approached semi-quantitatively and analytically rather than algorithmically.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="education">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <span class="eyebrow">Education &amp; honors</span>
+        <h2 class="sec-title">Training</h2>
+      </div>
+      <div><p class="lede">A chemistry major built deliberately toward materials &mdash; graduate-level synthesis, nanomaterials fabrication, and a semester of materials chemistry and physics on the other side of the world.</p></div>
+    </div>
+
+    <div class="edu">
+      <div class="card">
+        <span class="eyebrow">Washington, DC &middot; conferred 16 May 2026</span>
+        <h3 class="school">Georgetown University</h3>
+        <p class="deg">Bachelor of Science in Chemistry (Honors)<br>Minor in Biology &middot; College of Arts &amp; Sciences</p>
+        <div class="stat">
+          <div><b>3.46</b><span class="eyebrow">Cumulative GPA</span></div>
+          <div><b>103</b><span class="eyebrow">Credits earned</span></div>
+          <div><b>3 yr</b><span class="eyebrow">In the Stoll lab</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <span class="eyebrow">Sydney, Australia &middot; Jan &ndash; May 2025</span>
+        <h3 class="school">University of New South Wales</h3>
+        <p class="deg">Study abroad &mdash; Chemistry of Materials, Physics&nbsp;1B, Advanced Field Biology, Financial Management</p>
+        <div class="stat">
+          <div><b>85</b><span class="eyebrow">Chemistry of Materials</span></div>
+          <div><b>82</b><span class="eyebrow">Adv. Field Biology</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div>
+        <h3 class="minor">Selected coursework</h3>
+        <ul class="list-rule">
+          <li><b>Graduate-Level Organic Synthesis</b> &middot; CHEM 5060</li>
+          <li><b>Fabrication &amp; Characterization of Nanomaterials</b> &middot; PHYS 4751</li>
+          <li><b>Advanced Materials Chemistry</b> &mdash; nanomaterials, polymers, biomaterials, quantum materials</li>
+          <li><b>Physical Chemistry I &amp; II</b> and <b>Physical&ndash;Chemical Measurements</b></li>
+          <li><b>Inorganic Chemistry</b> &middot; <b>Analytical Methods</b>, with laboratory</li>
+          <li><b>Honors Research I&ndash;II</b> and <b>Honors Thesis</b> &middot; CHEM 4909, 4999</li>
+          <li><b>Mathematical Statistics</b> &middot; <b>Introduction to Programming</b></li>
+          <li><b>Biochemistry</b> &middot; <b>Introductory Virology &amp; Viral Disease</b></li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="minor">Honors &amp; awards</h3>
+        <ul class="list-rule">
+          <li><b>First Honors</b>, Georgetown University &middot; Fall 2025</li>
+          <li><b>Dean&rsquo;s List</b>, Georgetown University &middot; Fall 2024, Spring 2026</li>
+          <li><b>Materials Science Undergraduate Research Fellow</b> &middot; Stoll Research Group</li>
+          <li><b>Government of Albania appointee</b> &mdash; Youth NATO Summit delegate, 2024</li>
+        </ul>
+        <h3 class="minor" style="margin-top:34px">Memberships &amp; languages</h3>
+        <ul class="list-rule">
+          <li><b>American Chemical Society</b> &middot; 2024&ndash;present</li>
+          <li><b>Albanian Academic and Professional Association</b> &middot; 2023&ndash;present</li>
+          <li><b>Spanish</b> &mdash; spoken, written and comprehension</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="teaching">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <span class="eyebrow">Teaching, outreach &amp; service</span>
+        <h2 class="sec-title">Explaining it to someone else</h2>
+      </div>
+      <div><p class="lede">Five years of teaching &mdash; general chemistry labs, K&ndash;12 science across DC, and a free debate program founded in high school and run through college.</p></div>
+    </div>
+
+    <div class="two-col" style="margin-top:0">
+      <div>
+        <h3 class="minor">Teaching &amp; outreach</h3>
+        <ul class="list-rule">
+          <li><b>General Chemistry I &amp; II Lab TA</b> &mdash; Georgetown Department of Chemistry &middot; Aug 2025&ndash;May 2026</li>
+          <li><b>Math &amp; Science Tutor</b>, GUMSHOE &mdash; hands-on tutoring in math, chemistry, biology and physics for K&ndash;12 students across Washington, DC &middot; Sep 2023&ndash;May 2026</li>
+          <li><b>Founder &amp; Instructor</b>, Dynamite Debate (Kids Helping Kids) &mdash; a free debate-education program for K&ndash;12 students from underserved communities, teaching multi-month courses in several competitive styles &middot; Sep 2021&ndash;Jan 2025</li>
+          <li><b>Student Tutor</b>, Varsity Tutors &mdash; math through pre-calculus, chemistry, biology, physics, SAT/ACT &middot; Jun 2022&ndash;Aug 2023</li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="minor">Leadership</h3>
+        <ul class="list-rule">
+          <li><b>Head of Marketing</b>, Georgetown University Albanian Society &middot; Sep 2023&ndash;May 2026</li>
+          <li><b>Treasurer</b>, Georgetown University Chemistry Club &middot; Sep 2024&ndash;Aug 2025</li>
+          <li><b>Project Leader &amp; Senior Ambassador</b>, Kids Helping Kids &middot; since Jun 2016</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer id="contact">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <span class="eyebrow">Get in touch</span>
+        <h2 style="margin-top:14px">Happy to talk about<br>rare earths, formulation,<br>or anything f-block.</h2>
+      </div>
+      <div>
+        <ul class="contact-list">
+          <li><span class="lab">Email</span><a href="mailto:cotajmatthew@gmail.com">cotajmatthew@gmail.com</a></li>
+          <li><span class="lab">Phone</span><a href="tel:+12035411448">(203) 541-1448</a></li>
+          <li><span class="lab">Based</span><span class="sub">Stamford, Connecticut</span></li>
+          <li><span class="lab">Now</span><span class="sub">Groton, CT &mdash; Pfizer Drug Product Design</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="colophon">
+      <span>Matthew A. Cotaj &middot; B.S. Chemistry (Honors), Georgetown University, 2026</span>
+      <span>Set in Spectral &amp; IBM Plex &middot; Eu / Gd / Cu / S accents after the EDS channel colors</span>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+  var c = document.getElementById('field');
+  if(!c || !c.getContext) return;
+  var ctx = c.getContext('2d');
+  var host = c.parentNode;
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var rods = [], W = 0, H = 0, dpr = 1;
+  var field = -0.35, target = -0.35, auto = true;
+  var color = 'rgba(19,23,21,.13)';
+
+  function readColor(){
+    var v = getComputedStyle(document.documentElement).getPropertyValue('--rod').trim();
+    if(v) color = v;
+  }
+
+  function relax(iterations){
+    for(var k = 0; k < iterations; k++){
+      for(var i = 0; i < rods.length; i++){
+        var r = rods[i], d = field - r.a;
+        while(d > Math.PI / 2) d -= Math.PI;
+        while(d < -Math.PI / 2) d += Math.PI;
+        r.a += d * r.lag;
+      }
+    }
+  }
+
+  function seed(){
+    var box = host.getBoundingClientRect();
+    W = Math.max(1, box.width); H = Math.max(1, box.height);
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    c.width = Math.round(W * dpr); c.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    rods = [];
+    var n = Math.round(Math.min(140, (W * H) / 7000));
+    for(var i = 0; i < n; i++){
+      rods.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        len: 12 + Math.random() * 26,
+        w: 2 + Math.random() * 2.4,
+        a: Math.random() * Math.PI,
+        lag: 0.012 + Math.random() * 0.05
+      });
+    }
+    relax(60); /* open on an aligned resting state, not on noise */
+  }
+
+  function draw(){
+    ctx.clearRect(0, 0, W, H);
+    ctx.strokeStyle = color;
+    ctx.lineCap = 'round';
+    for(var i = 0; i < rods.length; i++){
+      var r = rods[i];
+      var dx = Math.cos(r.a) * r.len / 2, dy = Math.sin(r.a) * r.len / 2;
+      ctx.lineWidth = r.w;
+      ctx.beginPath();
+      ctx.moveTo(r.x - dx, r.y - dy);
+      ctx.lineTo(r.x + dx, r.y + dy);
+      ctx.stroke();
+    }
+  }
+
+  function step(ts){
+    if(auto) target = -0.35 + Math.sin(ts / 9000) * 0.85;
+    field += (target - field) * 0.02;
+    relax(1);
+    draw();
+    requestAnimationFrame(step);
+  }
+
+  readColor();
+  seed();
+  draw();
+
+  if(!reduce){
+    host.addEventListener('pointermove', function(e){
+      var box = host.getBoundingClientRect();
+      auto = false;
+      target = Math.atan2(e.clientY - box.top - H / 2, e.clientX - box.left - W / 2);
+    });
+    host.addEventListener('pointerleave', function(){ auto = true; });
+    requestAnimationFrame(step);
+  }
+
+  var timer;
+  window.addEventListener('resize', function(){
+    clearTimeout(timer);
+    timer = setTimeout(function(){ readColor(); seed(); draw(); }, 180);
+  });
+
+  var mq = window.matchMedia('(prefers-color-scheme: dark)');
+  var onScheme = function(){ readColor(); draw(); };
+  if(mq.addEventListener) mq.addEventListener('change', onScheme);
+  else if(mq.addListener) mq.addListener(onScheme);
+})();
+
+/* ---------- 3D: lanthanide sublattice + 4f orbitals ---------- */
+(function(){
+  if(typeof THREE === 'undefined') return;
+
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var token = function(name){
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || '#888888';
+  };
+
+  /* shared scaffolding ------------------------------------------------ */
+  function makeView(canvas, camera, build){
+    var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    var scene = new THREE.Scene();
+    scene.add(new THREE.AmbientLight(0xffffff, 0.66));
+    var key = new THREE.DirectionalLight(0xffffff, 0.78); key.position.set(5, 8, 7); scene.add(key);
+    var fill = new THREE.DirectionalLight(0xffffff, 0.34); fill.position.set(-6, -4, -5); scene.add(fill);
+
+    var root = new THREE.Group();
+    scene.add(root);
+    var api = build(root, scene);
+
+    function resize(){
+      var box = canvas.parentNode.getBoundingClientRect();
+      var w = Math.max(1, box.width), h = Math.max(1, box.height);
+      renderer.setSize(w, h, false);
+      if(camera.isPerspectiveCamera){
+        camera.aspect = w / h;
+      } else {
+        var half = camera.userData.frustumWidth / 2;
+        camera.left = -half; camera.right = half;
+        camera.top = half * h / w; camera.bottom = -half * h / w;
+      }
+      camera.updateProjectionMatrix();
+    }
+
+    /* drag to rotate */
+    var dragging = false, lastX = 0, lastY = 0, vx = 0, vy = 0;
+    canvas.addEventListener('pointerdown', function(e){
+      dragging = true; lastX = e.clientX; lastY = e.clientY;
+      canvas.setPointerCapture(e.pointerId);
+    });
+    canvas.addEventListener('pointermove', function(e){
+      if(!dragging) return;
+      vy = (e.clientX - lastX) * 0.008;
+      vx = (e.clientY - lastY) * 0.008;
+      if(api.onDrag){
+        api.onDrag(vy, vx);
+      } else {
+        root.rotation.y += vy;
+        root.rotation.x = Math.max(-1.2, Math.min(1.2, root.rotation.x + vx));
+      }
+      lastX = e.clientX; lastY = e.clientY;
+    });
+    function release(e){
+      if(!dragging) return;
+      dragging = false;
+      if(e && e.pointerId !== undefined && canvas.hasPointerCapture && canvas.hasPointerCapture(e.pointerId)){
+        canvas.releasePointerCapture(e.pointerId);
+      }
+    }
+    canvas.addEventListener('pointerup', release);
+    canvas.addEventListener('pointercancel', release);
+
+    var visible = true, running = false;
+    function frame(ts){
+      if(!running) return;
+      if(!dragging && !reduce && api.spinRoot !== false) root.rotation.y += 0.0022;
+      if(api.tick) api.tick(ts, dragging);
+      renderer.render(scene, camera);
+      requestAnimationFrame(frame);
+    }
+    function start(){ if(!running && visible){ running = true; requestAnimationFrame(frame); } }
+    function stop(){ running = false; }
+
+    resize();
+    renderer.render(scene, camera);
+
+    if('IntersectionObserver' in window){
+      new IntersectionObserver(function(entries){
+        visible = entries[0].isIntersecting;
+        if(visible) start(); else stop();
+      }, { threshold: 0.01 }).observe(canvas.parentNode);
+    } else { start(); }
+
+    var timer;
+    window.addEventListener('resize', function(){
+      clearTimeout(timer);
+      timer = setTimeout(function(){ resize(); renderer.render(scene, camera); }, 160);
+    });
+
+    return { retheme: api.retheme, render: function(){ renderer.render(scene, camera); } };
+  }
+
+  /* 1 — the two lanthanide sublattices -------------------------------- */
+  var latticeCanvas = document.getElementById('lattice');
+  var latticeView = null;
+  if(latticeCanvas){
+    var camA = new THREE.PerspectiveCamera(34, 1.78, 0.1, 400);
+    camA.position.set(0, 1.6, 28);
+    camA.lookAt(0, 0, 0);
+
+    latticeView = makeView(latticeCanvas, camA, function(root){
+      var SP = 3.6, N = 3;
+      var siteGeo2 = new THREE.SphereGeometry(0.66, 40, 28);  /* Eu2+, larger ion */
+      var siteGeo1 = new THREE.SphereGeometry(0.52, 40, 28);  /* Eu3+ / Gd3+ */
+      var bondGeo  = new THREE.CylinderGeometry(0.035, 0.035, SP, 8);
+      var shaftGeo = new THREE.CylinderGeometry(0.052, 0.052, 0.66, 8);
+      var headGeo  = new THREE.ConeGeometry(0.15, 0.3, 12);
+
+      var colEu2 = new THREE.Color(token('--eu'));
+      var colEu1 = new THREE.Color(token('--ink-3'));
+      var colGd  = new THREE.Color(token('--gd'));
+      var colBond = new THREE.Color(token('--ink-3'));
+
+      var matEu2 = new THREE.MeshStandardMaterial({ color: colEu2, roughness: 0.38, metalness: 0.08 });
+      var matEu1 = new THREE.MeshStandardMaterial({ color: colEu1, roughness: 0.55, metalness: 0.02 });
+      var matBond = new THREE.MeshStandardMaterial({ color: colBond, roughness: 0.8, metalness: 0 });
+      matBond.transparent = true; matBond.opacity = 0.42;
+
+      var sites = [], arrows1 = [], key = {};
+      function put(i, j, k){
+        var even = (i + j + k) % 2 === 0;
+        var p = new THREE.Vector3((i - 1) * SP, (j - 1) * SP, (k - 1) * SP);
+        var m = new THREE.Mesh(even ? siteGeo2 : siteGeo1, even ? matEu2 : matEu1);
+        m.position.copy(p);
+        root.add(m);
+        sites.push({ mesh: m, even: even, pos: p });
+        key[i + ',' + j + ',' + k] = p;
+
+        /* spin arrow: always on for Eu(2); appears on Eu(1) after substitution */
+        var arrow = new THREE.Group();
+        var shaft = new THREE.Mesh(shaftGeo, even ? matEu2 : matEu1);
+        shaft.position.y = 0.33;
+        var head = new THREE.Mesh(headGeo, even ? matEu2 : matEu1);
+        head.position.y = 0.81;
+        arrow.add(shaft); arrow.add(head);
+        arrow.position.copy(p);
+        arrow.position.y += even ? 0.72 : 0.58;
+        root.add(arrow);
+        if(even){ arrow.scale.setScalar(1); }
+        else { arrow.scale.setScalar(0.0001); arrow.visible = false; arrows1.push(arrow); }
+      }
+      for(var i = 0; i < N; i++) for(var j = 0; j < N; j++) for(var k = 0; k < N; k++) put(i, j, k);
+
+      /* nearest-neighbour links along each axis */
+      var axes = [[1,0,0],[0,1,0],[0,0,1]];
+      for(var a = 0; a < 3; a++){
+        for(var x = 0; x < N; x++) for(var y = 0; y < N; y++) for(var z = 0; z < N; z++){
+          var q = [x + axes[a][0], y + axes[a][1], z + axes[a][2]];
+          if(q[0] >= N || q[1] >= N || q[2] >= N) continue;
+          var p1 = key[x + ',' + y + ',' + z], p2 = key[q[0] + ',' + q[1] + ',' + q[2]];
+          var bond = new THREE.Mesh(bondGeo, matBond);
+          bond.position.copy(p1).add(p2).multiplyScalar(0.5);
+          if(a === 0) bond.rotation.z = Math.PI / 2;
+          if(a === 2) bond.rotation.x = Math.PI / 2;
+          root.add(bond);
+        }
+      }
+
+      root.rotation.x = -0.22;
+      root.rotation.y = 0.5;
+
+      /* substitution state */
+      var substituted = false, blend = 0, targetBlend = 0;
+      var btn = document.getElementById('swap-btn');
+      var phaseName = document.getElementById('phase-name');
+      var msatVal = document.getElementById('msat-val');
+      var phaseNote = document.getElementById('phase-note');
+      var legendSwatch = document.getElementById('site1-legend');
+
+      function setPhase(on){
+        substituted = on;
+        targetBlend = on ? 1 : 0;
+        for(var n = 0; n < arrows1.length; n++) arrows1[n].visible = true;
+        var SUP3 = '³⁺', SUP2 = '²⁺', SUB3 = '₃', DOT = ' · ';
+        if(btn) btn.textContent = on ? 'Restore Eu' + SUP3 + ' at Eu(1)' : 'Substitute Gd' + SUP3 + ' at Eu(1)';
+        if(phaseName) phaseName.textContent = on
+          ? 'Eu' + SUP2 + 'Gd' + SUP3 + 'CuS' + SUB3
+          : 'Eu' + SUP2 + 'Eu' + SUP3 + 'CuS' + SUB3;
+        if(phaseNote) phaseNote.textContent = on ? 'two magnetic sublattices' : 'one magnetic sublattice';
+        if(legendSwatch){
+          legendSwatch.style.setProperty('--sw', on ? 'var(--gd)' : 'var(--ink-3)');
+          legendSwatch.innerHTML = '<i></i>' + (on ? 'Gd' : 'Eu') + SUP3 + DOT + 'Eu(1), 6-coordinate';
+        }
+      }
+      if(btn) btn.addEventListener('click', function(){ setPhase(!substituted); });
+
+      return {
+        tick: function(){
+          if(Math.abs(blend - targetBlend) > 0.001){
+            blend += (targetBlend - blend) * 0.09;
+            matEu1.color.copy(colEu1).lerp(colGd, blend);
+            var s = Math.max(0.0001, blend);
+            for(var n = 0; n < arrows1.length; n++) arrows1[n].scale.setScalar(s);
+            if(msatVal) msatVal.textContent = (47.8 + blend * 30.2).toFixed(1);
+          } else if(blend !== targetBlend){
+            blend = targetBlend;
+            matEu1.color.copy(colEu1).lerp(colGd, blend);
+            for(var m2 = 0; m2 < arrows1.length; m2++){
+              arrows1[m2].scale.setScalar(Math.max(0.0001, blend));
+              arrows1[m2].visible = blend > 0.01;
+            }
+            if(msatVal) msatVal.textContent = blend > 0.5 ? '78.0' : '47.8';
+          }
+        },
+        retheme: function(){
+          colEu2.set(token('--eu')); colEu1.set(token('--ink-3'));
+          colGd.set(token('--gd')); colBond.set(token('--ink-3'));
+          matEu2.color.copy(colEu2);
+          matBond.color.copy(colBond);
+          matEu1.color.copy(colEu1).lerp(colGd, blend);
+        }
+      };
+    });
+  }
+
+  /* 2 — three of the seven 4f orbitals -------------------------------- */
+  var orbCanvas = document.getElementById('orbitals');
+  var orbView = null;
+  if(orbCanvas){
+    var camB = new THREE.OrthographicCamera(-4.8, 4.8, 1.7, -1.7, -60, 60);
+    camB.userData.frustumWidth = 9.6;
+    camB.position.set(0, 0, 12);
+    camB.lookAt(0, 0, 0);
+
+    orbView = makeView(orbCanvas, camB, function(root){
+      /* real 4f angular functions, normalized so max |f| = 1 */
+      var shapes = [
+        function(x, y, z){ return z * (5 * z * z - 3) / 2; },              /* 4f z3      */
+        function(x, y, z){ return x * y * z * 5.196152; },                /* 4f xyz     */
+        function(x, y, z){ return x * (x * x - 3 * y * y); }              /* 4f x(x2-3y2) */
+      ];
+      var posCol = new THREE.Color(token('--eu'));
+      var negCol = new THREE.Color(token('--s'));
+      var meshes = [];
+
+      for(var s = 0; s < shapes.length; s++){
+        var geo = new THREE.SphereGeometry(1, 128, 80);
+        var pos = geo.attributes.position;
+        var count = pos.count;
+        var colors = new Float32Array(count * 3);
+        var signs = new Float32Array(count);
+        for(var v = 0; v < count; v++){
+          var x = pos.getX(v), y = pos.getY(v), z = pos.getZ(v);
+          var len = Math.sqrt(x * x + y * y + z * z) || 1;
+          x /= len; y /= len; z /= len;
+          var f = shapes[s](x, y, z);
+          var r = Math.abs(f) * 1.28 + 0.02;
+          pos.setXYZ(v, x * r, y * r, z * r);
+          signs[v] = f >= 0 ? 1 : -1;
+        }
+        pos.needsUpdate = true;
+        geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+        geo.computeVertexNormals();
+
+        var mat = new THREE.MeshStandardMaterial({
+          vertexColors: true, roughness: 0.32, metalness: 0.05,
+          side: THREE.DoubleSide, flatShading: false
+        });
+        var mesh = new THREE.Mesh(geo, mat);
+        mesh.position.x = (s - 1) * 3.2;
+        mesh.rotation.x = 0.42;
+        root.add(mesh);
+        meshes.push({ mesh: mesh, geo: geo, signs: signs, colors: colors, spin: 0.004 + s * 0.0012 });
+      }
+
+      function paint(){
+        posCol.set(token('--eu'));
+        negCol.set(token('--s'));
+        for(var m = 0; m < meshes.length; m++){
+          var e = meshes[m], col = e.colors, sg = e.signs;
+          for(var v = 0; v < sg.length; v++){
+            var c = sg[v] > 0 ? posCol : negCol;
+            col[v * 3] = c.r; col[v * 3 + 1] = c.g; col[v * 3 + 2] = c.b;
+          }
+          e.geo.attributes.color.needsUpdate = true;
+        }
+      }
+      paint();
+
+      return {
+        spinRoot: false,          /* the row must stay aligned with its labels */
+        onDrag: function(dy){
+          for(var m = 0; m < meshes.length; m++) meshes[m].mesh.rotation.y += dy;
+        },
+        tick: function(ts, dragging){
+          if(dragging || reduce) return;
+          for(var m = 0; m < meshes.length; m++) meshes[m].mesh.rotation.y += meshes[m].spin;
+        },
+        retheme: paint
+      };
+    });
+  }
+
+  /* keep 3D colours in step with the viewer's theme */
+  var scheme = window.matchMedia('(prefers-color-scheme: dark)');
+  var onScheme2 = function(){
+    if(latticeView){ latticeView.retheme(); latticeView.render(); }
+    if(orbView){ orbView.retheme(); orbView.render(); }
+  };
+  if(scheme.addEventListener) scheme.addEventListener('change', onScheme2);
+  else if(scheme.addListener) scheme.addListener(onScheme2);
+})();
+</script>
