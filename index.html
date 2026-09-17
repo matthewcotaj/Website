@@ -18,9 +18,13 @@
   --s:#2a5d8f;           /* sulfur channel */
   --cu:#3f7a4a;          /* copper channel */
   --gd:#6b4a8f;          /* gadolinium, the substituent */
-  --rod:rgba(19,23,21,.13);
+  --mol-head:rgba(19,23,21,.24);
+  --mol-tail:rgba(19,23,21,.13);
+  --mol-core:rgba(184,58,38,.055);
   --grid:rgba(19,23,21,.10);
   --shadow:0 1px 0 rgba(19,23,21,.05);
+  --hero-bg:#dfe4dd;
+  --hero-glow:rgba(184,58,38,.12);
 }
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
@@ -37,9 +41,13 @@
     --s:#6fabe2;
     --cu:#71c281;
     --gd:#b18ed8;
-    --rod:rgba(231,234,228,.13);
+    --mol-head:rgba(231,234,228,.26);
+    --mol-tail:rgba(231,234,228,.14);
+    --mol-core:rgba(255,112,82,.085);
     --grid:rgba(231,234,228,.10);
     --shadow:0 1px 0 rgba(0,0,0,.3);
+    --hero-bg:#141c19;
+    --hero-glow:rgba(255,112,82,.10);
   }
 }
 :root[data-theme="dark"]{
@@ -56,9 +64,13 @@
   --s:#6fabe2;
   --cu:#71c281;
   --gd:#b18ed8;
-  --rod:rgba(231,234,228,.13);
+  --mol-head:rgba(231,234,228,.26);
+  --mol-tail:rgba(231,234,228,.14);
+  --mol-core:rgba(255,112,82,.085);
   --grid:rgba(231,234,228,.10);
   --shadow:0 1px 0 rgba(0,0,0,.3);
+  --hero-bg:#141c19;
+  --hero-glow:rgba(255,112,82,.10);
 }
 
 /* ---------- base ---------- */
@@ -129,7 +141,8 @@ nav{
 @media(max-width:1010px){.nav-links{display:none}}
 
 /* ---------- hero ---------- */
-header.hero{position:relative;overflow:hidden;border-bottom:1px solid var(--rule)}
+header.hero{position:relative;overflow:hidden;border-bottom:1px solid var(--rule);
+  background:radial-gradient(ellipse 62% 78% at 14% 18%,var(--hero-glow),transparent 70%),var(--hero-bg)}
 #field{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 .hero-in{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.02fr);gap:clamp(28px,5vw,64px);
   align-items:center;padding:clamp(52px,8vw,96px) 0 clamp(44px,6vw,72px)}
@@ -539,7 +552,7 @@ footer{background:var(--paper);border-top:1px solid var(--rule);padding:clamp(56
         </div>
         <button class="swap" id="swap-btn" type="button">Substitute Gd&#179;&#8314; at Eu(1)</button>
       </div>
-      <figcaption style="padding:0 16px 14px">Schematic of the two lanthanide sublattices &mdash; site geometry and occupancy after the thesis assignment, not a refined crystal structure. Arrows mark sites carrying a spin; the Cu&ndash;S framework is omitted for legibility. The site-ordered mixed-valent formulation shown here is the targeted composition; &#185;&#8309;&#185;Eu M&ouml;ssbauer spectroscopy is the test that would distinguish it from a statistical solid solution.</figcaption>
+      <figcaption style="padding:0 16px 14px">Schematic of the two lanthanide sublattices &mdash; site occupancy after the thesis assignment, not a refined crystal structure: in the real Pnma lattice the Eu(1) octahedra and CuS&#8324; tetrahedra form layers, with Eu(2) between them. Arrows mark sites carrying a spin. After substitution the Gd&#179;&#8314; arrows are drawn antiparallel to Eu&#178;&#8314;, as in bulk EuGdCuS&#8323;, which orders ferrimagnetically near 5&#8239;K (Wakeshima et al., 2004); whether the nanorods do the same is the open question stated above, and at 7&#8239;T both sublattices are field-polarized, which is where M<sub>sat</sub> is read. The Cu&ndash;S framework is omitted for legibility. The site-ordered mixed-valent formulation shown here is the targeted composition; &#185;&#8309;&#185;Eu M&ouml;ssbauer spectroscopy is the test that would distinguish it from a statistical solid solution.</figcaption>
     </figure>
 
     <h3 class="minor" style="margin-top:52px">Three of the seven 4f orbitals</h3>
@@ -549,7 +562,7 @@ footer{background:var(--paper);border-top:1px solid var(--rule);padding:clamp(56
       </div>
       <div class="orb-labels">
         <div><b>4f<sub>z&#179;</sub></b><span>m = 0</span></div>
-        <div><b>4f<sub>xyz</sub></b><span>cubic set</span></div>
+        <div><b>4f<sub>xyz</sub></b><span>m = &plusmn;2</span></div>
         <div><b>4f<sub>x(x&#178;&#8722;3y&#178;)</sub></b><span>m = &plusmn;3</span></div>
       </div>
       <figcaption style="padding:0 16px 14px">Angular parts of the 4f wavefunctions, colored by the sign of the lobe. These orbitals are spatially contracted and shielded by the filled 5s and 5p shells &mdash; which is exactly why neighboring lanthanide ions cannot couple directly.</figcaption>
@@ -580,7 +593,7 @@ footer{background:var(--paper);border-top:1px solid var(--rule);padding:clamp(56
           <rect class="box-cell" x="180.6" y="0.6" width="30" height="44"></rect><path class="box-arrow" d="M195.6 40 V8 M191.6 12 L195.6 8 L199.6 12"></path>
           <rect class="box-cell" x="216.6" y="0.6" width="28.8" height="44"></rect><path class="box-arrow" d="M231 40 V8 M227 12 L231 8 L235 12"></path>
         </svg>
-        <div class="term"><b>&#8312;S<sub>7/2</sub></b><span>Half-filled shell: L = 0, S = 7/2, and a 7.94 &mu;<sub>B</sub> spin-only moment. Both ions carry it identically.</span></div>
+        <div class="term"><b>&#8312;S<sub>7/2</sub></b><span>Half-filled shell: L = 0, S = 7/2, a 7.94 &mu;<sub>B</sub> spin-only effective moment and 7 &mu;<sub>B</sub> at saturation. Both ions carry it identically.</span></div>
       </article>
     </div>
 
@@ -987,27 +1000,99 @@ footer{background:var(--paper);border-top:1px solid var(--rule);padding:clamp(56
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
+  /* Hero field: amphiphiles diffusing, self-assembling into micelles, and
+     exchanging monomers - the shared physics of oleylamine-capped nanocrystals,
+     bile-salt micelles in biorelevant media, and a surfactant foam chassis. */
   var c = document.getElementById('field');
   if(!c || !c.getContext) return;
   var ctx = c.getContext('2d');
   var host = c.parentNode;
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var rods = [], W = 0, H = 0, dpr = 1;
-  var field = -0.35, target = -0.35, auto = true;
-  var color = 'rgba(19,23,21,.13)';
+  var W = 0, H = 0, dpr = 1;
+  var mols = [], cores = [];
+  var col = { head: 'rgba(19,23,21,.22)', tail: 'rgba(19,23,21,.12)', core: 'rgba(184,58,38,.05)' };
+  var probe = { x: 0, y: 0, r: 0, on: false, count: 0, spin: 0.006 };
 
-  function readColor(){
-    var v = getComputedStyle(document.documentElement).getPropertyValue('--rod').trim();
-    if(v) color = v;
+  function readColors(){
+    var cs = getComputedStyle(document.documentElement);
+    var h = cs.getPropertyValue('--mol-head').trim();
+    var t = cs.getPropertyValue('--mol-tail').trim();
+    var k = cs.getPropertyValue('--mol-core').trim();
+    if(h) col.head = h;
+    if(t) col.tail = t;
+    if(k) col.core = k;
   }
 
-  function relax(iterations){
-    for(var k = 0; k < iterations; k++){
-      for(var i = 0; i < rods.length; i++){
-        var r = rods[i], d = field - r.a;
-        while(d > Math.PI / 2) d -= Math.PI;
-        while(d < -Math.PI / 2) d += Math.PI;
-        r.a += d * r.lag;
+  /* how many head groups fit around the core surface */
+  function capacity(r){ return Math.max(6, Math.round(6.283 * r / 8.4)); }
+
+  function coreAt(idx){ return idx === -2 ? probe : cores[idx]; }
+
+  function release(mol){
+    var k = coreAt(mol.host);
+    mol.host = -1;
+    if(k){
+      var dx = mol.x - k.x, dy = mol.y - k.y, d = Math.sqrt(dx * dx + dy * dy) || 1;
+      mol.vx = dx / d * 0.45;
+      mol.vy = dy / d * 0.45;
+    }
+  }
+
+  function step(ts, settling){
+    var i, j, mol, k, kk;
+
+    for(i = 0; i < cores.length; i++){
+      k = cores[i];
+      k.x += k.vx; k.y += k.vy;
+      if(k.x < W * 0.08 || k.x > W * 0.92) k.vx *= -1;
+      if(k.y < H * 0.14 || k.y > H * 0.86) k.vy *= -1;
+      k.r = k.r0 + Math.sin(ts / 2400 + k.phase) * 3.2;
+      k.count = 0;
+    }
+    probe.count = 0;
+    probe.r += ((probe.on ? 31 : 0) - probe.r) * 0.08;
+
+    for(i = 0; i < mols.length; i++){
+      mol = mols[i];
+
+      if(mol.host !== -1){
+        k = coreAt(mol.host);
+        if(!k || (mol.host === -2 && probe.r < 6)){ release(mol); continue; }
+        k.count++;
+        mol.slot += k.spin;
+        var tx = k.x + Math.cos(mol.slot) * (k.r + mol.len * 0.55);
+        var ty = k.y + Math.sin(mol.slot) * (k.r + mol.len * 0.55);
+        var e = mol.ease * (settling ? 3.2 : 1);
+        mol.x += (tx - mol.x) * e;
+        mol.y += (ty - mol.y) * e;
+        mol.a = mol.slot + Math.PI;          /* tail buried in the core */
+        if(!settling && Math.random() < 0.0012) release(mol);   /* monomer exchange */
+        continue;
+      }
+
+      mol.vx += (Math.random() - 0.5) * 0.055;
+      mol.vy += (Math.random() - 0.5) * 0.055;
+      mol.vx *= 0.985; mol.vy *= 0.985;
+      mol.x += mol.vx; mol.y += mol.vy;
+      mol.a += (Math.random() - 0.5) * 0.07;
+
+      if(mol.x < -20) mol.x = W + 20; else if(mol.x > W + 20) mol.x = -20;
+      if(mol.y < -20) mol.y = H + 20; else if(mol.y > H + 20) mol.y = -20;
+
+      var best = -1, bestD = 1e9, dx, dy, d;
+      for(j = -1; j < cores.length; j++){
+        kk = j === -1 ? probe : cores[j];
+        if(j === -1 && probe.r < 8) continue;
+        if(kk.count >= capacity(kk.r)) continue;
+        dx = kk.x - mol.x; dy = kk.y - mol.y;
+        d = Math.sqrt(dx * dx + dy * dy);
+        if(d < kk.r + 46 && d < bestD){ bestD = d; best = (j === -1) ? -2 : j; }
+      }
+      if(best !== -1 && (settling || Math.random() < 0.06)){
+        mol.host = best;
+        kk = coreAt(best);
+        mol.slot = Math.atan2(mol.y - kk.y, mol.x - kk.x);
+        kk.count++;
       }
     }
   }
@@ -1018,66 +1103,110 @@ footer{background:var(--paper);border-top:1px solid var(--rule);padding:clamp(56
     dpr = Math.min(window.devicePixelRatio || 1, 2);
     c.width = Math.round(W * dpr); c.height = Math.round(H * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    rods = [];
-    var n = Math.round(Math.min(140, (W * H) / 7000));
+
+    cores = [];
+    var n = Math.max(3, Math.min(7, Math.round(W * H / 165000)));
     for(var i = 0; i < n; i++){
-      rods.push({
-        x: Math.random() * W,
-        y: Math.random() * H,
-        len: 12 + Math.random() * 26,
-        w: 2 + Math.random() * 2.4,
-        a: Math.random() * Math.PI,
-        lag: 0.012 + Math.random() * 0.05
+      cores.push({
+        x: (0.10 + 0.80 * Math.random()) * W,
+        y: (0.18 + 0.64 * Math.random()) * H,
+        r0: 23 + Math.random() * 19,
+        r: 30,
+        vx: (Math.random() - 0.5) * 0.13,
+        vy: (Math.random() - 0.5) * 0.11,
+        spin: (Math.random() - 0.5) * 0.0055,
+        phase: Math.random() * 6.283,
+        count: 0
       });
     }
-    relax(60); /* open on an aligned resting state, not on noise */
+
+    mols = [];
+    var m = Math.round(Math.min(170, (W * H) / 5000));
+    for(var j = 0; j < m; j++){
+      mols.push({
+        x: Math.random() * W, y: Math.random() * H,
+        vx: (Math.random() - 0.5) * 0.24, vy: (Math.random() - 0.5) * 0.24,
+        a: Math.random() * 6.283,
+        len: 8 + Math.random() * 5,
+        kink: (Math.random() < 0.5 ? -1 : 1) * (1.3 + Math.random() * 1.7),
+        r: 2.0 + Math.random() * 1.1,
+        host: -1,
+        slot: Math.random() * 6.283,
+        ease: 0.035 + Math.random() * 0.045
+      });
+    }
+
+    /* open on assembled micelles, not on noise */
+    for(var s = 0; s < 260; s++) step(s * 16, true);
   }
 
   function draw(){
     ctx.clearRect(0, 0, W, H);
-    ctx.strokeStyle = color;
+    var i, mol, k;
+
+    ctx.fillStyle = col.core;
+    for(i = 0; i < cores.length; i++){
+      k = cores[i];
+      ctx.beginPath(); ctx.arc(k.x, k.y, k.r * 0.94, 0, 6.283); ctx.fill();
+    }
+    if(probe.r > 2){
+      ctx.beginPath(); ctx.arc(probe.x, probe.y, probe.r * 0.94, 0, 6.283); ctx.fill();
+    }
+
+    ctx.strokeStyle = col.tail;
+    ctx.lineWidth = 1.5;
     ctx.lineCap = 'round';
-    for(var i = 0; i < rods.length; i++){
-      var r = rods[i];
-      var dx = Math.cos(r.a) * r.len / 2, dy = Math.sin(r.a) * r.len / 2;
-      ctx.lineWidth = r.w;
+    for(i = 0; i < mols.length; i++){
+      mol = mols[i];
+      var ca = Math.cos(mol.a), sa = Math.sin(mol.a);
+      var ex = mol.x + ca * mol.len, ey = mol.y + sa * mol.len;
+      var mx = mol.x + ca * mol.len * 0.5 - sa * mol.kink;
+      var my = mol.y + sa * mol.len * 0.5 + ca * mol.kink;
       ctx.beginPath();
-      ctx.moveTo(r.x - dx, r.y - dy);
-      ctx.lineTo(r.x + dx, r.y + dy);
+      ctx.moveTo(mol.x, mol.y);
+      ctx.quadraticCurveTo(mx, my, ex, ey);
       ctx.stroke();
+    }
+
+    ctx.fillStyle = col.head;
+    for(i = 0; i < mols.length; i++){
+      mol = mols[i];
+      ctx.beginPath(); ctx.arc(mol.x, mol.y, mol.r, 0, 6.283); ctx.fill();
     }
   }
 
-  function step(ts){
-    if(auto) target = -0.35 + Math.sin(ts / 9000) * 0.85;
-    field += (target - field) * 0.02;
-    relax(1);
+  var running = false;
+  function frame(ts){
+    if(!running) return;
+    step(ts, false);
     draw();
-    requestAnimationFrame(step);
+    requestAnimationFrame(frame);
   }
 
-  readColor();
+  readColors();
   seed();
   draw();
 
   if(!reduce){
+    running = true;
+    requestAnimationFrame(frame);
     host.addEventListener('pointermove', function(e){
       var box = host.getBoundingClientRect();
-      auto = false;
-      target = Math.atan2(e.clientY - box.top - H / 2, e.clientX - box.left - W / 2);
+      probe.x = e.clientX - box.left;
+      probe.y = e.clientY - box.top;
+      probe.on = true;
     });
-    host.addEventListener('pointerleave', function(){ auto = true; });
-    requestAnimationFrame(step);
+    host.addEventListener('pointerleave', function(){ probe.on = false; });
   }
 
   var timer;
   window.addEventListener('resize', function(){
     clearTimeout(timer);
-    timer = setTimeout(function(){ readColor(); seed(); draw(); }, 180);
+    timer = setTimeout(function(){ readColors(); seed(); draw(); }, 180);
   });
 
   var mq = window.matchMedia('(prefers-color-scheme: dark)');
-  var onScheme = function(){ readColor(); draw(); };
+  var onScheme = function(){ readColors(); draw(); };
   if(mq.addEventListener) mq.addEventListener('change', onScheme);
   else if(mq.addListener) mq.addListener(onScheme);
 })();
@@ -1212,7 +1341,7 @@ footer{background:var(--paper);border-top:1px solid var(--rule);padding:clamp(56
         sites.push({ mesh: m, even: even, pos: p });
         key[i + ',' + j + ',' + k] = p;
 
-        /* spin arrow: always on for Eu(2); appears on Eu(1) after substitution */
+        /* spin arrow: always on for Eu(2); appears on Eu(1) after substitution, pointing the other way */
         var arrow = new THREE.Group();
         var shaft = new THREE.Mesh(shaftGeo, even ? matEu2 : matEu1);
         shaft.position.y = 0.33;
@@ -1220,10 +1349,16 @@ footer{background:var(--paper);border-top:1px solid var(--rule);padding:clamp(56
         head.position.y = 0.81;
         arrow.add(shaft); arrow.add(head);
         arrow.position.copy(p);
-        arrow.position.y += even ? 0.72 : 0.58;
+        if(even){
+          arrow.position.y += 0.72;               /* Eu2+ moment, drawn up from the top of the sphere */
+          arrow.scale.setScalar(1);
+        } else {
+          /* Gd3+ sublattice antiparallel to Eu2+: bulk EuGdCuS3 is a ferrimagnet (Wakeshima et al. 2004) */
+          arrow.rotation.z = Math.PI;             /* point down */
+          arrow.position.y -= 0.58;               /* hang from the underside of the sphere */
+          arrow.scale.setScalar(0.0001); arrow.visible = false; arrows1.push(arrow);
+        }
         root.add(arrow);
-        if(even){ arrow.scale.setScalar(1); }
-        else { arrow.scale.setScalar(0.0001); arrow.visible = false; arrows1.push(arrow); }
       }
       for(var i = 0; i < N; i++) for(var j = 0; j < N; j++) for(var k = 0; k < N; k++) put(i, j, k);
 
@@ -1262,7 +1397,7 @@ footer{background:var(--paper);border-top:1px solid var(--rule);padding:clamp(56
         if(phaseName) phaseName.textContent = on
           ? 'Eu' + SUP2 + 'Gd' + SUP3 + 'CuS' + SUB3
           : 'Eu' + SUP2 + 'Eu' + SUP3 + 'CuS' + SUB3;
-        if(phaseNote) phaseNote.textContent = on ? 'two magnetic sublattices' : 'one magnetic sublattice';
+        if(phaseNote) phaseNote.textContent = on ? 'two magnetic sublattices, antiparallel' : 'one magnetic sublattice';
         if(legendSwatch){
           legendSwatch.style.setProperty('--sw', on ? 'var(--gd)' : 'var(--ink-3)');
           legendSwatch.innerHTML = '<i></i>' + (on ? 'Gd' : 'Eu') + SUP3 + DOT + 'Eu(1), 6-coordinate';
