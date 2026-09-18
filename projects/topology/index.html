@@ -1,0 +1,784 @@
+<title>Topology Explorer &middot; Matthew Cotaj</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,600;1,300;1,400&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* ---------- tokens : light (default) ---------- */
+:root{
+  --ground:#edeee9;
+  --paper:#f8f9f6;
+  --paper-2:#e4e6df;
+  --ink:#131715;
+  --ink-2:#59635e;
+  --ink-3:#8a938d;
+  --rule:#d2d6cf;
+  --rule-soft:#dfe2db;
+  --eu:#b83a26;
+  --eu-wash:rgba(184,58,38,.09);
+  --s:#2a5d8f;
+  --cu:#3f7a4a;
+  --gd:#6b4a8f;
+  --shadow:0 1px 0 rgba(19,23,21,.05);
+  /* fixed instrument-console tokens for the live plots: the canvas below
+     draws with hardcoded colors tuned for a dark readout, independent of
+     site theme, so the console itself stays dark in both modes. */
+  --topo-bg:#121821;
+  --topo-line:#253040;
+  --topo-text:#e7edf3;
+  --topo-dim:#8fa1b3;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#0f1311;
+    --paper:#161b18;
+    --paper-2:#1e2420;
+    --ink:#e7eae4;
+    --ink-2:#98a29b;
+    --ink-3:#6d766f;
+    --rule:#2a312d;
+    --rule-soft:#222824;
+    --eu:#ff7052;
+    --eu-wash:rgba(255,112,82,.10);
+    --s:#6fabe2;
+    --cu:#71c281;
+    --gd:#b18ed8;
+    --shadow:0 1px 0 rgba(0,0,0,.3);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0f1311;
+  --paper:#161b18;
+  --paper-2:#1e2420;
+  --ink:#e7eae4;
+  --ink-2:#98a29b;
+  --ink-3:#6d766f;
+  --rule:#2a312d;
+  --rule-soft:#222824;
+  --eu:#ff7052;
+  --eu-wash:rgba(255,112,82,.10);
+  --s:#6fabe2;
+  --cu:#71c281;
+  --gd:#b18ed8;
+  --shadow:0 1px 0 rgba(0,0,0,.3);
+}
+
+/* ---------- base ---------- */
+*{box-sizing:border-box}
+body{
+  background:var(--ground);
+  color:var(--ink);
+  font-family:"IBM Plex Sans","Segoe UI",Helvetica,Arial,sans-serif;
+  font-size:16px;
+  line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4,p,ul,ol,figure{margin:0}
+ul{padding:0;list-style:none}
+a{color:var(--eu);text-decoration:none;border-bottom:1px solid color-mix(in srgb,var(--eu) 35%,transparent);transition:border-color .18s,color .18s}
+a:hover{border-bottom-color:var(--eu)}
+a:focus-visible,button:focus-visible{outline:2px solid var(--eu);outline-offset:3px;border-radius:2px}
+
+.wrap{max-width:1140px;margin:0 auto;padding:0 clamp(20px,5vw,56px)}
+.measure{max-width:66ch}
+
+.mono{font-family:"IBM Plex Mono",ui-monospace,Consolas,monospace}
+.eyebrow{
+  font-family:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+  font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ink-3);
+}
+h2.sec-title{
+  font-family:Spectral,Georgia,serif;font-weight:400;
+  font-size:clamp(1.65rem,3.1vw,2.35rem);line-height:1.14;letter-spacing:-.012em;
+  text-wrap:balance;
+}
+.lede{
+  font-family:Spectral,Georgia,serif;font-weight:300;
+  font-size:clamp(1.08rem,1.7vw,1.3rem);line-height:1.58;color:var(--ink-2);
+}
+.sub{color:var(--ink-2)}
+em{font-family:Spectral,Georgia,serif;font-style:italic}
+
+/* ---------- nav ---------- */
+nav{
+  position:sticky;top:0;z-index:30;
+  background:color-mix(in srgb,var(--ground) 88%,transparent);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--rule-soft);
+}
+.nav-in{display:flex;align-items:center;gap:22px;height:60px}
+.tile{
+  width:34px;height:34px;flex:none;border:1px solid var(--ink);
+  display:grid;align-content:center;justify-items:center;line-height:1;
+  background:var(--paper);
+}
+.tile .z{font-family:"IBM Plex Mono",monospace;font-size:.44rem;color:var(--ink-2);letter-spacing:.02em}
+.tile .sym{font-family:Spectral,Georgia,serif;font-size:1.02rem;font-weight:400;margin-top:1px}
+.nav-name{font-family:"IBM Plex Mono",monospace;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;margin-right:auto}
+.nav-links{display:flex;align-items:center;gap:16px}
+.nav-links a{
+  font-family:"IBM Plex Mono",monospace;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-2);border-bottom:1px solid transparent;padding-bottom:2px;
+}
+.nav-links a:hover,.nav-links a.cur{color:var(--ink);border-bottom-color:var(--eu)}
+
+/* Projects dropdown */
+.nav-drop{position:relative}
+.nav-drop-trigger{
+  background:none;border:none;font:inherit;cursor:pointer;padding:0 0 2px;margin:0;
+  font-family:"IBM Plex Mono",monospace;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-2);border-bottom:1px solid transparent;
+  display:inline-flex;align-items:center;gap:5px;
+}
+.nav-drop-trigger:hover{color:var(--ink);border-bottom-color:var(--eu)}
+.nav-drop-trigger[aria-expanded="true"]{color:var(--ink);border-bottom-color:var(--eu)}
+.nav-drop-trigger .car{font-size:.55rem;line-height:1;transition:transform .15s}
+.nav-drop-trigger[aria-expanded="true"] .car{transform:rotate(180deg)}
+.nav-drop-menu{
+  position:absolute;top:calc(100% + 15px);left:50%;transform:translateX(-50%);
+  min-width:230px;background:var(--paper);border:1px solid var(--rule);box-shadow:var(--shadow);
+  padding:6px;display:none;z-index:40;
+}
+.nav-drop-menu.open{display:block}
+.nav-drop-menu a{
+  display:flex;flex-direction:column;gap:2px;padding:9px 12px;
+  font-family:"IBM Plex Mono",monospace;font-size:.72rem;letter-spacing:.05em;text-transform:none;
+  color:var(--ink-2);border-bottom:0;
+}
+.nav-drop-menu a:hover{color:var(--ink);background:var(--paper-2)}
+.nav-drop-menu a.cur{color:var(--eu)}
+.nav-drop-menu .note{font-family:"IBM Plex Sans",sans-serif;font-size:.68rem;color:var(--ink-3);letter-spacing:0}
+
+/* mobile nav toggle */
+.nav-toggle{
+  display:none;background:none;border:1px solid var(--rule);color:var(--ink-2);
+  font-family:"IBM Plex Mono",monospace;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;
+  padding:6px 12px;cursor:pointer;
+}
+.nav-toggle:hover{color:var(--ink);border-color:var(--ink-2)}
+.nav-toggle[aria-expanded="true"]{color:var(--ink);border-color:var(--eu)}
+
+@media(max-width:1010px){
+  .nav-toggle{display:inline-block}
+  .nav-links{
+    display:none;position:absolute;top:60px;left:0;right:0;
+    flex-direction:column;align-items:stretch;gap:0;background:var(--ground);
+    border-bottom:1px solid var(--rule-soft);padding:6px clamp(20px,5vw,56px) 14px;
+  }
+  .nav-links.mobile-open{display:flex}
+  .nav-links a{padding:11px 0;border-bottom:1px solid var(--rule-soft)}
+  .nav-drop{width:100%}
+  .nav-drop-trigger{width:100%;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--rule-soft)}
+  .nav-drop-menu{
+    position:static;transform:none;box-shadow:none;border:0;background:none;
+    padding:0 0 0 14px;min-width:0;
+  }
+  .nav-drop-menu a{padding:10px 0;border-bottom:1px solid var(--rule-soft)}
+}
+
+/* ---------- section scaffolding ---------- */
+section{padding:clamp(56px,8vw,96px) 0;border-bottom:1px solid var(--rule)}
+section:last-of-type{border-bottom:0}
+.sec-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.35fr);gap:clamp(24px,5vw,60px);align-items:start;margin-bottom:clamp(32px,4vw,52px)}
+@media(max-width:860px){.sec-head{grid-template-columns:1fr;gap:14px}}
+.sec-head .eyebrow{margin-bottom:12px;display:block}
+.back-link{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:22px;display:inline-block}
+.back-link a{color:var(--ink-2);border-bottom-color:transparent}
+.back-link a:hover{color:var(--eu);border-bottom-color:var(--eu)}
+
+/* ---------- footer (shared with the main page) ---------- */
+footer{background:var(--paper);border-top:1px solid var(--rule);padding:clamp(56px,8vw,88px) 0 44px}
+.foot-grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:clamp(28px,5vw,60px);align-items:end}
+@media(max-width:760px){.foot-grid{grid-template-columns:1fr;gap:32px;align-items:start}}
+.foot-grid h2{font-family:Spectral,Georgia,serif;font-weight:300;font-size:clamp(2rem,4.6vw,3.1rem);line-height:1.08;letter-spacing:-.018em}
+.contact-list li{padding:11px 0;border-top:1px solid var(--rule-soft);display:flex;gap:16px;align-items:baseline}
+.contact-list li:first-child{border-top:1px solid var(--rule)}
+.contact-list .lab{font-family:"IBM Plex Mono",monospace;font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);width:64px;flex:none}
+.colophon{margin-top:52px;padding-top:20px;border-top:1px solid var(--rule);
+  font-family:"IBM Plex Mono",monospace;font-size:.67rem;line-height:1.6;color:var(--ink-3);display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between}
+
+/* ==========================================================================
+   Topology Explorer tool -- structure and element IDs below are load-bearing
+   for the embedded script (untouched from the verified source); only the
+   visual styling here is new, built to match the rest of the site.
+   ========================================================================== */
+
+.tabs{
+  display:flex;gap:2px;margin:0 0 clamp(28px,4vw,40px);border-bottom:1px solid var(--rule);
+}
+.tab{
+  background:none;border:none;color:var(--ink-2);
+  font-family:"IBM Plex Mono",monospace;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;
+  padding:0 0 12px;margin-right:26px;cursor:pointer;border-bottom:2px solid transparent;
+  transition:color .15s,border-color .15s;
+}
+.tab:hover{color:var(--ink)}
+.tab.active{color:var(--ink);border-bottom-color:var(--eu)}
+
+.grid{display:grid;grid-template-columns:280px 1fr;gap:clamp(20px,3vw,32px)}
+@media(max-width:860px){.grid{grid-template-columns:1fr}}
+
+.panel{background:var(--paper);border:1px solid var(--rule);padding:22px 24px;box-shadow:var(--shadow)}
+
+/* Chern-number readout: styled as a fixed instrument console, like the
+   plots, since its color-coded value is set by the script against a dark
+   background and isn't theme-reactive. */
+.readout{
+  background:var(--topo-bg);border:1px solid var(--topo-line);
+  padding:20px 22px;margin-bottom:20px;
+}
+.readout .label{font-family:"IBM Plex Mono",monospace;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--topo-dim);margin-bottom:8px}
+.readout .value{font-family:"IBM Plex Mono",monospace;font-size:42px;font-weight:600;line-height:1;color:var(--topo-text)}
+.readout .raw{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--topo-dim);margin-top:8px}
+.readout .gapflag{font-family:"IBM Plex Sans",sans-serif;font-size:12px;margin-top:12px;color:#e8807a;display:none;line-height:1.5}
+.readout .gapflag.show{display:block}
+
+.slider-row{margin-bottom:18px}
+.slider-row label{display:flex;justify-content:space-between;font-size:.82rem;color:var(--ink-2);margin-bottom:7px}
+.slider-row .val{font-family:"IBM Plex Mono",monospace;color:var(--ink)}
+input[type="range"]{width:100%;accent-color:var(--eu);height:4px}
+
+.plots{display:flex;flex-direction:column;gap:20px}
+.plot-panel h3{
+  font-family:"IBM Plex Mono",monospace;font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;
+  font-weight:500;margin:0 0 12px;color:var(--eu);
+}
+.console{background:var(--topo-bg);border:1px solid var(--topo-line);padding:8px;margin-bottom:12px}
+canvas{display:block;width:100%;height:auto;border-radius:2px}
+
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;font-family:"IBM Plex Mono",monospace;font-size:.72rem;color:var(--ink-2)}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+.swatch{width:10px;height:10px;border-radius:2px;display:inline-block}
+
+.note{font-size:.85rem;color:var(--ink-2);line-height:1.6;margin-top:6px;padding-top:14px;border-top:1px solid var(--rule-soft)}
+
+.cbar{height:10px;border-radius:2px;margin-top:10px;background:linear-gradient(to right,#2166ac,#92c5de,#f7f7f7,#f4a582,#b2182b);border:1px solid var(--rule)}
+.cbar-labels{display:flex;justify-content:space-between;font-size:.68rem;font-family:"IBM Plex Mono",monospace;color:var(--ink-3);margin-top:6px}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<nav>
+  <div class="wrap nav-in">
+    <div class="tile"><span class="z">115</span><span class="sym">Mc</span></div>
+    <span class="nav-name">Matthew&nbsp;A.&nbsp;Cotaj</span>
+    <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links-list">Menu</button>
+    <div class="nav-links" id="nav-links-list">
+      <a href="../../index.html#thesis">Thesis</a>
+      <a href="../../index.html#structure">Structure</a>
+      <a href="../../index.html#experience">Experience</a>
+      <a href="../../index.html#work">Publications</a>
+      <a href="../../index.html#methods">Methods</a>
+      <a href="../../index.html#interests">Interests</a>
+      <div class="nav-drop">
+        <button class="nav-drop-trigger" id="projects-trigger" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="projects-menu">Projects<span class="car" aria-hidden="true">&#9662;</span></button>
+        <div class="nav-drop-menu" id="projects-menu" role="menu"></div>
+      </div>
+      <a href="../../index.html#education">Education</a>
+      <a href="../../index.html#contact">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+<section id="explorer">
+  <div class="wrap">
+    <span class="back-link mono"><a href="../../index.html">&larr; Matthew A. Cotaj</a></span>
+
+    <div class="sec-head">
+      <div>
+        <span class="eyebrow">Interactive tool &middot; condensed matter theory</span>
+        <h2 class="sec-title">Topological Band Explorer</h2>
+      </div>
+      <div>
+        <p class="lede">Live Bloch Hamiltonian diagonalization, Berry curvature by the Fukui&ndash;Hatsugai&ndash;Suzuki method, and the Chern number, for the Qi&ndash;Wu&ndash;Zhang and Haldane models.</p>
+        <p class="sub" style="margin-top:18px">The same band topology and Chern-number language mentioned under <a href="../../index.html#interests">Quantum materials</a> &mdash; worked out here on two lattices small enough to diagonalize live, in the browser, as you move the sliders.</p>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" data-model="qwz">Qi&ndash;Wu&ndash;Zhang (square lattice)</button>
+      <button class="tab" data-model="haldane">Haldane (honeycomb lattice)</button>
+    </div>
+
+    <div class="grid">
+      <div class="panel" id="controls">
+        <div class="readout">
+          <div class="label">Chern number</div>
+          <div class="value" id="chernValue">0</div>
+          <div class="raw" id="chernRaw">computed: 0.000</div>
+          <div class="gapflag" id="gapFlag">Gap closed &mdash; near a topological transition, Chern number may be unreliable at this resolution.</div>
+        </div>
+        <div id="sliderHost"></div>
+      </div>
+
+      <div class="plots">
+        <div class="panel plot-panel">
+          <h3>Band structure</h3>
+          <div class="console"><canvas id="bandCanvas" width="860" height="280"></canvas></div>
+          <div class="legend">
+            <span><span class="swatch" style="background:#45d9c8"></span>Lower band (occupied)</span>
+            <span><span class="swatch" style="background:#f2b544"></span>Upper band</span>
+          </div>
+        </div>
+
+        <div class="panel plot-panel">
+          <h3>Berry curvature of the lower band</h3>
+          <div class="console"><canvas id="curvCanvas" width="860" height="360"></canvas></div>
+          <div class="cbar"></div>
+          <div class="cbar-labels">
+            <span id="cbarMin">-0.00</span>
+            <span>0</span>
+            <span id="cbarMax">+0.00</span>
+          </div>
+        </div>
+
+        <div class="panel note" id="modelNote"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer id="contact">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <span class="eyebrow">Get in touch</span>
+        <h2 style="margin-top:14px">Happy to talk about<br>rare earths, formulation,<br>or anything f-block.</h2>
+      </div>
+      <div>
+        <ul class="contact-list">
+          <li><span class="lab">Email</span><a href="mailto:cotajmatthew@gmail.com">cotajmatthew@gmail.com</a></li>
+          <li><span class="lab">Phone</span><a href="tel:+12035411448">(203) 541-1448</a></li>
+          <li><span class="lab">Based</span><span class="sub">Stamford, Connecticut</span></li>
+          <li><span class="lab">Now</span><span class="sub">Groton, CT &mdash; Pfizer Drug Product Design</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="colophon">
+      <span>Matthew A. Cotaj &middot; B.S. Chemistry (Honors), Georgetown University, 2026</span>
+      <span>Set in Spectral &amp; IBM Plex &middot; Eu / Gd / Cu / S accents after the EDS channel colors</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  // ---------- linear algebra: 2x2 Hermitian eigensolver ----------
+  // H = [[a, b], [conj(b), d]], a,d real, b = bRe + i*bIm
+  // returns lower-band (occupied) energy and normalized eigenvector,
+  // plus the upper-band energy.
+  function eig2(a, d, bRe, bIm) {
+    var avg = (a + d) / 2;
+    var diff = (a - d) / 2;
+    var bAbs = Math.sqrt(bRe * bRe + bIm * bIm);
+    var radius = Math.sqrt(diff * diff + bAbs * bAbs);
+    var eLower = avg - radius;
+    var eUpper = avg + radius;
+
+    var vRe, vIm, v2;
+    if (bAbs > 1e-12) {
+      // v = [b, eLower - a]
+      vRe = [bRe, eLower - a];
+      vIm = [bIm, 0];
+    } else if (diff <= 0) {
+      // a <= d, lower band is [1,0]
+      vRe = [1, 0]; vIm = [0, 0];
+    } else {
+      vRe = [0, 1]; vIm = [0, 0];
+    }
+    var norm = Math.sqrt(vRe[0] * vRe[0] + vIm[0] * vIm[0] + vRe[1] * vRe[1] + vIm[1] * vIm[1]);
+    if (norm < 1e-14) norm = 1e-14;
+    vRe = [vRe[0] / norm, vRe[1] / norm];
+    vIm = [vIm[0] / norm, vIm[1] / norm];
+
+    return { eLower: eLower, eUpper: eUpper, vRe: vRe, vIm: vIm, gap: 2 * radius };
+  }
+
+  // ---------- reciprocal lattice from two real-space vectors ----------
+  function reciprocal(a1, a2) {
+    var area = a1[0] * a2[1] - a1[1] * a2[0];
+    var G1 = [ (2 * Math.PI / area) * a2[1], (2 * Math.PI / area) * (-a2[0]) ];
+    var G2 = [ (2 * Math.PI / area) * (-a1[1]), (2 * Math.PI / area) * a1[0] ];
+    return { G1: G1, G2: G2 };
+  }
+
+  // ---------- model definitions ----------
+  // Each model exposes: lattice vectors, a Hamiltonian(kx,ky,params)->{a,d,bRe,bIm},
+  // and a high-symmetry path in fractional reciprocal coordinates.
+  var models = {
+    qwz: {
+      label: "QWZ",
+      lattice: { a1: [1, 0], a2: [0, 1] },
+      path: [
+        { frac: [0, 0], name: "Γ" },
+        { frac: [0.5, 0], name: "X" },
+        { frac: [0.5, 0.5], name: "M" },
+        { frac: [0, 0], name: "Γ" }
+      ],
+      params: [
+        { key: "m", label: "mass  m", min: -3, max: 3, step: 0.02, value: 1.0 },
+        { key: "t", label: "hopping  t", min: 0.2, max: 2, step: 0.02, value: 1.0 }
+      ],
+      H: function (kx, ky, p) {
+        var dx = p.t * Math.sin(kx);
+        var dy = p.t * Math.sin(ky);
+        var dz = p.m - p.t * Math.cos(kx) - p.t * Math.cos(ky);
+        return { a: dz, d: -dz, bRe: dx, bIm: -dy };
+      },
+      note: "H(k) = sin(k_x) σ_x + sin(k_y) σ_y + (m - cos k_x - cos k_y) σ_z. The gap closes, and the Chern number changes, at m = 0 and m = ±2t (with t fixed at 1). Away from those lines C is ±1 or 0."
+    },
+    haldane: {
+      label: "Haldane",
+      // a1, a2 chosen so the A-B hopping term can be written in the periodic
+      // gauge (see H below) -- this keeps H(k) exactly periodic under the
+      // reciprocal lattice, which the Berry curvature / Wilson-loop sum requires.
+      lattice: { a1: [1.5, Math.sqrt(3) / 2], a2: [0, Math.sqrt(3)] },
+      path: [
+        { frac: [0, 0], name: "Γ" },
+        { frac: [2 / 3, 1 / 3], name: "K" },
+        { frac: [0.5, 0.5], name: "M" },
+        { frac: [0, 0], name: "Γ" }
+      ],
+      params: [
+        { key: "t1", label: "nearest-neighbor  t₁", min: 0.2, max: 2, step: 0.02, value: 1.0 },
+        { key: "t2", label: "next-nearest  t₂", min: 0, max: 0.6, step: 0.01, value: 0.15 },
+        { key: "phi", label: "flux phase  φ", min: 0, max: Math.PI, step: 0.01, value: Math.PI / 2 },
+        { key: "M", label: "sublattice mass  M", min: -2, max: 2, step: 0.02, value: 0.2 }
+      ],
+      H: function (kx, ky, p) {
+        // Next-nearest-neighbor vectors (intra-sublattice; same in either gauge).
+        var b1 = [0, Math.sqrt(3)], b2 = [-1.5, -Math.sqrt(3) / 2], b3 = [1.5, -Math.sqrt(3) / 2];
+        function dot(v) { return kx * v[0] + ky * v[1]; }
+        var sumSinB = Math.sin(dot(b1)) + Math.sin(dot(b2)) + Math.sin(dot(b3));
+        var hz = p.M - 2 * p.t2 * Math.sin(p.phi) * sumSinB;
+        // the h0*I term shifts both bands equally and is added when plotting energies
+        var sumCosB = Math.cos(dot(b1)) + Math.cos(dot(b2)) + Math.cos(dot(b3));
+        var h0 = 2 * p.t2 * Math.cos(p.phi) * sumCosB;
+
+        // Periodic-gauge A-B hopping term: referencing the B sublattice phase
+        // to the unit cell (not the actual bond vector) gives
+        //   h_AB(k) = t1 * (1 + e^{i k.a1} + e^{i k.a2}),
+        // which is exactly periodic under the reciprocal lattice -- unlike the
+        // "bond vector" form, which is not periodic and produces a spurious
+        // seam of Berry curvature at the edges of the sampling grid.
+        var dotA1 = dot(models.haldane.lattice.a1), dotA2 = dot(models.haldane.lattice.a2);
+        var bRe = p.t1 * (1 + Math.cos(dotA1) + Math.cos(dotA2));
+        var bIm = p.t1 * (Math.sin(dotA1) + Math.sin(dotA2));
+
+        return { a: hz, d: -hz, bRe: bRe, bIm: bIm, h0: h0 };
+      },
+      note: "Honeycomb lattice with a complex next-nearest-neighbor hopping t₂ e^{iφ} that breaks time-reversal symmetry, plus a sublattice (Semenoff) mass M. The topological transition sits at |M| = 3√3 t₂ sinφ; C flips sign across it."
+    }
+  };
+
+  // ---------- Berry curvature via Fukui-Hatsugai-Suzuki plaquette method ----------
+  function computeBerryAndChern(model, p, N) {
+    var lat = reciprocal(model.lattice.a1, model.lattice.a2);
+    var G1 = lat.G1, G2 = lat.G2;
+
+    var vRe = new Array(N), vIm = new Array(N);
+    var minGap = Infinity;
+    for (var i = 0; i < N; i++) {
+      vRe[i] = new Array(N); vIm[i] = new Array(N);
+      for (var j = 0; j < N; j++) {
+        var fi = i / N, fj = j / N;
+        var kx = fi * G1[0] + fj * G2[0];
+        var ky = fi * G1[1] + fj * G2[1];
+        var Hk = model.H(kx, ky, p);
+        var e = eig2(Hk.a, Hk.d, Hk.bRe, Hk.bIm);
+        vRe[i][j] = e.vRe; vIm[i][j] = e.vIm;
+        if (e.gap < minGap) minGap = e.gap;
+      }
+    }
+
+    function inner(i1, j1, i2, j2) {
+      var a = vRe[i1][j1], ai = vIm[i1][j1];
+      var b = vRe[i2][j2], bi = vIm[i2][j2];
+      // <u1|u2> = conj(a).b  (component-wise, summed)
+      var re = a[0] * b[0] + a[1] * b[1] + ai[0] * bi[0] + ai[1] * bi[1];
+      var im = a[0] * bi[0] + a[1] * bi[1] - ai[0] * b[0] - ai[1] * b[1];
+      var mag = Math.sqrt(re * re + im * im);
+      if (mag < 1e-14) mag = 1e-14;
+      return { re: re / mag, im: im / mag };
+    }
+
+    function cmul(u, v) { return { re: u.re * v.re - u.im * v.im, im: u.re * v.im + u.im * v.re }; }
+    function cconj(u) { return { re: u.re, im: -u.im }; }
+
+    var curvature = new Array(N);
+    var chernSum = 0;
+    var maxAbs = 0;
+    for (i = 0; i < N; i++) {
+      curvature[i] = new Array(N);
+      var ip = (i + 1) % N;
+      for (j = 0; j < N; j++) {
+        var jp = (j + 1) % N;
+        var U1 = inner(i, j, ip, j);
+        var U2 = inner(ip, j, ip, jp);
+        var U3 = cconj(inner(i, jp, ip, jp));
+        var U4 = cconj(inner(i, j, i, jp));
+        var prod = cmul(cmul(U1, U2), cmul(U3, U4));
+        var F = Math.atan2(prod.im, prod.re);
+        curvature[i][j] = F;
+        chernSum += F;
+        if (Math.abs(F) > maxAbs) maxAbs = Math.abs(F);
+      }
+    }
+    var chern = chernSum / (2 * Math.PI);
+    return { curvature: curvature, chern: chern, maxAbs: maxAbs || 1e-6, minGap: minGap, N: N };
+  }
+
+  // ---------- band structure along high-symmetry path ----------
+  function computeBands(model, p, ptsPerSeg) {
+    var lat = reciprocal(model.lattice.a1, model.lattice.a2);
+    var G1 = lat.G1, G2 = lat.G2;
+    var path = model.path;
+    var xs = [], lower = [], upper = [];
+    var ticks = [];
+    var x = 0;
+
+    function toK(frac) {
+      return [ frac[0] * G1[0] + frac[1] * G2[0], frac[0] * G1[1] + frac[1] * G2[1] ];
+    }
+
+    for (var s = 0; s < path.length - 1; s++) {
+      var kA = toK(path[s].frac), kB = toK(path[s + 1].frac);
+      var segLen = Math.hypot(kB[0] - kA[0], kB[1] - kA[1]);
+      ticks.push({ x: x, name: path[s].name });
+      for (var n = 0; n < ptsPerSeg; n++) {
+        var t = n / ptsPerSeg;
+        var kx = kA[0] + t * (kB[0] - kA[0]);
+        var ky = kA[1] + t * (kB[1] - kA[1]);
+        var Hk = model.H(kx, ky, p);
+        var e = eig2(Hk.a, Hk.d, Hk.bRe, Hk.bIm);
+        var h0 = Hk.h0 || 0;
+        xs.push(x);
+        lower.push(e.eLower + h0);
+        upper.push(e.eUpper + h0);
+        x += segLen / ptsPerSeg;
+      }
+    }
+    var last = path[path.length - 1];
+    ticks.push({ x: x, name: last.name });
+    xs.push(x);
+    var Hlast = model.H.apply(null, toK(last.frac).concat([p]));
+    var eLast = eig2(Hlast.a, Hlast.d, Hlast.bRe, Hlast.bIm);
+    lower.push(eLast.eLower + (Hlast.h0 || 0));
+    upper.push(eLast.eUpper + (Hlast.h0 || 0));
+
+    return { xs: xs, lower: lower, upper: upper, ticks: ticks, xMax: x };
+  }
+
+  // ---------- rendering ----------
+  function drawBands(canvas, data) {
+    var ctx = canvas.getContext("2d");
+    var W = canvas.width, H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+
+    var padL = 46, padR = 14, padT = 14, padB = 30;
+    var plotW = W - padL - padR, plotH = H - padT - padB;
+
+    var allY = data.lower.concat(data.upper);
+    var yMin = Math.min.apply(null, allY), yMax = Math.max.apply(null, allY);
+    var yPad = (yMax - yMin) * 0.12 || 1;
+    yMin -= yPad; yMax += yPad;
+
+    function X(x) { return padL + (x / data.xMax) * plotW; }
+    function Y(y) { return padT + (1 - (y - yMin) / (yMax - yMin)) * plotH; }
+
+    // grid + axes
+    ctx.strokeStyle = "#253040";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(padL, Y(0)); ctx.lineTo(padL + plotW, Y(0));
+    ctx.stroke();
+
+    ctx.fillStyle = "#8fa1b3";
+    ctx.font = "11px monospace";
+    ctx.textAlign = "right";
+    ctx.textBaseline = "middle";
+    ctx.fillText(yMax.toFixed(1), padL - 6, Y(yMax));
+    ctx.fillText("0", padL - 6, Y(0));
+    ctx.fillText(yMin.toFixed(1), padL - 6, Y(yMin));
+
+    // vertical ticks for high symmetry points
+    ctx.textAlign = "center";
+    ctx.textBaseline = "top";
+    data.ticks.forEach(function (t) {
+      var px = X(t.x);
+      ctx.strokeStyle = "#1a2230";
+      ctx.beginPath();
+      ctx.moveTo(px, padT); ctx.lineTo(px, padT + plotH);
+      ctx.stroke();
+      ctx.fillStyle = "#8fa1b3";
+      ctx.fillText(t.name, px, padT + plotH + 6);
+    });
+
+    function drawSeries(arr, color) {
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      for (var i = 0; i < data.xs.length; i++) {
+        var px = X(data.xs[i]), py = Y(arr[i]);
+        if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+    }
+    drawSeries(data.lower, "#45d9c8");
+    drawSeries(data.upper, "#f2b544");
+  }
+
+  // RdBu (reversed) diverging colormap -- the standard choice for Berry
+  // curvature plots in the condensed-matter literature: blue for negative
+  // curvature, white at zero, red for positive.
+  var RDBU_STOPS = [
+    { t: -1.0, c: [33, 102, 172] },   // dark blue
+    { t: -0.5, c: [146, 197, 222] },  // light blue
+    { t: 0.0, c: [247, 247, 247] },   // white
+    { t: 0.5, c: [244, 165, 130] },   // light red
+    { t: 1.0, c: [178, 24, 43] }      // dark red
+  ];
+
+  function colorFor(v, maxAbs) {
+    var t = Math.max(-1, Math.min(1, v / maxAbs));
+    for (var i = 0; i < RDBU_STOPS.length - 1; i++) {
+      var s0 = RDBU_STOPS[i], s1 = RDBU_STOPS[i + 1];
+      if (t >= s0.t && t <= s1.t) {
+        var f = (t - s0.t) / (s1.t - s0.t);
+        return [
+          s0.c[0] + (s1.c[0] - s0.c[0]) * f,
+          s0.c[1] + (s1.c[1] - s0.c[1]) * f,
+          s0.c[2] + (s1.c[2] - s0.c[2]) * f
+        ];
+      }
+    }
+    return RDBU_STOPS[RDBU_STOPS.length - 1].c;
+  }
+
+  function drawHeatmap(canvas, result) {
+    var ctx = canvas.getContext("2d");
+    var W = canvas.width, H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+
+    var N = result.N;
+    var off = document.createElement("canvas");
+    off.width = N; off.height = N;
+    var octx = off.getContext("2d");
+    var img = octx.createImageData(N, N);
+    for (var i = 0; i < N; i++) {
+      for (var j = 0; j < N; j++) {
+        var v = result.curvature[i][j];
+        var c = colorFor(v, result.maxAbs);
+        // flip j for canvas y-down vs ky-up, and draw i as x
+        var idx = ((N - 1 - j) * N + i) * 4;
+        img.data[idx] = c[0]; img.data[idx + 1] = c[1]; img.data[idx + 2] = c[2]; img.data[idx + 3] = 255;
+      }
+    }
+    octx.putImageData(img, 0, 0);
+
+    var pad = 10;
+    var size = Math.min(W - 2 * pad, H - 2 * pad);
+    ctx.imageSmoothingEnabled = true;
+    ctx.drawImage(off, (W - size) / 2, (H - size) / 2, size, size);
+  }
+
+  // ---------- UI wiring ----------
+  var state = {
+    model: "qwz",
+    params: { qwz: {}, haldane: {} }
+  };
+  models.qwz.params.forEach(function (p) { state.params.qwz[p.key] = p.value; });
+  models.haldane.params.forEach(function (p) { state.params.haldane[p.key] = p.value; });
+
+  var sliderHost = document.getElementById("sliderHost");
+  var bandCanvas = document.getElementById("bandCanvas");
+  var curvCanvas = document.getElementById("curvCanvas");
+  var chernValueEl = document.getElementById("chernValue");
+  var chernRawEl = document.getElementById("chernRaw");
+  var gapFlagEl = document.getElementById("gapFlag");
+  var modelNoteEl = document.getElementById("modelNote");
+  var cbarMinEl = document.getElementById("cbarMin");
+  var cbarMaxEl = document.getElementById("cbarMax");
+
+  function buildSliders() {
+    sliderHost.innerHTML = "";
+    var model = models[state.model];
+    model.params.forEach(function (p) {
+      var row = document.createElement("div");
+      row.className = "slider-row";
+      var label = document.createElement("label");
+      var span = document.createElement("span");
+      span.textContent = p.label;
+      var val = document.createElement("span");
+      val.className = "val";
+      val.textContent = state.params[state.model][p.key].toFixed(2);
+      label.appendChild(span); label.appendChild(val);
+
+      var input = document.createElement("input");
+      input.type = "range";
+      input.min = p.min; input.max = p.max; input.step = p.step;
+      input.value = state.params[state.model][p.key];
+      input.addEventListener("input", function () {
+        state.params[state.model][p.key] = parseFloat(input.value);
+        val.textContent = state.params[state.model][p.key].toFixed(2);
+        recompute();
+      });
+
+      row.appendChild(label);
+      row.appendChild(input);
+      sliderHost.appendChild(row);
+    });
+  }
+
+  function recompute() {
+    var model = models[state.model];
+    var p = state.params[state.model];
+
+    var bands = computeBands(model, p, 90);
+    drawBands(bandCanvas, bands);
+
+    var berry = computeBerryAndChern(model, p, 34);
+    drawHeatmap(curvCanvas, berry);
+
+    var rounded = Math.round(berry.chern);
+    chernValueEl.textContent = rounded;
+    chernValueEl.style.color = rounded === 0 ? "#e7edf3" : (rounded > 0 ? "#f2b544" : "#45d9c8");
+    chernRawEl.textContent = "computed: " + berry.chern.toFixed(3);
+
+    if (berry.minGap < 0.12) {
+      gapFlagEl.classList.add("show");
+    } else {
+      gapFlagEl.classList.remove("show");
+    }
+
+    cbarMinEl.textContent = (-berry.maxAbs).toFixed(2);
+    cbarMaxEl.textContent = (berry.maxAbs).toFixed(2);
+
+    modelNoteEl.textContent = model.note;
+  }
+
+  document.querySelectorAll(".tab").forEach(function (tab) {
+    tab.addEventListener("click", function () {
+      document.querySelectorAll(".tab").forEach(function (t) { t.classList.remove("active"); });
+      tab.classList.add("active");
+      state.model = tab.getAttribute("data-model");
+      buildSliders();
+      recompute();
+    });
+  });
+
+  buildSliders();
+  recompute();
+})();
+</script>
+
+<script src="../../projects.js"></script>
+<script>ProjectsNav.init('../../');</script>
