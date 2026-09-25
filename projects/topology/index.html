@@ -108,7 +108,7 @@ nav{
   backdrop-filter:blur(10px);
   border-bottom:1px solid var(--rule-soft);
 }
-.nav-in{display:flex;align-items:center;gap:22px;height:60px}
+.nav-in{display:flex;align-items:center;gap:22px;min-height:72px;padding:10px 0}
 .tile{
   width:34px;height:34px;flex:none;border:1px solid var(--ink);
   display:grid;align-content:center;justify-items:center;line-height:1;
@@ -117,7 +117,7 @@ nav{
 .tile .z{font-family:"IBM Plex Mono",monospace;font-size:.44rem;color:var(--ink-2);letter-spacing:.02em}
 .tile .sym{font-family:Spectral,Georgia,serif;font-size:1.02rem;font-weight:400;margin-top:1px}
 .nav-name{font-family:"IBM Plex Mono",monospace;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;margin-right:auto}
-.nav-links{display:flex;align-items:center;gap:16px}
+.nav-links{display:flex;align-items:center;gap:18px}
 .nav-links a{
   font-family:"IBM Plex Mono",monospace;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;
   color:var(--ink-2);border-bottom:1px solid transparent;padding-bottom:2px;
@@ -125,28 +125,40 @@ nav{
 .nav-links a:hover,.nav-links a.cur{color:var(--ink);border-bottom-color:var(--eu)}
 
 /* Projects dropdown */
-.nav-drop{position:relative}
+.nav-drop{position:relative;display:flex;align-items:center}
 .nav-drop-trigger{
-  background:none;border:none;font:inherit;cursor:pointer;padding:0 0 2px;margin:0;
+  background:transparent;
+  border:0;
+  border-radius:0;
+  font:inherit;cursor:pointer;padding:0 0 2px;margin:0;
   font-family:"IBM Plex Mono",monospace;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;
-  color:var(--ink-2);border-bottom:1px solid transparent;
-  display:inline-flex;align-items:center;gap:5px;
+  color:var(--eu);
+  display:inline-flex;align-items:center;gap:6px;
+  transition:color .18s ease,opacity .18s ease;
+  box-shadow:none;
+  font-weight:700;
+  border-bottom:1px solid color-mix(in srgb, var(--eu) 45%, transparent);
 }
-.nav-drop-trigger:hover{color:var(--ink);border-bottom-color:var(--eu)}
-.nav-drop-trigger[aria-expanded="true"]{color:var(--ink);border-bottom-color:var(--eu)}
-.nav-drop-trigger .car{font-size:.55rem;line-height:1;transition:transform .15s}
+.nav-drop-trigger:hover,
+.nav-drop-trigger[aria-expanded="true"]{
+  color:var(--eu);
+  opacity:1;
+  box-shadow:none;
+}
+.nav-drop-trigger .car{font-size:.55rem;line-height:1;transition:transform .15s ease}
 .nav-drop-trigger[aria-expanded="true"] .car{transform:rotate(180deg)}
 .nav-drop-menu{
-  position:absolute;top:calc(100% + 15px);left:50%;transform:translateX(-50%);
-  min-width:230px;background:var(--paper);border:1px solid var(--rule);box-shadow:var(--shadow);
-  padding:6px;display:none;z-index:40;
+  position:absolute;top:calc(100% + 15px);left:0;transform:none;
+  min-width:230px;background:var(--paper);border:1px solid var(--rule-soft);box-shadow:none;
+  padding:0;display:none;z-index:40;border-radius:0;
 }
 .nav-drop-menu.open{display:block}
 .nav-drop-menu a{
-  display:flex;flex-direction:column;gap:2px;padding:9px 12px;
+  display:flex;flex-direction:column;gap:2px;padding:11px 12px;
   font-family:"IBM Plex Mono",monospace;font-size:.72rem;letter-spacing:.05em;text-transform:none;
-  color:var(--ink-2);border-bottom:0;
+  color:var(--ink-2);border-bottom:1px solid var(--rule-soft);border-radius:0;
 }
+.nav-drop-menu a:last-child{border-bottom:none}
 .nav-drop-menu a:hover{color:var(--ink);background:var(--paper-2)}
 .nav-drop-menu a.cur{color:var(--eu)}
 .nav-drop-menu .note{font-family:"IBM Plex Sans",sans-serif;font-size:.68rem;color:var(--ink-3);letter-spacing:0}
@@ -254,6 +266,8 @@ canvas{display:block;width:100%;height:auto;border-radius:2px}
 
 .note{font-size:.85rem;color:var(--ink-2);line-height:1.6;margin-top:6px;padding-top:14px;border-top:1px solid var(--rule-soft)}
 
+.src-link{font-family:"IBM Plex Mono",monospace;font-size:.72rem;letter-spacing:.06em}
+
 .cbar{height:10px;border-radius:2px;margin-top:10px;background:linear-gradient(to right,#2166ac,#92c5de,#f7f7f7,#f4a582,#b2182b);border:1px solid var(--rule)}
 .cbar-labels{display:flex;justify-content:space-between;font-size:.68rem;font-family:"IBM Plex Mono",monospace;color:var(--ink-3);margin-top:6px}
 
@@ -295,7 +309,7 @@ canvas{display:block;width:100%;height:auto;border-radius:2px}
       </div>
       <div>
         <p class="lede">Live Bloch Hamiltonian diagonalization, Berry curvature by the Fukui&ndash;Hatsugai&ndash;Suzuki method, and the Chern number, for the Qi&ndash;Wu&ndash;Zhang and Haldane models.</p>
-        <p class="sub" style="margin-top:18px">The same band topology and Chern-number language mentioned under <a href="../../index.html#interests">Quantum materials</a> &mdash; worked out here on two lattices small enough to diagonalize live, in the browser, as you move the sliders.</p>
+        <p class="sub" style="margin-top:18px">The same band topology and Chern-number language mentioned under <a href="../../index.html#interests">Quantum materials</a> &mdash; worked out here on two lattices small enough to diagonalize live, in the browser, as you move the sliders. <a class="src-link" href="https://github.com/matthewcotaj/Topology">Python source on GitHub &rarr;</a></p>
       </div>
     </div>
 
@@ -356,7 +370,6 @@ canvas{display:block;width:100%;height:auto;border-radius:2px}
           <li><span class="lab">Email</span><a href="mailto:cotajmatthew@gmail.com">cotajmatthew@gmail.com</a></li>
           <li><span class="lab">Phone</span><a href="tel:+12035411448">(203) 541-1448</a></li>
           <li><span class="lab">Based</span><span class="sub">Stamford, Connecticut</span></li>
-          <li><span class="lab">Now</span><span class="sub">Groton, CT &mdash; Pfizer Drug Product Design</span></li>
         </ul>
       </div>
     </div>

@@ -124,7 +124,7 @@ nav{
   backdrop-filter:blur(10px);
   border-bottom:1px solid var(--rule-soft);
 }
-.nav-in{display:flex;align-items:center;gap:22px;height:60px}
+.nav-in{display:flex;align-items:center;gap:22px;min-height:72px;padding:10px 0}
 .tile{
   width:34px;height:34px;flex:none;border:1px solid var(--ink);
   display:grid;align-content:center;justify-items:center;line-height:1;
@@ -133,7 +133,7 @@ nav{
 .tile .z{font-family:"IBM Plex Mono",monospace;font-size:.44rem;color:var(--ink-2);letter-spacing:.02em}
 .tile .sym{font-family:Spectral,Georgia,serif;font-size:1.02rem;font-weight:400;margin-top:1px}
 .nav-name{font-family:"IBM Plex Mono",monospace;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;margin-right:auto}
-.nav-links{display:flex;align-items:center;gap:16px}
+.nav-links{display:flex;align-items:center;gap:18px}
 .nav-links a{
   font-family:"IBM Plex Mono",monospace;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;
   color:var(--ink-2);border-bottom:1px solid transparent;padding-bottom:2px;
@@ -141,28 +141,41 @@ nav{
 .nav-links a:hover,.nav-links a.cur{color:var(--ink);border-bottom-color:var(--eu)}
 
 /* Projects dropdown */
-.nav-drop{position:relative}
+.nav-drop{position:relative;display:flex;align-items:center}
 .nav-drop-trigger{
-  background:none;border:none;font:inherit;cursor:pointer;padding:0 0 2px;margin:0;
+  background:transparent;
+  border:0;
+  border-radius:0;
+  font:inherit;cursor:pointer;padding:0 0 2px;margin:0;
   font-family:"IBM Plex Mono",monospace;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;
-  color:var(--ink-2);border-bottom:1px solid transparent;
-  display:inline-flex;align-items:center;gap:5px;
+  color:var(--ink-2);
+  display:inline-flex;align-items:center;gap:6px;
+  transition:color .18s ease,border-color .18s ease,background-color .18s ease;
+  box-shadow:none;
+  line-height:1.2;
+  border-bottom:1px solid transparent;
 }
-.nav-drop-trigger:hover{color:var(--ink);border-bottom-color:var(--eu)}
-.nav-drop-trigger[aria-expanded="true"]{color:var(--ink);border-bottom-color:var(--eu)}
-.nav-drop-trigger .car{font-size:.55rem;line-height:1;transition:transform .15s}
-.nav-drop-trigger[aria-expanded="true"] .car{transform:rotate(180deg)}
+.nav-drop-trigger:hover,
+.nav-drop-trigger[aria-expanded="true"]{
+  color:var(--ink);
+  border-bottom-color:var(--eu);
+  background:transparent;
+  box-shadow:none;
+}
+.nav-drop-trigger .car{font-size:.55rem;line-height:1;transition:transform .15s ease;display:inline-block;transform:translateY(-1px)}
+.nav-drop-trigger[aria-expanded="true"] .car{transform:rotate(180deg) translateY(-1px)}
 .nav-drop-menu{
   position:absolute;top:calc(100% + 15px);left:50%;transform:translateX(-50%);
-  min-width:230px;background:var(--paper);border:1px solid var(--rule);box-shadow:var(--shadow);
-  padding:6px;display:none;z-index:40;
+  min-width:230px;background:var(--paper);border:1px solid var(--rule-soft);box-shadow:none;
+  padding:0;display:none;z-index:40;border-radius:0;
 }
 .nav-drop-menu.open{display:block}
 .nav-drop-menu a{
-  display:flex;flex-direction:column;gap:2px;padding:9px 12px;
+  display:flex;flex-direction:column;gap:2px;padding:11px 12px;
   font-family:"IBM Plex Mono",monospace;font-size:.72rem;letter-spacing:.05em;text-transform:none;
-  color:var(--ink-2);border-bottom:0;
+  color:var(--ink-2);border-bottom:1px solid var(--rule-soft);border-radius:0;
 }
+.nav-drop-menu a:last-child{border-bottom:none}
 .nav-drop-menu a:hover{color:var(--ink);background:var(--paper-2)}
 .nav-drop-menu a.cur{color:var(--eu)}
 .nav-drop-menu .note{font-family:"IBM Plex Sans",sans-serif;font-size:.68rem;color:var(--ink-3);letter-spacing:0}
@@ -438,15 +451,13 @@ footer{background:var(--paper);border-top:1px solid var(--rule);padding:clamp(56
       <h1 class="display"><span class="given">Matthew A.</span>Cotaj</h1>
       <p class="lede hero-lede measure">I grow lanthanide chalcogenide nanocrystals in a flask &mdash; and make their magnetism a question of composition rather than of size.</p>
       <div class="hero-meta">
-        <span class="chip">Pfizer &middot; Drug Product Design</span>
-        <span class="chip">B.S. Chemistry (Honors), Georgetown</span>
-        <span class="chip">Stamford, CT</span>
+        <span class="chip">B.S. Chemistry (Honors), Georgetown &middot; Stamford, CT</span>
         <span class="chip"><a href="mailto:cotajmatthew@gmail.com">cotajmatthew@gmail.com</a></span>
       </div>
     </div>
 
     <figure class="plot">
-      <svg viewBox="0 0 760 470" role="img" aria-label="Magnetization versus applied field at 2 kelvin. EuGdCuS3 nanorods saturate near 78 emu per gram; Eu2CuS3 nanorods saturate at 47.8 emu per gram.">
+      <svg viewBox="0 0 760 470" role="img" aria-label="Magnetization versus applied field at 2 kelvin. EuGdCuS3 nanorods reach about 78 emu per gram at 7 tesla; Eu2CuS3 nanorods show a saturation magnetization of 47.8 emu per gram.">
         <g stroke="var(--grid)" stroke-width="1">
           <line x1="104" y1="34" x2="104" y2="388"></line>
           <line x1="259" y1="34" x2="259" y2="388"></line>
@@ -490,7 +501,7 @@ footer{background:var(--paper);border-top:1px solid var(--rule);padding:clamp(56
         </g>
         <text class="ax-label" x="118" y="52" text-anchor="start">M vs. H &#183; T = 2 K</text>
       </svg>
-      <figcaption>Saturation magnetization rises from 47.8 to ~78 emu g&#8315;&#185; when Gd&#179;&#8314; replaces half the Eu&#178;&#8314; on the lanthanide sublattice &mdash; a ~63% gain, and a broader, more field-tunable approach to saturation. Traces reconstructed to the values reported in the thesis (Fig. 13); SQUID magnetometry.</figcaption>
+      <figcaption>Magnetization at 7 T rises from 47.8 to ~78 emu g&#8315;&#185; when Gd&#179;&#8314; replaces Eu&#179;&#8314; on the six-coordinate Eu(1) site (half the total europium), turning a nonmagnetic J = 0 sublattice into a second S = 7/2 sublattice. The Gd-substituted sample approaches saturation gradually and is still rising at 7 T. Traces reconstructed to the values reported in the thesis (Fig. 13); SQUID magnetometry, 2 K.</figcaption>
     </figure>
   </div>
 </header>
@@ -532,14 +543,14 @@ footer{background:var(--paper);border-top:1px solid var(--rule);padding:clamp(56
       </div>
       <div>
         <p class="lede">Trivalent lanthanides are hard Lewis acids. Chalcogenides are soft bases. That mismatch is why colloidal Ln&ndash;S chemistry stays stubborn &mdash; and why the reaction would rather hand you an oxysulfide than the phase you asked for.</p>
-        <p class="sub" style="margin-top:18px">My thesis works around it with air-stable single-source dithiocarbamate precursors, an HSAB-informed choice of copper source, and a degassing protocol strict enough to keep EuOS out of the pattern. The payoff is a lanthanide sublattice you can rewrite: swap Gd&#179;&#8314; for half the Eu&#178;&#8314; and the magnetism follows.</p>
+        <p class="sub" style="margin-top:18px">My thesis works around it with air-stable single-source dithiocarbamate precursors, an HSAB-informed choice of copper source, and a degassing protocol strict enough to keep Eu&#8322;O&#8322;S out of the pattern. The payoff is a lanthanide sublattice you can rewrite: put Gd&#179;&#8314; on the Eu&#179;&#8314; site and the magnetism follows.</p>
       </div>
     </div>
 
     <div class="figures">
       <div class="fig"><span class="val">3.6 <small>K</small></span><span class="cap">Ferromagnetic ordering temperature <span class="k">T<sub>C</sub></span> of Eu&#8322;CuS&#8323; nanorods, by SQUID &mdash; against 3.4 K in the bulk</span></div>
-      <div class="fig"><span class="val">+63 <small>%</small></span><span class="cap">Gain in saturation magnetization on Gd&#179;&#8314; substitution &mdash; matching the additive spin-only prediction</span></div>
-      <div class="fig"><span class="val">1 : 1</span><span class="cap">Eu&#8239;:&#8239;Gd stoichiometry confirmed by ICP-MS and EDS, with homogeneous elemental distribution</span></div>
+      <div class="fig"><span class="val">+63 <small>%</small></span><span class="cap">Gain in magnetization at 7 T on Gd&#179;&#8314; substitution at the Eu(1) site</span></div>
+      <div class="fig"><span class="val">1 : 1</span><span class="cap">Eu&#8239;:&#8239;Gd ratio of 1.00 &plusmn; 0.01 by ICP-MS; EDS confirms homogeneous distribution</span></div>
       <div class="fig"><span class="val">First</span><span class="cap">Colloidal synthesis and magnetic characterization of phase-pure EuGdCuS&#8323; nanorods</span></div>
     </div>
 
@@ -559,7 +570,7 @@ footer{background:var(--paper);border-top:1px solid var(--rule);padding:clamp(56
         </div>
         <span class="species" style="color:var(--eu)">Eu&#8322;CuS&#8323; nanorods</span>
       </div>
-      <p class="scheme-note">Cu&#8314; from CuI is a soft acid, well matched to the sulfur donors of the DTC ligand and the growing sulfide lattice, where Cu&#178;&#8314; from Cu(acac)&#8322; is not; the iodide released during reaction adsorbs selectively on specific crystal faces and directs the anisotropic growth. Half-substituting Eu(DTC)&#8323;(phen) with the Gd analogue gives EuGdCuS&#8323; on the same route.</p>
+      <p class="scheme-note">Cu&#8314; from CuI is a soft acid, well matched to the sulfur donors of the DTC ligand and the growing sulfide lattice, where Cu&#178;&#8314; from Cu(acac)&#8322; is not; the iodide released during reaction adsorbs selectively on specific crystal faces and directs the anisotropic growth. Half-substituting Eu(DTC)&#8323;(phen) with the Gd analogue gives EuGdCuS&#8323; by the same route at 315 &deg;C, with degassing extended to 45 min.</p>
     </div>
 
     <div class="elements" aria-label="Elements in the system">
@@ -572,10 +583,10 @@ footer{background:var(--paper);border-top:1px solid var(--rule);padding:clamp(56
 
     <h3 class="minor" style="margin-top:52px">How the claim is supported</h3>
     <div class="chain">
-      <div class="node"><span class="t">PXRD</span><span class="d">Phase purity against PDF#04-016-1598 &mdash; and the EuOS impurity that dogged the early runs absent from the optimized pattern.</span></div>
-      <div class="node"><span class="t">ICP-MS &amp; EDS</span><span class="d">1:1 Eu:Gd stoichiometry, with S, Eu and Cu co-localized across individual rods rather than phase-segregated.</span></div>
+      <div class="node"><span class="t">PXRD</span><span class="d">Phase purity against PDF#04-016-1598 (Eu&#8322;CuS&#8323;) and PDF#04-019-4851 (EuGdCuS&#8323;), with the Eu&#8322;O&#8322;S impurity that dogged the early runs absent from the optimized patterns.</span></div>
+      <div class="node"><span class="t">ICP-MS &amp; EDS</span><span class="d">Eu:Gd ratio of 1.00 &plusmn; 0.01 by ICP-MS; EDS maps show S, Eu, Gd and Cu co-localized across individual rods rather than phase-segregated.</span></div>
       <div class="node"><span class="t">TEM / HRTEM</span><span class="d">Anisotropic rod morphology with resolved lattice fringes &mdash; crystalline product, not aggregated amorphous material.</span></div>
-      <div class="node"><span class="t">SQUID</span><span class="d">&#967; vs. T and M vs. H from 2 K: the ordering transition, and the saturation magnetization that carries the compositional argument.</span></div>
+      <div class="node"><span class="t">SQUID</span><span class="d">&#967; vs. T from 2.8 K and M vs. H at 2 K to &plusmn;7 T: the ordering transition in Eu&#8322;CuS&#8323; and the magnetization increase that carries the compositional argument.</span></div>
     </div>
 
     <p class="sub measure" style="margin-top:32px"><em>Stated as an open question:</em> the specific spin-ordering type in EuGdCuS&#8323; cannot be assigned from &#967; vs. T and M vs. H alone. Settling it needs sub-2&#8239;K magnetometry, Curie&ndash;Weiss analysis, &#185;&#8309;&#185;Eu M&ouml;ssbauer spectroscopy, and neutron diffraction on the rods.</p>
@@ -600,7 +611,7 @@ footer{background:var(--paper);border-top:1px solid var(--rule);padding:clamp(56
         <canvas id="lattice"></canvas>
         <div class="viz-hud">
           <div class="phase" id="phase-name">Eu&#178;&#8314;Eu&#179;&#8314;CuS&#8323;</div>
-          <div class="msat">M<sub>sat</sub> &middot; <b id="msat-val">47.8</b> emu g&#8315;&#185; &middot; <span id="phase-note">one magnetic sublattice</span></div>
+          <div class="msat">M at 7 T &middot; <b id="msat-val">47.8</b> emu g&#8315;&#185; &middot; <span id="phase-note">one magnetic sublattice</span></div>
         </div>
         <div class="viz-hint">Drag to rotate</div>
       </div>
@@ -611,7 +622,7 @@ footer{background:var(--paper);border-top:1px solid var(--rule);padding:clamp(56
         </div>
         <button class="swap" id="swap-btn" type="button">Substitute Gd&#179;&#8314; at Eu(1)</button>
       </div>
-      <figcaption style="padding:0 16px 14px">Schematic of the two lanthanide sublattices &mdash; site occupancy after the thesis assignment, not a refined crystal structure: in the real Pnma lattice the Eu(1) octahedra and CuS&#8324; tetrahedra form layers, with Eu(2) between them. Arrows mark sites carrying a spin. After substitution the Gd&#179;&#8314; arrows are drawn antiparallel to Eu&#178;&#8314;, as in bulk EuGdCuS&#8323;, which orders ferrimagnetically near 5&#8239;K (Wakeshima et al., 2004); whether the nanorods do the same is the open question stated above, and at 7&#8239;T both sublattices are field-polarized, which is where M<sub>sat</sub> is read. The Cu&ndash;S framework is omitted for legibility. The site-ordered mixed-valent formulation shown here is the targeted composition; &#185;&#8309;&#185;Eu M&ouml;ssbauer spectroscopy is the test that would distinguish it from a statistical solid solution.</figcaption>
+      <figcaption style="padding:0 16px 14px">Schematic of the two lanthanide sublattices &mdash; site occupancy after the thesis assignment, not a refined crystal structure: in the real Pnma lattice the Eu(1) octahedra and CuS&#8324; tetrahedra form layers, with Eu(2) between them. Arrows mark sites carrying a spin. After substitution the Gd&#179;&#8314; arrows are drawn antiparallel to Eu&#178;&#8314;, as in bulk EuGdCuS&#8323;, which orders ferrimagnetically near 5&#8239;K (Wakeshima et al., 2004); whether the nanorods do the same is the open question stated above, and the larger magnetization at 7 T suggests the field cants the two sublattices toward parallel alignment, but the present data do not establish this. The Cu&ndash;S framework is omitted for legibility. The site-ordered mixed-valent formulation shown here is the targeted composition; &#185;&#8309;&#185;Eu M&ouml;ssbauer spectroscopy is the test that would distinguish it from a statistical solid solution.</figcaption>
     </figure>
 
     <h3 class="minor" style="margin-top:52px">Three of the seven 4f orbitals</h3>
@@ -658,7 +669,7 @@ footer{background:var(--paper);border-top:1px solid var(--rule);padding:clamp(56
 
     <div class="exchange">
       <svg viewBox="0 0 760 168" role="img" aria-label="Superexchange pathway from europium 4f through sulfur 3p and copper 3d to a second europium centre">
-        <text class="ex-cap" x="0" y="14">Superexchange pathway &#183; T&#8330; = 3.6 K</text>
+        <text class="ex-cap" x="0" y="14">Superexchange pathway &#183; T<tspan baseline-shift="sub" font-size="9">C</tspan> = 3.6 K</text>
         <g stroke="var(--ink-3)" stroke-width="1.4">
           <line x1="86" y1="76" x2="194" y2="76"></line>
           <line x1="246" y1="76" x2="354" y2="76"></line>
@@ -704,6 +715,22 @@ footer{background:var(--paper);border-top:1px solid var(--rule);padding:clamp(56
 
       <article class="entry">
         <div>
+          <h3 class="org">Stoll Research Group<br><span class="sub" style="font-size:.86rem">Georgetown University</span></h3>
+          <div class="when">Feb 2023 &ndash; May 2026 &middot; Washington, DC</div>
+        </div>
+        <div>
+          <p class="role">Honors Thesis Researcher &amp; Materials Science Undergraduate Research Fellow<span class="tag-inline">Adv. S.&nbsp;L.&nbsp;Stoll</span></p>
+          <ul class="bullets">
+            <li>Achieved the <strong>first colloidal synthesis and magnetic characterization of phase-pure EuGdCuS&#8323; nanorods</strong>, using single-source dithiocarbamate precursors under air-free conditions (Schlenk line, glovebox)</li>
+            <li>Demonstrated compositional control of magnetism by substituting Gd&#179;&#8314; for Eu&#179;&#8314; at the Eu(1) site, raising magnetization at 7 T from <strong>47.8 to ~78 emu g&#8315;&#185;</strong></li>
+            <li>Screened lanthanide halide and sulfur precursors to phase-control binary (Nd&#8323;S&#8324;, Gd&#8323;S&#8324;) and ternary nanomaterials, verifying composition and morphology by PXRD, ICP-MS, EDS and HRTEM</li>
+            <li>Analyzed f-electron configurations and ligand-field effects to interpret nanoscale magnetic and electronic phenomena in lanthanide systems</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="entry">
+        <div>
           <h3 class="org">Pfizer</h3>
           <div class="when">Jun &ndash; Aug 2026 &middot; Groton, CT</div>
         </div>
@@ -713,22 +740,6 @@ footer{background:var(--paper);border-top:1px solid var(--rule);padding:clamp(56
             <li>Characterized V1/V2 biorelevant media across <strong>20+ conditions</strong> by dynamic light scattering and tensiometry, standardizing media preparation across four functions</li>
             <li>Correlated colloidal media properties to the solubility and dissolution of five model compounds, improving in&nbsp;vitro&ndash;in&nbsp;vivo translation by <strong>~30%</strong></li>
             <li>Identified surfactant&ndash;bile micelle interactions forming solubility-limiting complexes, flagging excipient risks in early-phase formulations</li>
-          </ul>
-        </div>
-      </article>
-
-      <article class="entry">
-        <div>
-          <h3 class="org">Stoll Research Group<br><span class="sub" style="font-size:.86rem">Georgetown University</span></h3>
-          <div class="when">Feb 2023 &ndash; May 2026 &middot; Washington, DC</div>
-        </div>
-        <div>
-          <p class="role">Honors Thesis Researcher &amp; Materials Science Undergraduate Research Fellow<span class="tag-inline">Adv. S.&nbsp;L.&nbsp;Stoll</span></p>
-          <ul class="bullets">
-            <li>Achieved the <strong>first colloidal synthesis and magnetic characterization of phase-pure EuGdCuS&#8323; nanorods</strong>, using single-source dithiocarbamate precursors under air-free conditions (Schlenk line, glovebox)</li>
-            <li>Demonstrated compositional control of magnetism by substituting Gd&#179;&#8314; for Eu&#178;&#8314;, raising saturation magnetization from <strong>47.8 to ~78 emu g&#8315;&#185;</strong></li>
-            <li>Screened lanthanide halide and sulfur precursors to phase-control binary (Nd&#8323;S&#8324;, Gd&#8323;S&#8324;) and ternary nanomaterials, verifying composition and morphology by PXRD, ICP-MS, EDS and HRTEM</li>
-            <li>Analyzed f-electron configurations and ligand-field effects to interpret nanoscale magnetic and electronic phenomena in lanthanide systems</li>
           </ul>
         </div>
       </article>
@@ -843,7 +854,7 @@ footer{background:var(--paper);border-top:1px solid var(--rule);padding:clamp(56
     <div class="sec-head">
       <div>
         <span class="eyebrow">Instrumentation &amp; methods</span>
-        <h2 class="sec-title">What I can run unsupervised</h2>
+        <h2 class="sec-title">Techniques used in my research</h2>
       </div>
       <div><p class="lede">Hands-on across synthesis, characterization and analysis &mdash; from a Schlenk line at 330&#8239;&deg;C, to a SQUID at 2&#8239;K, to the long business of arguing with a diffraction pattern.</p></div>
     </div>
@@ -867,15 +878,15 @@ footer{background:var(--paper);border-top:1px solid var(--rule);padding:clamp(56
       </div>
     </div>
     <div class="tech-group">
-      <div><h3>Separations &amp; elemental</h3><span class="n">8 techniques</span></div>
+      <div><h3>Separations &amp; elemental</h3><span class="n">7 techniques</span></div>
       <div class="tags">
-        <span class="tag">ICP-MS</span><span class="tag">ICP-OES</span><span class="tag">HPLC / UPLC</span><span class="tag">LC-MS</span><span class="tag">GC-MS</span><span class="tag">NMR</span><span class="tag">DLS</span><span class="tag">RT-PCR &amp; gel electrophoresis</span>
+        <span class="tag">ICP-MS</span><span class="tag">ICP-OES</span><span class="tag">HPLC / UPLC</span><span class="tag">LC-MS</span><span class="tag">GC-MS</span><span class="tag">NMR</span><span class="tag">DLS</span>
       </div>
     </div>
     <div class="tech-group">
-      <div><h3>Computational &amp; data</h3><span class="n">11 tools</span></div>
+      <div><h3>Computational &amp; data</h3><span class="n">10 tools</span></div>
       <div class="tags">
-        <span class="tag">Python</span><span class="tag">R</span><span class="tag">OriginLab</span><span class="tag">JMP</span><span class="tag">Snowflake</span><span class="tag">ChemDraw</span><span class="tag">Gaussian</span><span class="tag">Spartan</span><span class="tag">MDI Jade</span><span class="tag">Cambridge Structural Database</span><span class="tag">SpinWorks &middot; MEGA</span>
+        <span class="tag">Python</span><span class="tag">R</span><span class="tag">OriginLab</span><span class="tag">JMP</span><span class="tag">Snowflake</span><span class="tag">ChemDraw</span><span class="tag">Gaussian</span><span class="tag">Spartan</span><span class="tag">MDI Jade</span><span class="tag">Cambridge Structural Database</span><span class="tag">SpinWorks</span>
       </div>
     </div>
     <div class="tech-group">
@@ -894,7 +905,7 @@ footer{background:var(--paper);border-top:1px solid var(--rule);padding:clamp(56
         <span class="eyebrow">Intellectual interests</span>
         <h2 class="sec-title">The reading that pulls me forward</h2>
       </div>
-      <div><p class="lede">Where the curiosity actually sits &mdash; concentrated in the physics and chemistry of correlated and magnetic matter, with a persistent side interest in how markets price risk.</p></div>
+      <div><p class="lede">Where the curiosity actually sits &mdash; concentrated in the physics and chemistry of correlated and magnetic matter.</p></div>
     </div>
 
     <div class="interests">
@@ -921,14 +932,6 @@ footer{background:var(--paper);border-top:1px solid var(--rule);padding:clamp(56
       <article class="topic" style="--dot:var(--s)">
         <h3>Energy storage &amp; conversion</h3>
         <p>Electrochemical intercalation and ion transport, the redox chemistry of electrode materials, ionic conductivity in solid-state electrolytes, and overpotential and electrocatalysis in energy conversion.</p>
-      </article>
-      <article class="topic" style="--dot:var(--ink-3)">
-        <h3>Financial markets &amp; analysis</h3>
-        <p>Discounted-cash-flow and dividend-discount valuation, relative and multiples-based valuation, and fundamental and financial-statement analysis; the efficient-market hypothesis and its limits; modern portfolio theory and mean-variance optimization; and CAPM, arbitrage pricing theory and multi-factor (Fama&ndash;French) models linking risk to expected return.</p>
-      </article>
-      <article class="topic" style="--dot:var(--ink-3)">
-        <h3>Trading &amp; market behavior</h3>
-        <p>Market microstructure, price formation, liquidity and the bid&ndash;ask spread; the random-walk hypothesis, momentum and mean reversion; implied and realized volatility and Black&ndash;Scholes option pricing; and behavioral finance, prospect theory and cognitive biases &mdash; approached semi-quantitatively and analytically rather than algorithmically.</p>
       </article>
     </div>
   </div>
@@ -983,6 +986,7 @@ footer{background:var(--paper);border-top:1px solid var(--rule);padding:clamp(56
       <div>
         <h3 class="minor">Honors &amp; awards</h3>
         <ul class="list-rule">
+          <li><b>ACS Undergraduate Award in Inorganic Chemistry</b>, American Chemical Society &middot; 2026</li>
           <li><b>First Honors</b>, Georgetown University &middot; Fall 2025</li>
           <li><b>Dean&rsquo;s List</b>, Georgetown University &middot; Fall 2024, Spring 2026</li>
           <li><b>Materials Science Undergraduate Research Fellow</b> &middot; Stoll Research Group</li>
