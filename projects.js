@@ -17,6 +17,11 @@ var PROJECTS = [
     slug: 'topology',
     title: 'Topology',
     note: 'Live Chern number & Berry curvature explorer'
+  },
+  {
+    slug: 'magnetism',
+    title: 'Magnetic Ordering',
+    note: 'Monte Carlo Heisenberg magnet & Curie temperature'
   }
   /* Next project goes here, e.g.:
   { slug: 'my-new-project', title: 'My New Project', note: 'One line about it' },

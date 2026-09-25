@@ -1,0 +1,1544 @@
+<!DOCTYPE html>
+<title>Magnetic Ordering &middot; Matthew Cotaj</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,600;1,300;1,400&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* ---------- tokens : light (default) ---------- */
+:root{
+  --ground:#edeee9;
+  --paper:#f8f9f6;
+  --paper-2:#e4e6df;
+  --ink:#131715;
+  --ink-2:#59635e;
+  --ink-3:#8a938d;
+  --rule:#d2d6cf;
+  --rule-soft:#dfe2db;
+  --eu:#b83a26;
+  --eu-wash:rgba(184,58,38,.09);
+  --s:#2a5d8f;
+  --cu:#3f7a4a;
+  --gd:#6b4a8f;
+  --shadow:0 1px 0 rgba(19,23,21,.05);
+  /* fixed instrument-console tokens for the live plots: the canvas below
+     draws with hardcoded colors tuned for a dark readout, independent of
+     site theme, so the console itself stays dark in both modes. */
+  --topo-bg:#121821;
+  --topo-line:#253040;
+  --topo-text:#e7edf3;
+  --topo-dim:#8fa1b3;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#0f1311;
+    --paper:#161b18;
+    --paper-2:#1e2420;
+    --ink:#e7eae4;
+    --ink-2:#98a29b;
+    --ink-3:#6d766f;
+    --rule:#2a312d;
+    --rule-soft:#222824;
+    --eu:#ff7052;
+    --eu-wash:rgba(255,112,82,.10);
+    --s:#6fabe2;
+    --cu:#71c281;
+    --gd:#b18ed8;
+    --shadow:0 1px 0 rgba(0,0,0,.3);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0f1311;
+  --paper:#161b18;
+  --paper-2:#1e2420;
+  --ink:#e7eae4;
+  --ink-2:#98a29b;
+  --ink-3:#6d766f;
+  --rule:#2a312d;
+  --rule-soft:#222824;
+  --eu:#ff7052;
+  --eu-wash:rgba(255,112,82,.10);
+  --s:#6fabe2;
+  --cu:#71c281;
+  --gd:#b18ed8;
+  --shadow:0 1px 0 rgba(0,0,0,.3);
+}
+
+/* ---------- base ---------- */
+*{box-sizing:border-box}
+body{
+  background:var(--ground);
+  color:var(--ink);
+  font-family:"IBM Plex Sans","Segoe UI",Helvetica,Arial,sans-serif;
+  font-size:16px;
+  line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4,p,ul,ol,figure{margin:0}
+ul{padding:0;list-style:none}
+a{color:var(--eu);text-decoration:none;border-bottom:1px solid color-mix(in srgb,var(--eu) 35%,transparent);transition:border-color .18s,color .18s}
+a:hover{border-bottom-color:var(--eu)}
+a:focus-visible,button:focus-visible{outline:2px solid var(--eu);outline-offset:3px;border-radius:2px}
+
+.wrap{max-width:1140px;margin:0 auto;padding:0 clamp(20px,5vw,56px)}
+.measure{max-width:66ch}
+
+.mono{font-family:"IBM Plex Mono",ui-monospace,Consolas,monospace}
+.eyebrow{
+  font-family:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+  font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ink-3);
+}
+h2.sec-title{
+  font-family:Spectral,Georgia,serif;font-weight:400;
+  font-size:clamp(1.65rem,3.1vw,2.35rem);line-height:1.14;letter-spacing:-.012em;
+  text-wrap:balance;
+}
+.lede{
+  font-family:Spectral,Georgia,serif;font-weight:300;
+  font-size:clamp(1.08rem,1.7vw,1.3rem);line-height:1.58;color:var(--ink-2);
+}
+.sub{color:var(--ink-2)}
+em{font-family:Spectral,Georgia,serif;font-style:italic}
+
+/* ---------- nav ---------- */
+nav{
+  position:sticky;top:0;z-index:30;
+  background:color-mix(in srgb,var(--ground) 88%,transparent);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--rule-soft);
+}
+.nav-in{display:flex;align-items:center;gap:22px;height:60px}
+.tile{
+  width:34px;height:34px;flex:none;border:1px solid var(--ink);
+  display:grid;align-content:center;justify-items:center;line-height:1;
+  background:var(--paper);
+}
+.tile .z{font-family:"IBM Plex Mono",monospace;font-size:.44rem;color:var(--ink-2);letter-spacing:.02em}
+.tile .sym{font-family:Spectral,Georgia,serif;font-size:1.02rem;font-weight:400;margin-top:1px}
+.nav-name{font-family:"IBM Plex Mono",monospace;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;margin-right:auto}
+.nav-links{display:flex;align-items:center;gap:16px}
+.nav-links a{
+  font-family:"IBM Plex Mono",monospace;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-2);border-bottom:1px solid transparent;padding-bottom:2px;
+}
+.nav-links a:hover,.nav-links a.cur{color:var(--ink);border-bottom-color:var(--eu)}
+
+/* Projects dropdown */
+.nav-drop{position:relative}
+.nav-drop-trigger{
+  background:none;border:none;font:inherit;cursor:pointer;padding:0 0 2px;margin:0;
+  font-family:"IBM Plex Mono",monospace;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-2);border-bottom:1px solid transparent;
+  display:inline-flex;align-items:center;gap:5px;
+}
+.nav-drop-trigger:hover{color:var(--ink);border-bottom-color:var(--eu)}
+.nav-drop-trigger[aria-expanded="true"]{color:var(--ink);border-bottom-color:var(--eu)}
+.nav-drop-trigger .car{font-size:.55rem;line-height:1;transition:transform .15s}
+.nav-drop-trigger[aria-expanded="true"] .car{transform:rotate(180deg)}
+.nav-drop-menu{
+  position:absolute;top:calc(100% + 15px);left:50%;transform:translateX(-50%);
+  min-width:230px;background:var(--paper);border:1px solid var(--rule);box-shadow:var(--shadow);
+  padding:6px;display:none;z-index:40;
+}
+.nav-drop-menu.open{display:block}
+.nav-drop-menu a{
+  display:flex;flex-direction:column;gap:2px;padding:9px 12px;
+  font-family:"IBM Plex Mono",monospace;font-size:.72rem;letter-spacing:.05em;text-transform:none;
+  color:var(--ink-2);border-bottom:0;
+}
+.nav-drop-menu a:hover{color:var(--ink);background:var(--paper-2)}
+.nav-drop-menu a.cur{color:var(--eu)}
+.nav-drop-menu .note{font-family:"IBM Plex Sans",sans-serif;font-size:.68rem;color:var(--ink-3);letter-spacing:0}
+
+/* mobile nav toggle */
+.nav-toggle{
+  display:none;background:none;border:1px solid var(--rule);color:var(--ink-2);
+  font-family:"IBM Plex Mono",monospace;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;
+  padding:6px 12px;cursor:pointer;
+}
+.nav-toggle:hover{color:var(--ink);border-color:var(--ink-2)}
+.nav-toggle[aria-expanded="true"]{color:var(--ink);border-color:var(--eu)}
+
+@media(max-width:1010px){
+  .nav-toggle{display:inline-block}
+  .nav-links{
+    display:none;position:absolute;top:60px;left:0;right:0;
+    flex-direction:column;align-items:stretch;gap:0;background:var(--ground);
+    border-bottom:1px solid var(--rule-soft);padding:6px clamp(20px,5vw,56px) 14px;
+  }
+  .nav-links.mobile-open{display:flex}
+  .nav-links a{padding:11px 0;border-bottom:1px solid var(--rule-soft)}
+  .nav-drop{width:100%}
+  .nav-drop-trigger{width:100%;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--rule-soft)}
+  .nav-drop-menu{
+    position:static;transform:none;box-shadow:none;border:0;background:none;
+    padding:0 0 0 14px;min-width:0;
+  }
+  .nav-drop-menu a{padding:10px 0;border-bottom:1px solid var(--rule-soft)}
+}
+
+/* ---------- section scaffolding ---------- */
+section{padding:clamp(56px,8vw,96px) 0;border-bottom:1px solid var(--rule)}
+section:last-of-type{border-bottom:0}
+.sec-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.35fr);gap:clamp(24px,5vw,60px);align-items:start;margin-bottom:clamp(32px,4vw,52px)}
+@media(max-width:860px){.sec-head{grid-template-columns:1fr;gap:14px}}
+.sec-head .eyebrow{margin-bottom:12px;display:block}
+.back-link{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:22px;display:inline-block}
+.back-link a{color:var(--ink-2);border-bottom-color:transparent}
+.back-link a:hover{color:var(--eu);border-bottom-color:var(--eu)}
+
+/* ---------- footer (shared with the main page) ---------- */
+footer{background:var(--paper);border-top:1px solid var(--rule);padding:clamp(56px,8vw,88px) 0 44px}
+.foot-grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:clamp(28px,5vw,60px);align-items:end}
+@media(max-width:760px){.foot-grid{grid-template-columns:1fr;gap:32px;align-items:start}}
+.foot-grid h2{font-family:Spectral,Georgia,serif;font-weight:300;font-size:clamp(2rem,4.6vw,3.1rem);line-height:1.08;letter-spacing:-.018em}
+.contact-list li{padding:11px 0;border-top:1px solid var(--rule-soft);display:flex;gap:16px;align-items:baseline}
+.contact-list li:first-child{border-top:1px solid var(--rule)}
+.contact-list .lab{font-family:"IBM Plex Mono",monospace;font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);width:64px;flex:none}
+.colophon{margin-top:52px;padding-top:20px;border-top:1px solid var(--rule);
+  font-family:"IBM Plex Mono",monospace;font-size:.67rem;line-height:1.6;color:var(--ink-3);display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between}
+
+
+.tabs{
+  display:flex;gap:2px;margin:0 0 clamp(28px,4vw,40px);border-bottom:1px solid var(--rule);
+}
+.tab{
+  background:none;border:none;color:var(--ink-2);
+  font-family:"IBM Plex Mono",monospace;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;
+  padding:0 0 12px;margin-right:26px;cursor:pointer;border-bottom:2px solid transparent;
+  transition:color .15s,border-color .15s;
+}
+.tab:hover{color:var(--ink)}
+.tab.active{color:var(--ink);border-bottom-color:var(--eu)}
+
+.grid{display:grid;grid-template-columns:280px 1fr;gap:clamp(20px,3vw,32px)}
+@media(max-width:860px){.grid{grid-template-columns:1fr}}
+
+.panel{background:var(--paper);border:1px solid var(--rule);padding:22px 24px;box-shadow:var(--shadow)}
+
+/* Chern-number readout: styled as a fixed instrument console, like the
+   plots, since its color-coded value is set by the script against a dark
+   background and isn't theme-reactive. */
+.readout{
+  background:var(--topo-bg);border:1px solid var(--topo-line);
+  padding:20px 22px;margin-bottom:20px;
+}
+.readout .label{font-family:"IBM Plex Mono",monospace;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--topo-dim);margin-bottom:8px}
+.readout .value{font-family:"IBM Plex Mono",monospace;font-size:42px;font-weight:600;line-height:1;color:var(--topo-text)}
+.readout .raw{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--topo-dim);margin-top:8px}
+.readout .gapflag{font-family:"IBM Plex Sans",sans-serif;font-size:12px;margin-top:12px;color:#e8807a;display:none;line-height:1.5}
+.readout .gapflag.show{display:block}
+
+.slider-row{margin-bottom:18px}
+.slider-row label{display:flex;justify-content:space-between;font-size:.82rem;color:var(--ink-2);margin-bottom:7px}
+.slider-row .val{font-family:"IBM Plex Mono",monospace;color:var(--ink)}
+input[type="range"]{width:100%;accent-color:var(--eu);height:4px}
+
+.plots{display:flex;flex-direction:column;gap:20px}
+.plot-panel h3{
+  font-family:"IBM Plex Mono",monospace;font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;
+  font-weight:500;margin:0 0 12px;color:var(--eu);
+}
+.console{background:var(--topo-bg);border:1px solid var(--topo-line);padding:8px;margin-bottom:12px}
+canvas{display:block;width:100%;height:auto;border-radius:2px}
+
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;font-family:"IBM Plex Mono",monospace;font-size:.72rem;color:var(--ink-2)}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+.swatch{width:10px;height:10px;border-radius:2px;display:inline-block}
+
+.note{font-size:.85rem;color:var(--ink-2);line-height:1.6;margin-top:6px;padding-top:14px;border-top:1px solid var(--rule-soft)}
+
+.cbar{height:10px;border-radius:2px;margin-top:10px;background:linear-gradient(to right,#2166ac,#92c5de,#f7f7f7,#f4a582,#b2182b);border:1px solid var(--rule)}
+.cbar-labels{display:flex;justify-content:space-between;font-size:.68rem;font-family:"IBM Plex Mono",monospace;color:var(--ink-3);margin-top:6px}
+
+
+/* ==========================================================================
+   Magnetic ordering tool. Shared tool styles above are carried over from the
+   Topology page so both projects read as one set; additions below.
+   ========================================================================== */
+.hidden{display:none!important}
+.readout .value.small{font-size:34px}
+.readout .raw + .raw{margin-top:4px}
+
+.group-label{
+  display:block;font-family:"IBM Plex Mono",monospace;font-size:.66rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink-3);margin:22px 0 10px;
+}
+.group-label:first-child{margin-top:0}
+
+.btn-row{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 6px}
+.btn{
+  background:var(--paper);border:1px solid var(--rule);color:var(--ink);
+  font-family:"IBM Plex Mono",monospace;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;
+  padding:8px 12px;cursor:pointer;border-radius:2px;transition:border-color .15s,color .15s,background .15s;
+}
+.btn:hover{border-color:var(--eu);color:var(--eu)}
+.btn.primary{background:var(--eu);border-color:var(--eu);color:#fff}
+.btn.primary:hover{filter:brightness(1.08);color:#fff}
+.btn:disabled{opacity:.4;cursor:not-allowed;filter:none}
+.btn:disabled:hover{border-color:var(--rule);color:var(--ink)}
+.btn.primary:disabled:hover{border-color:var(--eu);color:#fff}
+
+.seg{display:flex;border:1px solid var(--rule);border-radius:2px;overflow:hidden}
+.seg button{
+  flex:1;background:var(--paper);border:0;border-left:1px solid var(--rule);color:var(--ink-2);
+  font-family:"IBM Plex Mono",monospace;font-size:.74rem;padding:8px 0;cursor:pointer;
+}
+.seg button:first-child{border-left:0}
+.seg button:hover{color:var(--ink);background:var(--paper-2)}
+.seg button[aria-pressed="true"]{background:var(--eu-wash);color:var(--eu)}
+.seg button:disabled{opacity:.45;cursor:not-allowed}
+.seg-note{font-size:.72rem;color:var(--ink-3);margin-top:7px;font-family:"IBM Plex Mono",monospace}
+
+.checks{display:flex;gap:14px;flex-wrap:wrap}
+.checks label{display:inline-flex;align-items:center;gap:6px;font-family:"IBM Plex Mono",monospace;font-size:.78rem;color:var(--ink-2);cursor:pointer}
+.checks input{accent-color:var(--eu)}
+.checks .mk{width:10px;height:10px;display:inline-block}
+
+.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px}
+.field label{display:block;font-size:.72rem;color:var(--ink-2);margin-bottom:4px}
+.field input{
+  width:100%;font-family:"IBM Plex Mono",monospace;font-size:.82rem;padding:6px 8px;
+  background:var(--ground);color:var(--ink);border:1px solid var(--rule);border-radius:2px;
+}
+.field input:focus{outline:2px solid var(--eu);outline-offset:0;border-color:var(--eu)}
+.field input:disabled{opacity:.55}
+
+.stat-line{display:flex;justify-content:space-between;gap:10px;font-size:.78rem;color:var(--ink-2);padding:7px 0;border-top:1px solid var(--rule-soft)}
+.stat-line b{font-family:"IBM Plex Mono",monospace;font-weight:500;color:var(--ink)}
+
+.console{position:relative}
+.spin-views{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(max-width:560px){.spin-views{grid-template-columns:1fr}}
+.view{position:relative}
+.view-cap{
+  position:absolute;left:8px;top:6px;font-family:"IBM Plex Mono",monospace;font-size:10.5px;
+  letter-spacing:.06em;color:var(--topo-dim);pointer-events:none;
+}
+#view3d{cursor:grab;touch-action:none}
+#view3d:active{cursor:grabbing}
+
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:1060px){.chart-grid{grid-template-columns:1fr}}
+.plot-panel h3 .unit{color:var(--ink-3);text-transform:none;letter-spacing:0;font-weight:400;margin-left:6px}
+.sweep-canvas{cursor:crosshair}
+
+.tip{
+  position:absolute;pointer-events:none;z-index:5;display:none;white-space:nowrap;
+  background:#0b1017;border:1px solid var(--topo-line);color:var(--topo-text);
+  font-family:"IBM Plex Mono",monospace;font-size:11px;line-height:1.55;padding:7px 9px;border-radius:2px;
+}
+.tip .t-head{color:var(--topo-dim);margin-bottom:2px}
+.tip .t-row{display:flex;align-items:center;gap:7px}
+.tip .t-row i{width:8px;height:8px;display:inline-block;border-radius:1px}
+.tip .t-row span:last-child{margin-left:auto;padding-left:12px}
+
+.prog-list{margin-top:4px}
+.prog{display:grid;grid-template-columns:44px 1fr 62px;gap:10px;align-items:center;font-family:"IBM Plex Mono",monospace;font-size:.72rem;color:var(--ink-2);padding:5px 0}
+.prog .bar{height:4px;background:var(--rule-soft);border-radius:2px;overflow:hidden}
+.prog .bar i{display:block;height:100%;width:0;border-radius:2px}
+.prog .pct{text-align:right}
+
+.estimates .row{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:.8rem;color:var(--topo-dim);padding:6px 0;border-top:1px solid var(--topo-line)}
+.estimates .row b{font-family:"IBM Plex Mono",monospace;font-weight:500;color:var(--topo-text)}
+
+.note p + p{margin-top:10px}
+.note b{color:var(--ink);font-weight:600}
+.src-link{font-family:"IBM Plex Mono",monospace;font-size:.72rem;letter-spacing:.06em}
+</style>
+
+<nav>
+  <div class="wrap nav-in">
+    <div class="tile"><span class="z">115</span><span class="sym">Mc</span></div>
+    <span class="nav-name">Matthew&nbsp;A.&nbsp;Cotaj</span>
+    <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links-list">Menu</button>
+    <div class="nav-links" id="nav-links-list">
+      <a href="../../index.html#thesis">Thesis</a>
+      <a href="../../index.html#structure">Structure</a>
+      <a href="../../index.html#experience">Experience</a>
+      <a href="../../index.html#work">Publications</a>
+      <a href="../../index.html#methods">Methods</a>
+      <a href="../../index.html#interests">Interests</a>
+      <div class="nav-drop">
+        <button class="nav-drop-trigger" id="projects-trigger" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="projects-menu">Projects<span class="car" aria-hidden="true">&#9662;</span></button>
+        <div class="nav-drop-menu" id="projects-menu" role="menu"></div>
+      </div>
+      <a href="../../index.html#education">Education</a>
+      <a href="../../index.html#contact">Contact</a>
+    </div>
+  </div>
+</nav>
+
+
+<main>
+
+<section id="explorer">
+  <div class="wrap">
+    <span class="back-link mono"><a href="../../index.html">&larr; Matthew A. Cotaj</a></span>
+
+    <div class="sec-head">
+      <div>
+        <span class="eyebrow">Interactive simulation &middot; statistical mechanics</span>
+        <h2 class="sec-title">Magnetic Ordering, by Monte&nbsp;Carlo</h2>
+      </div>
+      <div>
+        <p class="lede">The classical Heisenberg ferromagnet on a 3D cubic lattice, run with Metropolis Monte Carlo in your browser. Cool it through the Curie temperature and watch it order, then run the full temperature sweep to pin down T<sub>c</sub>.</p>
+        <p class="sub" style="margin-top:18px">My <a href="../../index.html#thesis">thesis work</a> on EuGdCuS<sub>3</sub> nanorods was about how Gd<sup>3+</sup> substitution changes magnetic ordering, from the synthesis and characterization side. This is the finite-temperature theory side of the same physics, on a model system simple enough to simulate from scratch. <a class="src-link" href="https://github.com/matthewcotaj/magnetic-ordering">Python source on GitHub &rarr;</a></p>
+      </div>
+    </div>
+
+    <div class="tabs" role="tablist">
+      <button class="tab active" type="button" role="tab" aria-selected="true" data-view="live">Live lattice</button>
+      <button class="tab" type="button" role="tab" aria-selected="false" data-view="sweep">Temperature sweep &amp; T<sub>c</sub></button>
+    </div>
+
+    <!-- ======================= LIVE LATTICE ======================= -->
+    <div class="grid" id="view-live">
+      <div class="panel">
+        <div class="readout">
+          <div class="label">Order parameter |M| / N</div>
+          <div class="value" id="mValue">0.000</div>
+          <div class="raw" id="eValue">E / N = 0.000 J</div>
+          <div class="raw" id="phaseValue">T / T<sub>c</sub> = 1.04</div>
+        </div>
+
+        <div class="slider-row">
+          <label for="tSlider"><span>Temperature T <span class="mono" style="color:var(--ink-3)">(J/k<sub>B</sub>)</span></span><span class="val" id="tVal">1.50</span></label>
+          <input type="range" id="tSlider" min="0.05" max="3" step="0.01" value="1.50">
+        </div>
+        <div class="slider-row">
+          <label for="jSlider"><span>Exchange coupling J</span><span class="val" id="jVal">1.00</span></label>
+          <input type="range" id="jSlider" min="0.1" max="2" step="0.01" value="1.00">
+        </div>
+        <div class="slider-row">
+          <label for="spfSlider"><span>Sweeps per frame</span><span class="val" id="spfVal">2</span></label>
+          <input type="range" id="spfSlider" min="1" max="20" step="1" value="2">
+        </div>
+
+        <span class="group-label">Lattice size L</span>
+        <div class="seg" id="lSeg">
+          <button type="button" data-l="6">6</button>
+          <button type="button" data-l="8">8</button>
+          <button type="button" data-l="10" aria-pressed="true">10</button>
+          <button type="button" data-l="12">12</button>
+          <button type="button" data-l="16">16</button>
+        </div>
+        <div class="seg-note" id="nNote">1000 spins</div>
+
+        <div class="slider-row" style="margin-top:18px">
+          <label for="zSlider"><span>Slice height z</span><span class="val" id="zVal">0</span></label>
+          <input type="range" id="zSlider" min="0" max="9" step="1" value="0">
+        </div>
+
+        <div class="btn-row">
+          <button class="btn primary" type="button" id="runBtn">Pause</button>
+          <button class="btn" type="button" id="hotBtn" title="Every spin random: infinite-temperature start">Randomize</button>
+          <button class="btn" type="button" id="coldBtn" title="Every spin along +z: zero-temperature start">Align</button>
+        </div>
+
+        <div style="margin-top:14px">
+          <div class="stat-line"><span>Sweeps</span><b id="sweepCount">0</b></div>
+          <div class="stat-line"><span>Acceptance rate</span><b id="accRate">&mdash;</b></div>
+        </div>
+      </div>
+
+      <div class="plots">
+        <div class="panel plot-panel">
+          <h3>Spin configuration</h3>
+          <div class="console">
+            <div class="spin-views">
+              <div class="view">
+                <canvas id="view2d" aria-label="Arrows showing the in-plane spin components on one lattice slice, colored by the out-of-plane component"></canvas>
+                <span class="view-cap" id="cap2d">slice z = 0</span>
+              </div>
+              <div class="view">
+                <canvas id="view3d" aria-label="Rotatable 3D view of every spin in the lattice"></canvas>
+                <span class="view-cap">full lattice &middot; drag to rotate</span>
+              </div>
+            </div>
+          </div>
+          <div class="cbar"></div>
+          <div class="cbar-labels"><span>s<sub>z</sub> = &minus;1</span><span>0</span><span>+1</span></div>
+          <div class="legend" style="margin-top:10px">
+            <span><span class="swatch" style="background:#f2b544"></span>Net magnetization direction (3D view)</span>
+          </div>
+        </div>
+
+        <div class="panel plot-panel">
+          <h3>|M| / N vs. Monte Carlo sweep</h3>
+          <div class="console"><canvas id="histCanvas" aria-label="Magnetization per spin over the most recent sweeps"></canvas></div>
+        </div>
+
+        <div class="panel note">
+          <p>Each site holds a unit-vector spin coupled to its six nearest neighbors, H = &minus;J &Sigma; <b>s</b><sub>i</sub>&middot;<b>s</b><sub>j</sub>, with periodic boundaries. One sweep is N Metropolis proposals: pick a random site, propose a completely random new orientation, and accept it with probability min(1, e<sup>&minus;&Delta;E/T</sup>).</p>
+          <p>The literature T<sub>c</sub> for this model is 1.443 J/k<sub>B</sub>, and it scales with J, so T/T<sub>c</sub> above uses 1.443&thinsp;J. Above it, |M|/N sits near its finite-size floor (about 1/&radic;N for random spins). Below it the lattice picks a direction spontaneously; the gold arrow in the 3D view shows which one. Try <b>Randomize</b> at T = 0.3 to watch a quench relax, or sit right at T<sub>c</sub> to see the large, slow fluctuations of a critical point.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================= TEMPERATURE SWEEP ======================= -->
+    <div class="grid hidden" id="view-sweep">
+      <div class="panel">
+        <div class="readout estimates">
+          <div class="label">T<sub>c</sub> from &chi; peak <span id="tcFromL"></span></div>
+          <div class="value small" id="tcValue">&mdash;</div>
+          <div class="raw" style="margin-bottom:12px">literature: 1.443 J/k<sub>B</sub></div>
+          <div class="row"><span>Binder crossing</span><b id="binderValue">&mdash;</b></div>
+          <div class="row"><span>Curie&ndash;Weiss &theta;</span><b id="thetaValue">&mdash;</b></div>
+          <div class="row"><span>Curie constant C</span><b id="cwCValue">&mdash;</b></div>
+        </div>
+
+        <span class="group-label">Statistics preset</span>
+        <div class="seg" id="presetSeg">
+          <button type="button" data-preset="quick" aria-pressed="true">Quick</button>
+          <button type="button" data-preset="standard">Standard</button>
+          <button type="button" data-preset="full">main.py</button>
+        </div>
+        <div class="seg-note" id="etaNote">&asymp; 5 s</div>
+
+        <span class="group-label">Lattice sizes</span>
+        <div class="checks" id="sizeChecks"></div>
+
+        <span class="group-label">Anneal schedule</span>
+        <div class="field-grid">
+          <div class="field"><label for="tMaxIn">T start</label><input id="tMaxIn" type="number" step="0.1" min="0.2" max="5" value="2.4"></div>
+          <div class="field"><label for="tMinIn">T end</label><input id="tMinIn" type="number" step="0.1" min="0.1" max="5" value="0.8"></div>
+          <div class="field"><label for="nTIn">Temperatures</label><input id="nTIn" type="number" step="1" min="4" max="60" value="24"></div>
+          <div class="field"><label for="seedIn">Seed</label><input id="seedIn" type="number" step="1" min="0" value="1"></div>
+          <div class="field"><label for="eqIn">Equil. sweeps / T</label><input id="eqIn" type="number" step="100" min="0" max="20000" value="300"></div>
+          <div class="field"><label for="smIn">Sample sweeps / T</label><input id="smIn" type="number" step="100" min="50" max="20000" value="1000"></div>
+        </div>
+
+        <div class="btn-row" style="margin-top:18px">
+          <button class="btn primary" type="button" id="sweepBtn">Run sweep</button>
+          <button class="btn" type="button" id="stopBtn" disabled>Stop</button>
+          <button class="btn" type="button" id="csvBtn" disabled>CSV</button>
+        </div>
+        <div class="prog-list" id="progList"></div>
+      </div>
+
+      <div class="plots">
+        <div class="legend" id="sizeLegend"></div>
+        <div class="chart-grid">
+          <div class="panel plot-panel">
+            <h3>Magnetization<span class="unit">&lang;|M|&rang; / N</span></h3>
+            <div class="console"><canvas class="sweep-canvas" id="cM" aria-label="Magnetization per spin versus temperature"></canvas><div class="tip"></div></div>
+          </div>
+          <div class="panel plot-panel">
+            <h3>Susceptibility<span class="unit">&chi;</span></h3>
+            <div class="console"><canvas class="sweep-canvas" id="cChi" aria-label="Magnetic susceptibility versus temperature"></canvas><div class="tip"></div></div>
+          </div>
+          <div class="panel plot-panel">
+            <h3>Specific heat<span class="unit">C / N k<sub>B</sub></span></h3>
+            <div class="console"><canvas class="sweep-canvas" id="cC" aria-label="Specific heat per spin versus temperature"></canvas><div class="tip"></div></div>
+          </div>
+          <div class="panel plot-panel">
+            <h3>Binder cumulant<span class="unit">U<sub>L</sub></span></h3>
+            <div class="console"><canvas class="sweep-canvas" id="cU" aria-label="Binder cumulant versus temperature"></canvas><div class="tip"></div></div>
+          </div>
+        </div>
+        <div class="panel plot-panel">
+          <h3>Curie&ndash;Weiss fit<span class="unit">1/&chi;, largest L</span></h3>
+          <div class="console"><canvas class="sweep-canvas" id="cCW" aria-label="Inverse susceptibility with a Curie-Weiss fit in the paramagnetic regime"></canvas><div class="tip"></div></div>
+          <div class="legend" id="cwLegend"></div>
+        </div>
+
+        <div class="panel note">
+          <p>Same procedure as <span class="mono">main.py</span>: each lattice starts random and anneals from high to low T, with equilibration sweeps at each temperature before sampling E and |M| every sweep. Each lattice size runs in its own background thread, so the page stays responsive.</p>
+          <p><b>&chi; = (&lang;M&sup2;&rang; &minus; &lang;|M|&rang;&sup2;) / NT</b> peaks at the transition, and the peak grows and sharpens with L: the finite-size signature of a real phase transition. On these small lattices the peak sits a little above the infinite-lattice value (about 1.50 vs. 1.443). <b>C = (&lang;E&sup2;&rang; &minus; &lang;E&rang;&sup2;) / NT&sup2;</b> shows the energy side of the same transition. The Binder cumulant <b>U<sub>L</sub> = 1 &minus; &lang;M&#8308;&rang; / 3&lang;M&sup2;&rang;&sup2;</b> is size-independent at T<sub>c</sub>, so the curves for different L should cross there; at quick-run statistics that crossing is noisy, so it is a secondary check. Above T<sub>c</sub>, 1/&chi; is fit to the Curie&ndash;Weiss law (T &minus; &theta;)/C over T &gt; 1.3&thinsp;T<sub>c</sub>.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer id="contact">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <span class="eyebrow">Get in touch</span>
+        <h2 style="margin-top:14px">Happy to talk about<br>rare earths, formulation,<br>or anything f-block.</h2>
+      </div>
+      <div>
+        <ul class="contact-list">
+          <li><span class="lab">Email</span><a href="mailto:cotajmatthew@gmail.com">cotajmatthew@gmail.com</a></li>
+          <li><span class="lab">Phone</span><a href="tel:+12035411448">(203) 541-1448</a></li>
+          <li><span class="lab">Based</span><span class="sub">Stamford, Connecticut</span></li>
+          <li><span class="lab">Now</span><span class="sub">Groton, CT &mdash; Pfizer Drug Product Design</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="colophon">
+      <span>Matthew A. Cotaj &middot; B.S. Chemistry (Honors), Georgetown University, 2026</span>
+      <span>Set in Spectral &amp; IBM Plex &middot; Eu / Gd / Cu / S accents after the EDS channel colors</span>
+    </div>
+  </div>
+</footer>
+
+
+<script>
+/* Monte Carlo core: a line-for-line port of simulation.py. Also serialized
+   into the Web Workers that run the temperature sweep. */
+function mcCore() {
+  "use strict";
+  // sfc32: small, fast, seedable PRNG (Math.random can't be seeded)
+  function makeRng(seed) {
+    var a = 0x9e3779b9, b = 0x243f6a88, c = 0xb7e15162, d = seed >>> 0;
+    function next() {
+      var t = (a + b | 0) + d | 0;
+      d = d + 1 | 0;
+      a = b ^ (b >>> 9);
+      b = c + (c << 3) | 0;
+      c = (c << 21) | (c >>> 11);
+      c = c + t | 0;
+      return (t >>> 0) / 4294967296;
+    }
+    for (var i = 0; i < 20; i++) next();
+    return next;
+  }
+
+  // L x L x L simple cubic lattice, periodic boundaries, spins stored flat as
+  // [sx, sy, sz] triples. Site index = (i*L + j)*L + k, same ordering as the
+  // numpy array spins[i, j, k, :].
+  function Lattice(L, seed) {
+    var N = L * L * L;
+    this.L = L; this.N = N;
+    this.s = new Float64Array(3 * N);
+    this.nb = new Int32Array(6 * N);
+    this.rng = makeRng(seed == null ? (Math.random() * 4294967296) >>> 0 : seed);
+    this.Mx = 0; this.My = 0; this.Mz = 0; this.bond = 0; // bond = sum over bonds of s_i . s_j
+    this.accepted = 0; this.proposed = 0;
+    for (var i = 0; i < L; i++) for (var j = 0; j < L; j++) for (var k = 0; k < L; k++) {
+      var n = (i * L + j) * L + k, o = 6 * n;
+      this.nb[o]     = (((i + 1) % L) * L + j) * L + k;
+      this.nb[o + 1] = (((i - 1 + L) % L) * L + j) * L + k;
+      this.nb[o + 2] = (i * L + (j + 1) % L) * L + k;
+      this.nb[o + 3] = (i * L + (j - 1 + L) % L) * L + k;
+      this.nb[o + 4] = (i * L + j) * L + (k + 1) % L;
+      this.nb[o + 5] = (i * L + j) * L + (k - 1 + L) % L;
+    }
+    this.randomize();
+  }
+
+  // uniform random point on the unit sphere (Archimedes: z uniform in [-1,1])
+  Lattice.prototype.randomize = function () {
+    var s = this.s, r = this.rng;
+    for (var n = 0; n < this.N; n++) {
+      var z = 2 * r() - 1, phi = 2 * Math.PI * r(), rho = Math.sqrt(1 - z * z);
+      s[3 * n] = rho * Math.cos(phi); s[3 * n + 1] = rho * Math.sin(phi); s[3 * n + 2] = z;
+    }
+    this.recompute();
+  };
+
+  Lattice.prototype.align = function () {
+    var s = this.s;
+    for (var n = 0; n < this.N; n++) { s[3 * n] = 0; s[3 * n + 1] = 0; s[3 * n + 2] = 1; }
+    this.recompute();
+  };
+
+  // exact M and bond sum from scratch (the sweep tracks them incrementally)
+  Lattice.prototype.recompute = function () {
+    var s = this.s, nb = this.nb, mx = 0, my = 0, mz = 0, e = 0;
+    for (var n = 0; n < this.N; n++) {
+      var x = s[3 * n], y = s[3 * n + 1], z = s[3 * n + 2];
+      mx += x; my += y; mz += z;
+      for (var q = 0; q < 6; q += 2) { // +i, +j, +k neighbors: each bond once
+        var m = 3 * nb[6 * n + q];
+        e += x * s[m] + y * s[m + 1] + z * s[m + 2];
+      }
+    }
+    this.Mx = mx; this.My = my; this.Mz = mz; this.bond = e;
+  };
+
+  // One Metropolis sweep = N single-spin proposals at random sites, each a
+  // fully random new orientation, accepted with min(1, exp(-dE/T)).
+  Lattice.prototype.sweep = function (T, J) {
+    var s = this.s, nb = this.nb, r = this.rng, N = this.N;
+    var beta = 1 / T, acc = 0, dBond = 0, dmx = 0, dmy = 0, dmz = 0;
+    for (var step = 0; step < N; step++) {
+      var n = (r() * N) | 0, o = 6 * n, p = 3 * n;
+      var fx = 0, fy = 0, fz = 0;
+      for (var q = 0; q < 6; q++) {
+        var m = 3 * nb[o + q];
+        fx += s[m]; fy += s[m + 1]; fz += s[m + 2];
+      }
+      var sx = s[p], sy = s[p + 1], sz = s[p + 2];
+      var z = 2 * r() - 1, phi = 6.283185307179586 * r(), rho = Math.sqrt(1 - z * z);
+      var nx = rho * Math.cos(phi), ny = rho * Math.sin(phi);
+      var db = (nx - sx) * fx + (ny - sy) * fy + (z - sz) * fz; // change in bond sum
+      var dE = -J * db;
+      if (dE <= 0 || r() < Math.exp(-dE * beta)) {
+        s[p] = nx; s[p + 1] = ny; s[p + 2] = z;
+        dBond += db; dmx += nx - sx; dmy += ny - sy; dmz += z - sz;
+        acc++;
+      }
+    }
+    this.bond += dBond; this.Mx += dmx; this.My += dmy; this.Mz += dmz;
+    this.accepted += acc; this.proposed += N;
+  };
+
+  Lattice.prototype.energy = function (J) { return -J * this.bond; };
+  Lattice.prototype.magnitude = function () {
+    return Math.sqrt(this.Mx * this.Mx + this.My * this.My + this.Mz * this.Mz);
+  };
+
+  // Port of simulation.run_temperature_sweep for a single L: anneal through
+  // T_list in the given order, n_equil sweeps then n_sample measured sweeps
+  // at each T. onPoint fires after each temperature; onProgress within it.
+  function runTemperatureSweep(L, Ts, nEquil, nSample, J, seed, onPoint, onProgress) {
+    var lat = new Lattice(L, seed);
+    var N = lat.N, total = Ts.length * (nEquil + nSample), done = 0;
+    for (var t = 0; t < Ts.length; t++) {
+      var T = Ts[t];
+      lat.recompute(); // clear any floating-point drift in the running sums
+      for (var a = 0; a < nEquil; a++) {
+        lat.sweep(T, J); done++;
+        if ((done & 255) === 0 && onProgress) onProgress(done / total);
+      }
+      var sE = 0, sE2 = 0, sM = 0, sM2 = 0, sM4 = 0;
+      for (var b = 0; b < nSample; b++) {
+        lat.sweep(T, J); done++;
+        var E = lat.energy(J), M = lat.magnitude(), M2 = M * M;
+        sE += E; sE2 += E * E; sM += M; sM2 += M2; sM4 += M2 * M2;
+        if ((done & 255) === 0 && onProgress) onProgress(done / total);
+      }
+      onPoint({
+        L: L, N: N, index: t, T: T,
+        E: sE / nSample, E2: sE2 / nSample,
+        M: sM / nSample, M2: sM2 / nSample, M4: sM4 / nSample
+      });
+    }
+  }
+
+  return { makeRng: makeRng, Lattice: Lattice, runTemperatureSweep: runTemperatureSweep };
+}
+</script>
+
+<script>
+(function () {
+  "use strict";
+
+  var core = mcCore();
+  var TC_REF = 1.443; // classical Heisenberg, simple cubic, in units of J/kB
+
+  // ---------- console palette (fixed dark instrument look, as on the Topology page) ----------
+  var BG = "#121821", GRID = "#1d2633", AXIS = "#2b3748", DIM = "#8fa1b3", TEXT = "#e7edf3";
+  var GOLD = "#f2b544", TEAL = "#45d9c8";
+  // Lattice-size series: validated for CVD separation on the #121821 console surface.
+  var SIZE_STYLE = {
+    6:  { color: "#346ecd", marker: "circle" },
+    8:  { color: "#bd891c", marker: "square" },
+    10: { color: "#cf3546", marker: "triangle" },
+    12: { color: "#18a7a1", marker: "diamond" }
+  };
+  var SIZES = [6, 8, 10, 12];
+
+  // RdBu diverging map for s_z, same stops as the Berry-curvature plot
+  var RDBU = [[33, 102, 172], [146, 197, 222], [247, 247, 247], [244, 165, 130], [178, 24, 43]];
+  var LUT = [];
+  (function () {
+    for (var i = 0; i < 129; i++) {
+      var t = i / 128 * 4, k = Math.min(3, Math.floor(t)), f = t - k;
+      var a = RDBU[k], b = RDBU[k + 1];
+      LUT.push("rgb(" + Math.round(a[0] + (b[0] - a[0]) * f) + "," + Math.round(a[1] + (b[1] - a[1]) * f) + "," + Math.round(a[2] + (b[2] - a[2]) * f) + ")");
+    }
+  })();
+  function szColor(sz) { return LUT[Math.max(0, Math.min(128, Math.round((sz + 1) * 64)))]; }
+
+  // ---------- canvas helpers ----------
+  function fit(canvas, aspect) {
+    var w = canvas.clientWidth;
+    if (!w) return null;
+    var h = Math.round(w * aspect);
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var W = Math.round(w * dpr), H = Math.round(h * dpr);
+    if (canvas.width !== W || canvas.height !== H) { canvas.width = W; canvas.height = H; }
+    canvas.style.height = h + "px";
+    var ctx = canvas.getContext("2d");
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return { ctx: ctx, w: w, h: h };
+  }
+
+  function niceStep(span, n) {
+    var raw = span / n, mag = Math.pow(10, Math.floor(Math.log10(raw))), f = raw / mag;
+    return (f < 1.5 ? 1 : f < 3 ? 2 : f < 7 ? 5 : 10) * mag;
+  }
+  function ticks(lo, hi, n) {
+    var step = niceStep(hi - lo, n), out = [];
+    for (var v = Math.ceil(lo / step - 1e-9) * step; v <= hi + step * 1e-9; v += step) out.push(v);
+    return { list: out, step: step };
+  }
+  function fmtTick(v, step) {
+    var d = Math.max(0, Math.min(4, -Math.floor(Math.log10(step) + 1e-9)));
+    var s = v.toFixed(d);
+    return s === "-0" || /^-0\.0*$/.test(s) ? s.slice(1) : s;
+  }
+  function fmtVal(v) {
+    if (!isFinite(v)) return "—";
+    var a = Math.abs(v);
+    return a >= 100 ? v.toFixed(1) : a >= 10 ? v.toFixed(2) : v.toFixed(3);
+  }
+
+  function drawMarker(ctx, kind, x, y, r) {
+    ctx.beginPath();
+    if (kind === "square") ctx.rect(x - r * 0.85, y - r * 0.85, r * 1.7, r * 1.7);
+    else if (kind === "triangle") { ctx.moveTo(x, y - r * 1.1); ctx.lineTo(x + r, y + r * 0.75); ctx.lineTo(x - r, y + r * 0.75); ctx.closePath(); }
+    else if (kind === "diamond") { ctx.moveTo(x, y - r * 1.15); ctx.lineTo(x + r * 1.05, y); ctx.lineTo(x, y + r * 1.15); ctx.lineTo(x - r * 1.05, y); ctx.closePath(); }
+    else ctx.arc(x, y, r, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.stroke();
+  }
+
+  // Generic x-y plot on a dark console canvas.
+  // cfg: { aspect, xMin, xMax, yMin?, yMax?, xLabel, series:[{color, marker, pts:[[x,y]], line}],
+  //        fits:[{pts, color, dash}], vlines:[{x, label}], hoverX, empty }
+  function plotXY(canvas, cfg) {
+    var f = fit(canvas, cfg.aspect || 0.62);
+    if (!f) return;
+    var ctx = f.ctx, w = f.w, h = f.h;
+    ctx.fillStyle = BG; ctx.fillRect(0, 0, w, h);
+    var padL = 50, padR = 14, padT = 14, padB = 36;
+    var pw = w - padL - padR, ph = h - padT - padB;
+
+    var ys = [];
+    cfg.series.forEach(function (s) { s.pts.forEach(function (p) { if (isFinite(p[1])) ys.push(p[1]); }); });
+    (cfg.fits || []).forEach(function (s) { s.pts.forEach(function (p) { if (isFinite(p[1])) ys.push(p[1]); }); });
+    var yMin = cfg.yMin, yMax = cfg.yMax;
+    var lo = ys.length ? Math.min.apply(null, ys) : 0, hi = ys.length ? Math.max.apply(null, ys) : 1;
+    if (yMin == null) yMin = lo; if (yMax == null) yMax = hi;
+    if (!(yMax - yMin > 1e-12)) { yMax = yMin + 1; }
+    var span = yMax - yMin;
+    if (cfg.yMin == null) yMin -= span * 0.08;
+    if (cfg.yMax == null) yMax += span * 0.08;
+
+    var xMin = cfg.xMin, xMax = cfg.xMax;
+    function X(x) { return padL + (x - xMin) / (xMax - xMin) * pw; }
+    function Y(y) { return padT + (1 - (y - yMin) / (yMax - yMin)) * ph; }
+    canvas._map = { padL: padL, pw: pw, xMin: xMin, xMax: xMax, X: X, Y: Y, padT: padT, ph: ph };
+
+    // grid + tick labels
+    ctx.font = "11px 'IBM Plex Mono', ui-monospace, monospace";
+    ctx.lineWidth = 1;
+    var yt = ticks(yMin, yMax, Math.max(3, Math.round(ph / 48)));
+    ctx.textAlign = "right"; ctx.textBaseline = "middle";
+    yt.list.forEach(function (v) {
+      var py = Math.round(Y(v)) + 0.5;
+      ctx.strokeStyle = GRID; ctx.beginPath(); ctx.moveTo(padL, py); ctx.lineTo(padL + pw, py); ctx.stroke();
+      ctx.fillStyle = DIM; ctx.fillText(fmtTick(v, yt.step), padL - 7, py);
+    });
+    var xt = ticks(xMin, xMax, Math.max(3, Math.round(pw / 70)));
+    ctx.textAlign = "center"; ctx.textBaseline = "top";
+    xt.list.forEach(function (v) {
+      var px = Math.round(X(v)) + 0.5;
+      ctx.strokeStyle = AXIS; ctx.beginPath(); ctx.moveTo(px, padT + ph); ctx.lineTo(px, padT + ph + 4); ctx.stroke();
+      ctx.fillStyle = DIM; ctx.fillText(fmtTick(v, xt.step), px, padT + ph + 7);
+    });
+    ctx.strokeStyle = AXIS;
+    ctx.beginPath(); ctx.moveTo(padL + 0.5, padT); ctx.lineTo(padL + 0.5, padT + ph + 0.5); ctx.lineTo(padL + pw, padT + ph + 0.5); ctx.stroke();
+    if (cfg.xLabel) { ctx.textAlign = "right"; ctx.fillStyle = DIM; ctx.fillText(cfg.xLabel, padL + pw, padT + ph + 21); }
+
+    if (cfg.empty) {
+      ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillStyle = DIM;
+      ctx.fillText(cfg.empty, padL + pw / 2, padT + ph / 2);
+    }
+
+    ctx.save();
+    ctx.beginPath(); ctx.rect(padL, padT - 6, pw + 6, ph + 6); ctx.clip();
+
+    // reference lines
+    (cfg.vlines || []).forEach(function (v) {
+      if (!isFinite(v.x) || v.x < xMin || v.x > xMax) return;
+      var px = Math.round(X(v.x)) + 0.5;
+      ctx.strokeStyle = "rgba(143,161,179,.55)"; ctx.setLineDash([4, 4]);
+      ctx.beginPath(); ctx.moveTo(px, padT); ctx.lineTo(px, padT + ph); ctx.stroke();
+      ctx.setLineDash([]);
+      if (v.label) {
+        ctx.fillStyle = DIM; ctx.textBaseline = "top";
+        var right = px > padL + pw - 90;
+        ctx.textAlign = right ? "right" : "left";
+        ctx.fillText(v.label, px + (right ? -5 : 5), padT + 2);
+      }
+    });
+
+    // fitted curves
+    (cfg.fits || []).forEach(function (s) {
+      if (s.pts.length < 2) return;
+      ctx.strokeStyle = s.color; ctx.lineWidth = 2; ctx.setLineDash(s.dash || []);
+      ctx.beginPath();
+      s.pts.forEach(function (p, i) { if (i) ctx.lineTo(X(p[0]), Y(p[1])); else ctx.moveTo(X(p[0]), Y(p[1])); });
+      ctx.stroke(); ctx.setLineDash([]);
+    });
+
+    // hover crosshair
+    if (cfg.hoverX != null && cfg.hoverX >= xMin && cfg.hoverX <= xMax) {
+      var hx = Math.round(X(cfg.hoverX)) + 0.5;
+      ctx.strokeStyle = "rgba(231,237,243,.28)"; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(hx, padT); ctx.lineTo(hx, padT + ph); ctx.stroke();
+    }
+
+    // data series: 2px line, then markers with a surface-colored ring
+    cfg.series.forEach(function (s) {
+      var pts = s.pts.filter(function (p) { return isFinite(p[1]); });
+      if (s.line !== false && pts.length > 1) {
+        ctx.strokeStyle = s.color; ctx.lineWidth = 2; ctx.lineJoin = "round";
+        ctx.beginPath();
+        pts.forEach(function (p, i) { if (i) ctx.lineTo(X(p[0]), Y(p[1])); else ctx.moveTo(X(p[0]), Y(p[1])); });
+        ctx.stroke();
+      }
+      if (s.marker) {
+        ctx.fillStyle = s.color; ctx.strokeStyle = BG; ctx.lineWidth = 1.5;
+        pts.forEach(function (p) {
+          var big = cfg.hoverX != null && Math.abs(p[0] - cfg.hoverX) < 1e-9;
+          drawMarker(ctx, s.marker, X(p[0]), Y(p[1]), big ? 5.5 : 4);
+        });
+      }
+    });
+    ctx.restore();
+  }
+
+  // ======================================================================
+  // LIVE LATTICE
+  // ======================================================================
+  var live = {
+    L: 10, T: 1.5, J: 1.0, spf: 2, z: 0,
+    running: true, sweeps: 0, hist: [], HIST: 800,
+    yaw: 0.6, pitch: 0.42, dragging: false, lastX: 0, lastY: 0,
+    accEMA: null, dirty: true
+  };
+  live.lat = new core.Lattice(live.L);
+
+  var el = function (id) { return document.getElementById(id); };
+  var tSlider = el("tSlider"), jSlider = el("jSlider"), spfSlider = el("spfSlider"), zSlider = el("zSlider");
+  var view2d = el("view2d"), view3d = el("view3d"), histCanvas = el("histCanvas");
+
+  function phaseText() {
+    var r = live.T / (TC_REF * live.J);
+    var phase = r < 0.93 ? "ordered (ferromagnet)" : r > 1.07 ? "disordered (paramagnet)" : "near T<sub>c</sub>: critical";
+    return "T / T<sub>c</sub> = " + r.toFixed(2) + " &middot; " + phase;
+  }
+
+  function resetLattice(mode) {
+    if (!live.lat || live.lat.L !== live.L) live.lat = new core.Lattice(live.L);
+    if (mode === "cold") live.lat.align(); else live.lat.randomize();
+    live.sweeps = 0; live.hist = []; live.accEMA = null; live.dirty = true;
+    live.lat.accepted = 0; live.lat.proposed = 0;
+    el("sweepCount").textContent = "0";
+    el("accRate").textContent = "—";
+    updateReadout();
+  }
+
+  function updateReadout() {
+    var lat = live.lat;
+    el("mValue").textContent = (lat.magnitude() / lat.N).toFixed(3);
+    el("eValue").textContent = "E / N = " + (lat.energy(live.J) / lat.N).toFixed(3) + " J";
+    el("phaseValue").innerHTML = phaseText();
+  }
+
+  tSlider.addEventListener("input", function () {
+    live.T = parseFloat(tSlider.value); el("tVal").textContent = live.T.toFixed(2); updateReadout();
+  });
+  jSlider.addEventListener("input", function () {
+    live.J = parseFloat(jSlider.value); el("jVal").textContent = live.J.toFixed(2); updateReadout();
+  });
+  spfSlider.addEventListener("input", function () {
+    live.spf = parseInt(spfSlider.value, 10); el("spfVal").textContent = live.spf;
+  });
+  zSlider.addEventListener("input", function () {
+    live.z = parseInt(zSlider.value, 10); el("zVal").textContent = live.z;
+    el("cap2d").textContent = "slice z = " + live.z; live.dirty = true;
+  });
+  document.querySelectorAll("#lSeg button").forEach(function (b) {
+    b.addEventListener("click", function () {
+      document.querySelectorAll("#lSeg button").forEach(function (x) { x.setAttribute("aria-pressed", "false"); });
+      b.setAttribute("aria-pressed", "true");
+      live.L = parseInt(b.getAttribute("data-l"), 10);
+      el("nNote").textContent = (live.L * live.L * live.L) + " spins";
+      zSlider.max = live.L - 1;
+      if (live.z > live.L - 1) { live.z = live.L - 1; zSlider.value = live.z; el("zVal").textContent = live.z; el("cap2d").textContent = "slice z = " + live.z; }
+      live.lat = new core.Lattice(live.L);
+      resetLattice("hot");
+    });
+  });
+  el("runBtn").addEventListener("click", function () {
+    live.running = !live.running;
+    el("runBtn").textContent = live.running ? "Pause" : "Run";
+  });
+  el("hotBtn").addEventListener("click", function () { resetLattice("hot"); });
+  el("coldBtn").addEventListener("click", function () { resetLattice("cold"); });
+
+  // 3D rotation by drag (pointer events cover mouse + touch)
+  view3d.addEventListener("pointerdown", function (e) {
+    live.dragging = true; live.lastX = e.clientX; live.lastY = e.clientY;
+    view3d.setPointerCapture(e.pointerId);
+  });
+  view3d.addEventListener("pointermove", function (e) {
+    if (!live.dragging) return;
+    live.yaw += (e.clientX - live.lastX) * 0.01;
+    live.pitch = Math.max(-1.45, Math.min(1.45, live.pitch + (e.clientY - live.lastY) * 0.01));
+    live.lastX = e.clientX; live.lastY = e.clientY; live.dirty = true;
+  });
+  ["pointerup", "pointercancel"].forEach(function (ev) {
+    view3d.addEventListener(ev, function () { live.dragging = false; });
+  });
+
+  // slice view: site (i, j) at k = z; i to the right, j upward
+  function drawSlice() {
+    var f = fit(view2d, 1);
+    if (!f) return;
+    var ctx = f.ctx, W = f.w, L = live.L, s = live.lat.s, k = live.z;
+    ctx.fillStyle = BG; ctx.fillRect(0, 0, W, W);
+    var m = 24, cell = (W - 2 * m) / L, arm = cell * 0.42, head = Math.max(2.5, cell * 0.2);
+    ctx.lineWidth = Math.max(1.2, cell * 0.075); ctx.lineCap = "round";
+    for (var i = 0; i < L; i++) {
+      for (var j = 0; j < L; j++) {
+        var p = 3 * ((i * L + j) * L + k);
+        var sx = s[p], sy = s[p + 1], sz = s[p + 2];
+        var cx = m + (i + 0.5) * cell, cy = W - m - (j + 0.5) * cell;
+        var dx = sx * arm, dy = -sy * arm, col = szColor(sz);
+        ctx.strokeStyle = col; ctx.fillStyle = col;
+        var inPlane = Math.sqrt(sx * sx + sy * sy);
+        if (inPlane < 0.12) {
+          ctx.beginPath(); ctx.arc(cx, cy, head * 0.55, 0, 2 * Math.PI); ctx.fill();
+          continue;
+        }
+        ctx.beginPath(); ctx.moveTo(cx - dx, cy - dy); ctx.lineTo(cx + dx, cy + dy); ctx.stroke();
+        var ux = dx / (arm * inPlane), uy = dy / (arm * inPlane), hl = head * Math.min(1, inPlane * 1.6);
+        ctx.beginPath();
+        ctx.moveTo(cx + dx + ux * hl * 0.5, cy + dy + uy * hl * 0.5);
+        ctx.lineTo(cx + dx - ux * hl - uy * hl * 0.6, cy + dy - uy * hl + ux * hl * 0.6);
+        ctx.lineTo(cx + dx - ux * hl + uy * hl * 0.6, cy + dy - uy * hl - ux * hl * 0.6);
+        ctx.closePath(); ctx.fill();
+      }
+    }
+  }
+
+  // 3D view: orthographic projection, i -> x, j -> y, k -> z (up)
+  var order3d = null;
+  function drawLattice3D() {
+    var f = fit(view3d, 1);
+    if (!f) return;
+    var ctx = f.ctx, W = f.w, L = live.L, N = L * L * L, s = live.lat.s;
+    ctx.fillStyle = BG; ctx.fillRect(0, 0, W, W);
+    var cy_ = Math.cos(live.yaw), sy_ = Math.sin(live.yaw), cp = Math.cos(live.pitch), sp = Math.sin(live.pitch);
+    var sc = W * 0.56 / L, cx = W / 2, cyc = W / 2 + 6, c = (L - 1) / 2;
+    function proj(x, y, z) {
+      var x1 = x * cy_ - y * sy_, y1 = x * sy_ + y * cy_;
+      var depth = y1 * cp - z * sp, up = y1 * sp + z * cp;
+      return [cx + x1 * sc, cyc - up * sc, depth];
+    }
+    // bounding box
+    var h = L / 2, corners = [];
+    for (var a = 0; a < 8; a++) corners.push(proj(a & 1 ? h : -h, a & 2 ? h : -h, a & 4 ? h : -h));
+    ctx.strokeStyle = AXIS; ctx.lineWidth = 1;
+    [[0,1],[2,3],[4,5],[6,7],[0,2],[1,3],[4,6],[5,7],[0,4],[1,5],[2,6],[3,7]].forEach(function (e) {
+      ctx.beginPath(); ctx.moveTo(corners[e[0]][0], corners[e[0]][1]); ctx.lineTo(corners[e[1]][0], corners[e[1]][1]); ctx.stroke();
+    });
+    // slice plane outline
+    var zz = live.z - c, q = [proj(-h, -h, zz), proj(h, -h, zz), proj(h, h, zz), proj(-h, h, zz)];
+    ctx.strokeStyle = "rgba(242,181,68,.35)"; ctx.setLineDash([3, 3]);
+    ctx.beginPath(); ctx.moveTo(q[0][0], q[0][1]); for (var t = 1; t < 4; t++) ctx.lineTo(q[t][0], q[t][1]); ctx.closePath(); ctx.stroke();
+    ctx.setLineDash([]);
+
+    // depth-sort sites back to front
+    if (!order3d || order3d.length !== N) order3d = new Array(N);
+    var depths = new Float64Array(N), pos = new Float64Array(2 * N), dMin = Infinity, dMax = -Infinity;
+    for (var i = 0; i < L; i++) for (var j = 0; j < L; j++) for (var k = 0; k < L; k++) {
+      var n = (i * L + j) * L + k, pp = proj(i - c, j - c, k - c);
+      pos[2 * n] = pp[0]; pos[2 * n + 1] = pp[1]; depths[n] = pp[2]; order3d[n] = n;
+      if (pp[2] < dMin) dMin = pp[2]; if (pp[2] > dMax) dMax = pp[2];
+    }
+    order3d.sort(function (u, v) { return depths[v] - depths[u]; });
+    var arm = 0.34, lw = Math.max(1, sc * 0.1);
+    ctx.lineCap = "round"; ctx.lineWidth = lw;
+    for (var r = 0; r < N; r++) {
+      var nn = order3d[r], p3 = 3 * nn;
+      var sx = s[p3], syv = s[p3 + 1], sz = s[p3 + 2];
+      var vx = (sx * cy_ - syv * sy_) * sc * arm;
+      var vy1 = sx * sy_ + syv * cy_;
+      var vup = (vy1 * sp + sz * cp) * sc * arm;
+      var X0 = pos[2 * nn], Y0 = pos[2 * nn + 1];
+      var fade = (dMax - depths[nn]) / ((dMax - dMin) || 1); // 1 = nearest
+      ctx.globalAlpha = 0.28 + 0.72 * fade;
+      var col = szColor(sz);
+      ctx.strokeStyle = col; ctx.fillStyle = col;
+      ctx.beginPath(); ctx.moveTo(X0 - vx, Y0 + vup); ctx.lineTo(X0 + vx, Y0 - vup); ctx.stroke();
+      ctx.beginPath(); ctx.arc(X0 + vx, Y0 - vup, lw * 0.95, 0, 2 * Math.PI); ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+
+    // net magnetization arrow from the center
+    var lat = live.lat, mag = lat.magnitude() / N;
+    if (mag > 0.02) {
+      var ux = lat.Mx / (mag * N), uy = lat.My / (mag * N), uz = lat.Mz / (mag * N);
+      var len = mag * L * 0.62, o = proj(0, 0, 0), tip = proj(ux * len, uy * len, uz * len);
+      ctx.strokeStyle = BG; ctx.lineWidth = 7;
+      ctx.beginPath(); ctx.moveTo(o[0], o[1]); ctx.lineTo(tip[0], tip[1]); ctx.stroke();
+      ctx.strokeStyle = GOLD; ctx.fillStyle = GOLD; ctx.lineWidth = 3.5;
+      ctx.beginPath(); ctx.moveTo(o[0], o[1]); ctx.lineTo(tip[0], tip[1]); ctx.stroke();
+      var ang = Math.atan2(tip[1] - o[1], tip[0] - o[0]), hl = 11;
+      ctx.beginPath();
+      ctx.moveTo(tip[0] + Math.cos(ang) * 4, tip[1] + Math.sin(ang) * 4);
+      ctx.lineTo(tip[0] - Math.cos(ang - 0.45) * hl, tip[1] - Math.sin(ang - 0.45) * hl);
+      ctx.lineTo(tip[0] - Math.cos(ang + 0.45) * hl, tip[1] - Math.sin(ang + 0.45) * hl);
+      ctx.closePath(); ctx.fill();
+    }
+  }
+
+  function drawHistory() {
+    var n = live.hist.length, x0 = Math.max(0, live.sweeps - n);
+    var pts = live.hist.map(function (v, i) { return [x0 + i + 1, v]; });
+    var xMax = Math.max(live.HIST, live.sweeps);
+    plotXY(histCanvas, {
+      aspect: histCanvas.clientWidth < 600 ? 0.55 : 0.3, xMin: xMax - live.HIST, xMax: xMax, yMin: 0, yMax: 1, xLabel: "sweep",
+      series: [{ color: TEAL, pts: pts }],
+      empty: n ? null : "press Run"
+    });
+  }
+
+  function liveFrame() {
+    if (activeView === "live") {
+      if (live.running) {
+        var lat = live.lat, a0 = lat.accepted, p0 = lat.proposed;
+        for (var i = 0; i < live.spf; i++) {
+          lat.sweep(live.T, live.J);
+          live.sweeps++;
+          live.hist.push(lat.magnitude() / lat.N);
+        }
+        if (live.hist.length > live.HIST) live.hist.splice(0, live.hist.length - live.HIST);
+        if (live.sweeps % 200 < live.spf) lat.recompute();
+        var acc = (lat.accepted - a0) / (lat.proposed - p0);
+        live.accEMA = live.accEMA == null ? acc : live.accEMA * 0.9 + acc * 0.1;
+        el("sweepCount").textContent = live.sweeps.toLocaleString();
+        el("accRate").textContent = (100 * live.accEMA).toFixed(1) + "%";
+        updateReadout();
+        if (!live.dragging) live.yaw += 0.0025;
+        live.dirty = true;
+      }
+      if (live.dirty) {
+        drawSlice(); drawLattice3D(); drawHistory();
+        live.dirty = false;
+      }
+    }
+    requestAnimationFrame(liveFrame);
+  }
+
+  // ======================================================================
+  // TEMPERATURE SWEEP
+  // ======================================================================
+  var PRESETS = {
+    quick:    { nEquil: 300,  nSample: 1000 },
+    standard: { nEquil: 1000, nSample: 3000 },
+    full:     { nEquil: 2000, nSample: 5000 } // main.py settings
+  };
+  var NS_PER_UPDATE = 140; // rough laptop figure for the time estimate
+
+  var sweep = { running: false, workers: [], results: {}, Ts: [], hoverT: null, started: 0, progress: {} };
+  var selected = { 6: true, 8: true, 10: true, 12: false };
+
+  // size checkboxes + legend
+  (function () {
+    var host = el("sizeChecks"), leg = el("sizeLegend");
+    SIZES.forEach(function (L) {
+      var st = SIZE_STYLE[L];
+      var lab = document.createElement("label");
+      lab.innerHTML = '<input type="checkbox" ' + (selected[L] ? "checked" : "") + ' data-l="' + L + '"> L = ' + L;
+      host.appendChild(lab);
+      lab.querySelector("input").addEventListener("change", function (e) { selected[L] = e.target.checked; updateEta(); });
+      var sp = document.createElement("span");
+      sp.innerHTML = '<svg width="12" height="12" viewBox="-6 -6 12 12" aria-hidden="true">' + markerSVG(st.marker, st.color) + "</svg>L = " + L;
+      leg.appendChild(sp);
+    });
+  })();
+  function markerSVG(kind, color) {
+    if (kind === "square") return '<rect x="-4" y="-4" width="8" height="8" fill="' + color + '"/>';
+    if (kind === "triangle") return '<polygon points="0,-5 5,4 -5,4" fill="' + color + '"/>';
+    if (kind === "diamond") return '<polygon points="0,-5.5 5,0 0,5.5 -5,0" fill="' + color + '"/>';
+    return '<circle r="4.5" fill="' + color + '"/>';
+  }
+
+  function readInputs() {
+    var tMax = parseFloat(el("tMaxIn").value), tMin = parseFloat(el("tMinIn").value);
+    var nT = Math.max(4, Math.min(60, parseInt(el("nTIn").value, 10) || 24));
+    var nEquil = Math.max(0, Math.min(20000, parseInt(el("eqIn").value, 10) || 0));
+    var nSample = Math.max(50, Math.min(20000, parseInt(el("smIn").value, 10) || 1000));
+    var seed = Math.max(0, parseInt(el("seedIn").value, 10) || 0);
+    if (!(tMax > 0)) tMax = 2.4; if (!(tMin > 0)) tMin = 0.8;
+    if (tMin > tMax) { var tmp = tMin; tMin = tMax; tMax = tmp; }
+    if (tMax - tMin < 0.05) tMax = tMin + 0.05;
+    var sizes = SIZES.filter(function (L) { return selected[L]; });
+    return { tMax: tMax, tMin: tMin, nT: nT, nEquil: nEquil, nSample: nSample, seed: seed, sizes: sizes };
+  }
+
+  function updateEta() {
+    var p = readInputs();
+    if (!p.sizes.length) { el("etaNote").textContent = "select at least one lattice size"; return; }
+    var Lmax = Math.max.apply(null, p.sizes);
+    var sec = Math.pow(Lmax, 3) * p.nT * (p.nEquil + p.nSample) * NS_PER_UPDATE * 1e-9;
+    el("etaNote").textContent = "≈ " + (sec < 60 ? Math.max(1, Math.round(sec)) + " s" : (sec / 60).toFixed(1) + " min") +
+      " on a laptop · " + p.nEquil + " + " + p.nSample + " sweeps per T";
+  }
+  document.querySelectorAll("#presetSeg button").forEach(function (b) {
+    b.addEventListener("click", function () {
+      document.querySelectorAll("#presetSeg button").forEach(function (x) { x.setAttribute("aria-pressed", "false"); });
+      b.setAttribute("aria-pressed", "true");
+      var pr = PRESETS[b.getAttribute("data-preset")];
+      el("eqIn").value = pr.nEquil; el("smIn").value = pr.nSample;
+      updateEta();
+    });
+  });
+  ["tMaxIn", "tMinIn", "nTIn", "eqIn", "smIn"].forEach(function (id) {
+    el(id).addEventListener("input", function () {
+      if (id === "eqIn" || id === "smIn") document.querySelectorAll("#presetSeg button").forEach(function (x) {
+        var pr = PRESETS[x.getAttribute("data-preset")];
+        x.setAttribute("aria-pressed", String(pr.nEquil === +el("eqIn").value && pr.nSample === +el("smIn").value));
+      });
+      updateEta();
+    });
+  });
+
+  // ---------- analysis (port of analysis.py) ----------
+  function derived(r) {
+    var out = { T: [], M: [], chi: [], C: [], U: [] };
+    for (var i = 0; i < r.pts.length; i++) {
+      var p = r.pts[i];
+      if (!p) continue;
+      out.T.push(p.T);
+      out.M.push(p.M / p.N);
+      out.chi.push((p.M2 - p.M * p.M) / (p.N * p.T));
+      out.C.push((p.E2 - p.E * p.E) / (p.N * p.T * p.T));
+      out.U.push(1 - p.M4 / (3 * p.M2 * p.M2));
+    }
+    return out;
+  }
+
+  function tcFromChiPeak(d) {
+    var best = -Infinity, T = null;
+    for (var i = 0; i < d.T.length; i++) if (d.chi[i] > best) { best = d.chi[i]; T = d.T[i]; }
+    return T;
+  }
+
+  function sortedByT(T, y) {
+    var idx = T.map(function (_, i) { return i; }).sort(function (a, b) { return T[a] - T[b]; });
+    return { T: idx.map(function (i) { return T[i]; }), y: idx.map(function (i) { return y[i]; }) };
+  }
+  function interp(xs, xp, fp) {
+    var out = new Float64Array(xs.length), j = 0;
+    for (var i = 0; i < xs.length; i++) {
+      var x = xs[i];
+      if (x <= xp[0]) { out[i] = fp[0]; continue; }
+      if (x >= xp[xp.length - 1]) { out[i] = fp[fp.length - 1]; continue; }
+      while (xp[j + 1] < x) j++;
+      out[i] = fp[j] + (fp[j + 1] - fp[j]) * (x - xp[j]) / (xp[j + 1] - xp[j]);
+    }
+    return out;
+  }
+
+  // Binder crossing restricted to where the curves are actually moving
+  function tcFromBinderCrossing(ds, slopeFrac) {
+    slopeFrac = slopeFrac == null ? 0.3 : slopeFrac;
+    var lo = -Infinity, hi = Infinity;
+    ds.forEach(function (d) { lo = Math.max(lo, Math.min.apply(null, d.T)); hi = Math.min(hi, Math.max.apply(null, d.T)); });
+    var n = 2000, Tf = new Float64Array(n);
+    for (var i = 0; i < n; i++) Tf[i] = lo + (hi - lo) * i / (n - 1);
+    var curves = ds.map(function (d) { var s = sortedByT(d.T, d.U); return interp(Tf, s.T, s.y); });
+    var avg = new Float64Array(n);
+    for (i = 0; i < n; i++) { var sum = 0; for (var c = 0; c < curves.length; c++) sum += curves[c][i]; avg[i] = sum / curves.length; }
+    var slope = new Float64Array(n), h = Tf[1] - Tf[0], smax = 0;
+    for (i = 0; i < n; i++) {
+      var g = i === 0 ? (avg[1] - avg[0]) / h : i === n - 1 ? (avg[n - 1] - avg[n - 2]) / h : (avg[i + 1] - avg[i - 1]) / (2 * h);
+      slope[i] = Math.abs(g); if (slope[i] > smax) smax = slope[i];
+    }
+    var active = [];
+    for (i = 0; i < n; i++) if (slope[i] >= slopeFrac * smax) active.push(i);
+    var crossings = [];
+    for (var a = 0; a < curves.length; a++) for (var b = a + 1; b < curves.length; b++) {
+      for (var q = 0; q < active.length - 1; q++) {
+        var d0 = Math.sign(curves[a][active[q]] - curves[b][active[q]]);
+        var d1 = Math.sign(curves[a][active[q + 1]] - curves[b][active[q + 1]]);
+        if (d0 !== d1) crossings.push(Tf[active[q]]);
+      }
+    }
+    if (!crossings.length) return null;
+    return crossings.reduce(function (s, v) { return s + v; }, 0) / crossings.length;
+  }
+
+  // 1/chi = (T - theta)/C over T > Tmin, by least squares
+  function curieWeissFit(T, chi, Tmin) {
+    var xs = [], ys = [];
+    for (var i = 0; i < T.length; i++) if (T[i] > Tmin && chi[i] > 0) { xs.push(T[i]); ys.push(1 / chi[i]); }
+    if (xs.length < 3) return null;
+    var n = xs.length, mx = 0, my = 0;
+    for (i = 0; i < n; i++) { mx += xs[i]; my += ys[i]; }
+    mx /= n; my /= n;
+    var sxy = 0, sxx = 0;
+    for (i = 0; i < n; i++) { sxy += (xs[i] - mx) * (ys[i] - my); sxx += (xs[i] - mx) * (xs[i] - mx); }
+    var slope = sxy / sxx, intercept = my - slope * mx;
+    var C = 1 / slope;
+    return { C: C, theta: -intercept * C, Tmin: Tmin };
+  }
+
+  // ---------- sweep charts ----------
+  var charts = [
+    { id: "cM",  key: "M",   yMin: 0 },
+    { id: "cChi", key: "chi", yMin: 0 },
+    { id: "cC",  key: "C",   yMin: 0 },
+    { id: "cU",  key: "U" },
+    { id: "cCW", key: "cw" }
+  ];
+  var analysis = { tc: null, tcL: null, binder: null, cw: null, cwL: null };
+
+  function activeSizes() {
+    return Object.keys(sweep.results).map(Number).sort(function (a, b) { return a - b; });
+  }
+
+  function recomputeEstimates() {
+    var sizes = activeSizes();
+    var withData = sizes.filter(function (L) { return derived(sweep.results[L]).T.length >= 3; });
+    analysis.tc = null; analysis.tcL = null; analysis.binder = null; analysis.cw = null; analysis.cwL = null;
+    if (withData.length) {
+      // largest completed size if any, else largest with data (provisional)
+      var done = withData.filter(function (L) { return sweep.results[L].done; });
+      var L = (done.length ? done : withData)[(done.length ? done : withData).length - 1];
+      var d = derived(sweep.results[L]);
+      analysis.tc = tcFromChiPeak(d); analysis.tcL = L; analysis.tcProvisional = !sweep.results[L].done;
+      var Tmin = (analysis.tc || mean(d.T)) * 1.3;
+      analysis.cw = curieWeissFit(d.T, d.chi, Tmin); analysis.cwL = L;
+      if (done.length >= 2) analysis.binder = tcFromBinderCrossing(done.map(function (x) { return derived(sweep.results[x]); }));
+    }
+    el("tcValue").textContent = analysis.tc != null ? analysis.tc.toFixed(3) : "—";
+    el("tcFromL").textContent = analysis.tcL ? "(L = " + analysis.tcL + (analysis.tcProvisional ? ", running" : "") + ")" : "";
+    var doneCount = sizes.filter(function (x) { return sweep.results[x].done; }).length;
+    el("binderValue").textContent = analysis.binder != null ? analysis.binder.toFixed(3)
+      : (doneCount >= 2 ? "no clean crossing" : "needs 2+ sizes");
+    el("thetaValue").textContent = analysis.cw ? analysis.cw.theta.toFixed(3) : "—";
+    el("cwCValue").textContent = analysis.cw ? analysis.cw.C.toFixed(3) : "—";
+  }
+  function mean(a) { return a.reduce(function (s, v) { return s + v; }, 0) / (a.length || 1); }
+
+  function chartConfig(ch) {
+    var p = readInputs();
+    var xMin = sweep.Ts.length ? Math.min.apply(null, sweep.Ts) : p.tMin;
+    var xMax = sweep.Ts.length ? Math.max.apply(null, sweep.Ts) : p.tMax;
+    var padX = (xMax - xMin) * 0.03;
+    var cfg = { aspect: ch.key === "cw" ? 0.36 : 0.66, xMin: xMin - padX, xMax: xMax + padX, xLabel: "T  (J / kB)", series: [], fits: [], vlines: [], hoverX: sweep.hoverT };
+    var sizes = activeSizes();
+    if (ch.key === "cw") {
+      if (analysis.cwL) {
+        var d = derived(sweep.results[analysis.cwL]), st = SIZE_STYLE[analysis.cwL];
+        cfg.series.push({ color: st.color, marker: st.marker, line: false, L: analysis.cwL,
+          pts: d.T.map(function (t, i) { return [t, 1 / d.chi[i]]; }) });
+        if (analysis.cw) {
+          var fitPts = [], a = analysis.cw.Tmin, b = xMax;
+          for (var k = 0; k <= 40; k++) { var t = a + (b - a) * k / 40; fitPts.push([t, (t - analysis.cw.theta) / analysis.cw.C]); }
+          cfg.fits.push({ pts: fitPts, color: GOLD });
+          cfg.vlines.push({ x: analysis.cw.Tmin, label: "fit region →" });
+        }
+      }
+      cfg.yMin = 0;
+    } else {
+      sizes.forEach(function (L) {
+        var d = derived(sweep.results[L]), st = SIZE_STYLE[L];
+        cfg.series.push({ color: st.color, marker: st.marker, L: L, pts: d.T.map(function (t, i) { return [t, d[ch.key][i]]; }) });
+      });
+      if (ch.yMin != null) cfg.yMin = ch.yMin;
+      if (analysis.tc != null) cfg.vlines.push({ x: analysis.tc, label: "Tc ≈ " + analysis.tc.toFixed(2) });
+    }
+    if (!sizes.length) cfg.empty = "press Run sweep";
+    return cfg;
+  }
+
+  function drawSweepCharts() {
+    charts.forEach(function (ch) { plotXY(el(ch.id), chartConfig(ch)); });
+    var cwLeg = el("cwLegend");
+    if (analysis.cw) {
+      var st = SIZE_STYLE[analysis.cwL];
+      cwLeg.innerHTML = '<span><svg width="12" height="12" viewBox="-6 -6 12 12" aria-hidden="true">' + markerSVG(st.marker, st.color) +
+        "</svg>1/χ, L = " + analysis.cwL + "</span>" +
+        '<span><span class="swatch" style="background:' + GOLD + ';height:3px;width:14px"></span>(T − θ)/C, θ = ' +
+        analysis.cw.theta.toFixed(2) + ", C = " + analysis.cw.C.toFixed(2) + "</span>";
+    } else cwLeg.innerHTML = "";
+  }
+
+  // synchronized hover across all sweep charts; tooltip on the one under the cursor
+  charts.forEach(function (ch) {
+    var canvas = el(ch.id), tip = canvas.parentNode.querySelector(".tip");
+    function hide() { tip.style.display = "none"; if (sweep.hoverT != null) { sweep.hoverT = null; drawSweepCharts(); } }
+    canvas.addEventListener("pointermove", function (e) {
+      var m = canvas._map;
+      if (!m || !sweep.Ts.length || !activeSizes().length) return hide();
+      var rect = canvas.getBoundingClientRect(), px = e.clientX - rect.left, py = e.clientY - rect.top;
+      var x = m.xMin + (px - m.padL) / m.pw * (m.xMax - m.xMin);
+      var best = null, bd = Infinity;
+      sweep.Ts.forEach(function (t) { var dd = Math.abs(t - x); if (dd < bd) { bd = dd; best = t; } });
+      if (best !== sweep.hoverT) { sweep.hoverT = best; drawSweepCharts(); }
+      var cfg = chartConfig(ch), rows = [];
+      cfg.series.forEach(function (s) {
+        var hit = s.pts.filter(function (p) { return Math.abs(p[0] - best) < 1e-9; })[0];
+        if (hit) rows.push('<div class="t-row"><i style="background:' + s.color + '"></i><span>L = ' + s.L + "</span><span>" + fmtVal(hit[1]) + "</span></div>");
+      });
+      if (ch.key === "cw" && analysis.cw && best > analysis.cw.Tmin)
+        rows.push('<div class="t-row"><i style="background:' + GOLD + '"></i><span>fit</span><span>' + fmtVal((best - analysis.cw.theta) / analysis.cw.C) + "</span></div>");
+      if (!rows.length) { tip.style.display = "none"; return; }
+      tip.innerHTML = '<div class="t-head">T = ' + best.toFixed(3) + "</div>" + rows.join("");
+      tip.style.display = "block";
+      var cw = canvas.clientWidth, tw = tip.offsetWidth;
+      var left = m.X(best) + 14; if (left + tw > cw - 4) left = m.X(best) - tw - 14;
+      tip.style.left = Math.max(4, left) + 8 + "px";
+      tip.style.top = Math.max(4, py - 20) + 8 + "px";
+    });
+    canvas.addEventListener("pointerleave", hide);
+  });
+
+  // ---------- workers ----------
+  var workerURL = null;
+  function getWorkerURL() {
+    if (workerURL) return workerURL;
+    var src = "var core = (" + mcCore.toString() + ")();\n" +
+      "self.onmessage = function (e) {\n" +
+      "  var d = e.data, last = 0;\n" +
+      "  core.runTemperatureSweep(d.L, d.Ts, d.nEquil, d.nSample, d.J, d.seed,\n" +
+      "    function (p) { self.postMessage({ type: 'point', p: p }); },\n" +
+      "    function (f) { if (f - last > 0.004) { last = f; self.postMessage({ type: 'progress', L: d.L, f: f }); } });\n" +
+      "  self.postMessage({ type: 'done', L: d.L });\n" +
+      "};";
+    workerURL = URL.createObjectURL(new Blob([src], { type: "text/javascript" }));
+    return workerURL;
+  }
+
+  function buildProgress(sizes) {
+    var host = el("progList");
+    host.innerHTML = "";
+    sizes.forEach(function (L) {
+      var row = document.createElement("div");
+      row.className = "prog";
+      row.innerHTML = "<span>L = " + L + '</span><span class="bar"><i id="pb' + L + '" style="background:' + SIZE_STYLE[L].color + '"></i></span><span class="pct" id="pp' + L + '">0%</span>';
+      host.appendChild(row);
+    });
+  }
+  function setProgress(L, f) {
+    sweep.progress[L] = f;
+    var b = el("pb" + L), t = el("pp" + L);
+    if (b) b.style.width = (100 * f).toFixed(1) + "%";
+    if (t) {
+      if (f >= 1) t.textContent = "done";
+      else {
+        var el_ = (performance.now() - sweep.started) / 1000, rem = f > 0.02 ? el_ * (1 - f) / f : null;
+        t.textContent = rem == null ? Math.round(100 * f) + "%" : (rem < 60 ? Math.ceil(rem) + " s" : (rem / 60).toFixed(1) + " m");
+      }
+    }
+  }
+
+  function setRunningUI(on) {
+    sweep.running = on;
+    el("sweepBtn").disabled = on; el("stopBtn").disabled = !on;
+    ["tMaxIn", "tMinIn", "nTIn", "eqIn", "smIn", "seedIn"].forEach(function (id) { el(id).disabled = on; });
+    document.querySelectorAll("#sizeChecks input, #presetSeg button").forEach(function (x) { x.disabled = on; });
+    el("csvBtn").disabled = on || !activeSizes().some(function (L) { return sweep.results[L].pts.some(Boolean); });
+  }
+
+  var redrawPending = false;
+  function scheduleRedraw() {
+    if (redrawPending) return;
+    redrawPending = true;
+    requestAnimationFrame(function () { redrawPending = false; recomputeEstimates(); drawSweepCharts(); });
+  }
+
+  function startSweep() {
+    var p = readInputs();
+    if (!p.sizes.length) { updateEta(); return; }
+    stopSweep(true);
+    sweep.Ts = [];
+    for (var i = 0; i < p.nT; i++) sweep.Ts.push(+(p.tMax - (p.tMax - p.tMin) * i / (p.nT - 1)).toFixed(6)); // descending: anneal
+    sweep.results = {}; sweep.progress = {}; sweep.hoverT = null;
+    p.sizes.forEach(function (L) { sweep.results[L] = { L: L, pts: new Array(p.nT), done: false }; });
+    buildProgress(p.sizes);
+    sweep.started = performance.now();
+    setRunningUI(true);
+    scheduleRedraw();
+    try {
+      p.sizes.forEach(function (L) {
+        var w = new Worker(getWorkerURL());
+        w.onmessage = function (e) {
+          var m = e.data;
+          if (m.type === "point") { sweep.results[m.p.L].pts[m.p.index] = m.p; scheduleRedraw(); }
+          else if (m.type === "progress") setProgress(m.L, m.f);
+          else if (m.type === "done") {
+            sweep.results[m.L].done = true; setProgress(m.L, 1); w.terminate();
+            sweep.workers = sweep.workers.filter(function (x) { return x !== w; });
+            if (!sweep.workers.length) setRunningUI(false);
+            scheduleRedraw();
+          }
+        };
+        w.onerror = function () { el("etaNote").textContent = "background thread failed; try another browser"; stopSweep(); };
+        w.postMessage({ L: L, Ts: sweep.Ts, nEquil: p.nEquil, nSample: p.nSample, J: 1.0, seed: p.seed });
+        sweep.workers.push(w);
+      });
+    } catch (err) {
+      el("etaNote").textContent = "this browser blocked background threads, so the sweep can't run here";
+      stopSweep();
+    }
+  }
+  function stopSweep(silent) {
+    sweep.workers.forEach(function (w) { w.terminate(); });
+    sweep.workers = [];
+    if (!silent) {
+      Object.keys(sweep.progress).forEach(function (L) {
+        var t = el("pp" + L); if (t && sweep.progress[L] < 1) t.textContent = "stopped";
+      });
+    }
+    setRunningUI(false);
+  }
+  el("sweepBtn").addEventListener("click", startSweep);
+  el("stopBtn").addEventListener("click", function () { stopSweep(false); });
+
+  el("csvBtn").addEventListener("click", function () {
+    var lines = ["L,N,T,E,E2,M,M2,M4,M_per_spin,chi,C_per_spin,binder_U"];
+    activeSizes().forEach(function (L) {
+      sweep.results[L].pts.forEach(function (q) {
+        if (!q) return;
+        var chi = (q.M2 - q.M * q.M) / (q.N * q.T), C = (q.E2 - q.E * q.E) / (q.N * q.T * q.T), U = 1 - q.M4 / (3 * q.M2 * q.M2);
+        lines.push([q.L, q.N, q.T, q.E, q.E2, q.M, q.M2, q.M4, q.M / q.N, chi, C, U].join(","));
+      });
+    });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([lines.join("\n") + "\n"], { type: "text/csv" }));
+    a.download = "heisenberg_sweep.csv";
+    document.body.appendChild(a); a.click(); a.remove();
+  });
+
+  // ======================================================================
+  // tabs, resize, boot
+  // ======================================================================
+  var activeView = "live", sweepAutoRan = false;
+  document.querySelectorAll(".tab").forEach(function (tab) {
+    tab.addEventListener("click", function () {
+      document.querySelectorAll(".tab").forEach(function (t) { t.classList.remove("active"); t.setAttribute("aria-selected", "false"); });
+      tab.classList.add("active"); tab.setAttribute("aria-selected", "true");
+      activeView = tab.getAttribute("data-view");
+      el("view-live").classList.toggle("hidden", activeView !== "live");
+      el("view-sweep").classList.toggle("hidden", activeView !== "sweep");
+      if (activeView === "sweep") {
+        drawSweepCharts();
+        if (!sweepAutoRan) { sweepAutoRan = true; startSweep(); }
+      } else live.dirty = true;
+    });
+  });
+
+  var resizeTimer = null;
+  window.addEventListener("resize", function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function () { live.dirty = true; if (activeView === "sweep") drawSweepCharts(); }, 80);
+  });
+
+  updateEta();
+  resetLattice("hot");
+  requestAnimationFrame(liveFrame);
+})();
+</script>
+
+<script src="../../projects.js"></script>
+<script>ProjectsNav.init('../../');</script>
