@@ -547,7 +547,7 @@ canvas{display:block;width:100%;height:auto;border-radius:2px}
 
         <div class="panel note">
           <p>Same procedure as <span class="mono">main.py</span>: each lattice starts random and anneals from high to low T, with equilibration sweeps at each temperature before sampling E and |M| every sweep. Each lattice size runs in its own background thread, so the page stays responsive.</p>
-          <p><b>&chi; = (&lang;M&sup2;&rang; &minus; &lang;|M|&rang;&sup2;) / NT</b> peaks at the transition, and the peak grows and sharpens with L: the finite-size signature of a real phase transition. On these small lattices the peak sits a little above the infinite-lattice value (about 1.50 vs. 1.443). <b>C = (&lang;E&sup2;&rang; &minus; &lang;E&rang;&sup2;) / NT&sup2;</b> shows the energy side of the same transition. The Binder cumulant <b>U<sub>L</sub> = 1 &minus; &lang;M&#8308;&rang; / 3&lang;M&sup2;&rang;&sup2;</b> is size-independent at T<sub>c</sub>, so the curves for different L should cross there; at quick-run statistics that crossing is noisy, so it is a secondary check. Above T<sub>c</sub>, 1/&chi; is fit to the Curie&ndash;Weiss law (T &minus; &theta;)/C over T &gt; 1.3&thinsp;T<sub>c</sub>.</p>
+          <p><b>&chi; = (&lang;M&sup2;&rang; &minus; &lang;|M|&rang;&sup2;) / NT</b> peaks at the transition, and the peak grows and sharpens with L: the finite-size signature of a real phase transition. On these small lattices the peak sits a little above the infinite-lattice value (about 1.50 vs. 1.443). <b>C = (&lang;E&sup2;&rang; &minus; &lang;E&rang;&sup2;) / NT&sup2;</b> shows the energy side of the same transition. The Binder cumulant <b>U<sub>L</sub> = (5 &minus; 3&lang;M&#8308;&rang; / &lang;M&sup2;&rang;&sup2;) / 2</b>, normalized for three-component spins so it runs from 0 in the paramagnet to 1 when ordered, is size-independent at T<sub>c</sub>, so the curves for different L should cross there; at quick-run statistics that crossing is noisy, so it is a secondary check. Above T<sub>c</sub>, 1/&chi; is fit to the Curie&ndash;Weiss law (T &minus; &theta;)/C over T &gt; 1.3&thinsp;T<sub>c</sub>.</p>
         </div>
       </div>
     </div>
@@ -1210,7 +1210,7 @@ function mcCore() {
       out.M.push(p.M / p.N);
       out.chi.push((p.M2 - p.M * p.M) / (p.N * p.T));
       out.C.push((p.E2 - p.E * p.E) / (p.N * p.T * p.T));
-      out.U.push(1 - p.M4 / (3 * p.M2 * p.M2));
+      out.U.push(2.5 - 1.5 * p.M4 / (p.M2 * p.M2)); // 3-component spins: 0 above Tc, 1 below
     }
     return out;
   }
@@ -1500,7 +1500,7 @@ function mcCore() {
     activeSizes().forEach(function (L) {
       sweep.results[L].pts.forEach(function (q) {
         if (!q) return;
-        var chi = (q.M2 - q.M * q.M) / (q.N * q.T), C = (q.E2 - q.E * q.E) / (q.N * q.T * q.T), U = 1 - q.M4 / (3 * q.M2 * q.M2);
+        var chi = (q.M2 - q.M * q.M) / (q.N * q.T), C = (q.E2 - q.E * q.E) / (q.N * q.T * q.T), U = 2.5 - 1.5 * q.M4 / (q.M2 * q.M2);
         lines.push([q.L, q.N, q.T, q.E, q.E2, q.M, q.M2, q.M4, q.M / q.N, chi, C, U].join(","));
       });
     });
