@@ -539,7 +539,8 @@ canvas{display:block;width:100%;height:auto;border-radius:2px}
         var U3 = cconj(inner(i, jp, ip, jp));
         var U4 = cconj(inner(i, j, i, jp));
         var prod = cmul(cmul(U1, U2), cmul(U3, U4));
-        var F = Math.atan2(prod.im, prod.re);
+        // the loop product is exp(-i * flux), so the curvature is minus its phase
+        var F = -Math.atan2(prod.im, prod.re);
         curvature[i][j] = F;
         chernSum += F;
         if (Math.abs(F) > maxAbs) maxAbs = Math.abs(F);
@@ -764,7 +765,7 @@ canvas{display:block;width:100%;height:auto;border-radius:2px}
     var rounded = Math.round(berry.chern);
     chernValueEl.textContent = rounded;
     chernValueEl.style.color = rounded === 0 ? "#e7edf3" : (rounded > 0 ? "#f2b544" : "#45d9c8");
-    chernRawEl.textContent = "computed: " + berry.chern.toFixed(3);
+    chernRawEl.textContent = "computed: " + (Math.abs(berry.chern) < 5e-4 ? 0 : berry.chern).toFixed(3);
 
     if (berry.minGap < 0.12) {
       gapFlagEl.classList.add("show");
