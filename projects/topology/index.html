@@ -309,7 +309,7 @@ canvas{display:block;width:100%;height:auto;border-radius:2px}
       </div>
       <div>
         <p class="lede">Live Bloch Hamiltonian diagonalization, Berry curvature by the Fukui&ndash;Hatsugai&ndash;Suzuki method, and the Chern number, for the Qi&ndash;Wu&ndash;Zhang and Haldane models.</p>
-        <p class="sub" style="margin-top:18px">The same band topology and Chern-number language mentioned under <a href="../../index.html#interests">Quantum materials</a> &mdash; worked out here on two lattices small enough to diagonalize live, in the browser, as you move the sliders. <a class="src-link" href="https://github.com/matthewcotaj/Topology">Python source on GitHub &rarr;</a></p>
+        <p class="sub" style="margin-top:18px">The same band topology and Chern-number language mentioned under <a href="../../index.html#interests">Quantum materials</a> &mdash; worked out here on two lattices small enough to diagonalize live, in the browser, as you move the sliders. <a class="src-link" href="https://github.com/matthewcotaj/chern-number-calculator">Python source on GitHub &rarr;</a></p>
       </div>
     </div>
 
@@ -446,7 +446,7 @@ canvas{display:block;width:100%;height:auto;border-radius:2px}
         var dz = p.m - p.t * Math.cos(kx) - p.t * Math.cos(ky);
         return { a: dz, d: -dz, bRe: dx, bIm: -dy };
       },
-      note: "H(k) = sin(k_x) σ_x + sin(k_y) σ_y + (m - cos k_x - cos k_y) σ_z. The gap closes, and the Chern number changes, at m = 0 and m = ±2t (with t fixed at 1). Away from those lines C is ±1 or 0."
+      note: "H(k) = sin(k_x) σ_x + sin(k_y) σ_y + (m - cos k_x - cos k_y) σ_z. The gap closes, and the Chern number changes, at m = 0 and m = ±2t: C = -1 for 0 < m < 2t, +1 for -2t < m < 0, and 0 for |m| > 2t."
     },
     haldane: {
       label: "Haldane",
@@ -488,7 +488,7 @@ canvas{display:block;width:100%;height:auto;border-radius:2px}
 
         return { a: hz, d: -hz, bRe: bRe, bIm: bIm, h0: h0 };
       },
-      note: "Honeycomb lattice with a complex next-nearest-neighbor hopping t₂ e^{iφ} that breaks time-reversal symmetry, plus a sublattice (Semenoff) mass M. The topological transition sits at |M| = 3√3 t₂ sinφ; C flips sign across it."
+      note: "Honeycomb lattice with a complex next-nearest-neighbor hopping t₂ e^{iφ} that breaks time-reversal symmetry, plus a sublattice (Semenoff) mass M. The topological transition sits at |M| = 3√3 t₂ sinφ: inside it C = -1 (for any 0 < φ < π), outside it C = 0."
     }
   };
 
