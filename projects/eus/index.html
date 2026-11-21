@@ -321,6 +321,34 @@ canvas{display:block;width:100%;height:auto;border-radius:2px}
 .u-ticks span.on{color:var(--eu)}
 .hover-canvas{cursor:crosshair}
 #cGap,#cLev{cursor:pointer}
+
+/* key findings */
+.findings{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(14px,2vw,20px);margin:0 0 clamp(40px,5vw,56px)}
+@media(max-width:820px){.findings{grid-template-columns:1fr}}
+.finding{background:var(--paper);border:1px solid var(--rule);border-top:2px solid var(--eu);padding:18px 20px 20px;box-shadow:var(--shadow)}
+.finding.f-pbe{border-top-color:var(--s)}
+.finding.f-limit{border-top-color:var(--gd)}
+.finding .big{font-family:Spectral,Georgia,serif;font-weight:300;font-size:clamp(1.9rem,3.2vw,2.45rem);line-height:1.05;letter-spacing:-.01em;margin:10px 0 8px}
+.finding p{font-size:.86rem;line-height:1.55;color:var(--ink-2)}
+
+/* expandable detail inside notes */
+.more{margin-top:12px}
+.more summary{
+  cursor:pointer;list-style:none;display:inline-flex;align-items:center;gap:8px;
+  font-family:"IBM Plex Mono",monospace;font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--eu);
+}
+.more summary::-webkit-details-marker{display:none}
+.more summary::before{content:"+";display:inline-block;width:10px;font-size:.85rem;transition:transform .2s}
+.more[open] summary::before{transform:rotate(45deg)}
+.more summary:hover{color:var(--ink)}
+.more .more-body{margin-top:12px;animation:fadeUp .25s ease both}
+
+/* gentle motion */
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.grid:not(.hidden){animation:fadeUp .3s ease both}
+.fade-in{animation:fadeUp .3s ease both}
+.seg button{transition:background .2s,color .2s}
+@media(prefers-reduced-motion:reduce){.grid:not(.hidden),.fade-in,.more .more-body{animation:none}}
 </style>
 
 <nav>
@@ -363,6 +391,24 @@ canvas{display:block;width:100%;height:auto;border-radius:2px}
       </div>
     </div>
 
+    <div class="findings">
+      <div class="finding f-pbe">
+        <span class="eyebrow">Plain PBE</span>
+        <div class="big">0.02&thinsp;eV</div>
+        <p>band gap. The 4f states sit at the top of the valence band and the lattice comes out 2% too small.</p>
+      </div>
+      <div class="finding f-pbeu">
+        <span class="eyebrow">PBE+U, U = 7&thinsp;<span style="text-transform:none">eV</span></span>
+        <div class="big">0.5%</div>
+        <p>off the measured lattice constant, with the full 7&nbsp;&mu;B moment and a 1.0&nbsp;eV gap.</p>
+      </div>
+      <div class="finding f-limit">
+        <span class="eyebrow">What U can&rsquo;t fix</span>
+        <div class="big">1.65&thinsp;eV</div>
+        <p>the measured 4f&thinsp;&rarr;&thinsp;5d gap. No U reaches it without pushing the 4f below the S&nbsp;3p band.</p>
+      </div>
+    </div>
+
     <div class="tabs" role="tablist">
       <button class="tab active" type="button" role="tab" aria-selected="true" data-view="compare">PBE vs PBE+U</button>
       <button class="tab" type="button" role="tab" aria-selected="false" data-view="uscan">Turning up U</button>
@@ -382,7 +428,7 @@ canvas{display:block;width:100%;height:auto;border-radius:2px}
         <div class="readout" style="margin-top:20px">
           <div class="label">Band gap</div>
           <div class="value small" id="gapValue">&mdash;</div>
-          <div class="raw">experiment: 1.65 eV (4f &rarr; 5d)</div>
+          <div class="raw">measured: 1.65 eV, 4f&rarr;5d</div>
         </div>
 
         <div class="stat-line"><span>Lattice constant</span><b id="aValue">&mdash;</b></div>
@@ -390,9 +436,7 @@ canvas{display:block;width:100%;height:auto;border-radius:2px}
         <div class="stat-line"><span>Bulk modulus</span><b id="bValue">&mdash;</b></div>
         <div class="stat-line"><span>Moment per Eu</span><b id="mValue">&mdash;</b></div>
 
-        <div class="note">
-          <p>Each method uses its own relaxed lattice constant, from a Birch&ndash;Murnaghan fit to total energies at seven volumes. Spin-polarized, ferromagnetic, PAW pseudopotentials from pslibrary with the Eu 4f electrons in the valence.</p>
-        </div>
+        <div class="seg-note" style="margin-top:14px">Each method at its own relaxed lattice constant (Birch&ndash;Murnaghan fit, seven volumes). Spin-polarized ferromagnet, PAW pseudopotentials with the Eu 4f in the valence.</div>
       </div>
 
       <div class="plots">
@@ -422,7 +466,7 @@ canvas{display:block;width:100%;height:auto;border-radius:2px}
         <div class="readout" style="margin-top:16px">
           <div class="label">Band gap at this U</div>
           <div class="value small" id="uGap">&mdash;</div>
-          <div class="raw">experiment: 1.65 eV (4f &rarr; 5d)</div>
+          <div class="raw">measured: 1.65 eV, 4f&rarr;5d</div>
         </div>
 
         <div class="stat-line"><span>Occupied 4f center</span><b id="uF">&mdash;</b></div>
@@ -452,9 +496,15 @@ canvas{display:block;width:100%;height:auto;border-radius:2px}
           <span><span class="swatch" style="background:#f2b544"></span>Eu 5d conduction band edge</span>
         </div>
         <div class="note">
-          <p>A Hubbard U penalizes fractional occupation of the 4f shell, which pushes the occupied 4f states down and the empty ones up. The gap barely moves until U reaches about 4 eV, then grows, but it never reaches the measured 1.65 eV, and only gets to 1.33 eV at U = 10 eV.</p>
-          <p>The comparison with experiment needs care. The measured gap is the <b>4f &rarr; 5d</b> edge: in real EuS the occupied 4f level sits above the S 3p band and forms the top of the valence band. In PBE+U that ordering only holds at small U. As U grows the 4f sinks below the valence band top, which becomes S 3p, so the computed gap turns into an S 3p &rarr; Eu 5d gap. By U = 10 eV the 4f center is below the S 3p center.</p>
-          <p>So no single U gets both the gap and the 4f position right: a small U keeps the 4f on top but leaves almost no gap, and a large U opens a gap only by burying the 4f. Getting both needs a method that also corrects the Eu 5d conduction band, such as a hybrid functional or GW.</p>
+          <p>Raising U pushes the occupied 4f down and opens the gap, but even U = 10 eV only reaches 1.33 eV, and by then the 4f sits below the S 3p band. Click a point on either chart to jump to that U.</p>
+          <details class="more">
+            <summary>Why 1.65 eV is the wrong target for these gaps</summary>
+            <div class="more-body">
+              <p>A Hubbard U penalizes fractional occupation of the 4f shell, pushing the occupied 4f states down and the empty ones up. The gap barely moves until U reaches about 4 eV, then grows steadily.</p>
+              <p>The measured gap is the <b>4f &rarr; 5d</b> edge: in real EuS the occupied 4f level sits above the S 3p band and forms the top of the valence band. In PBE+U that ordering only holds at small U. As U grows the 4f sinks below the valence band top, which becomes S 3p, so the computed gap turns into an S 3p &rarr; Eu 5d gap, a different transition.</p>
+              <p>So no single U gets both the gap and the 4f position right. A small U keeps the 4f on top but leaves almost no gap; a large U opens a gap only by burying the 4f. Getting both needs a method that also corrects the Eu 5d conduction band, such as a hybrid functional or GW.</p>
+            </div>
+          </details>
         </div>
       </div>
     </div>
@@ -501,8 +551,14 @@ canvas{display:block;width:100%;height:auto;border-radius:2px}
           </div>
         </div>
         <div class="note">
-          <p>EuS needs far more plane waves than silicon: the Eu pseudopotential keeps 27 electrons in the valence, including the tightly bound 4d and 4f shells. Its absolute energy converges too slowly to be a useful criterion, so the cutoff is set by when the <b>pressure</b> (which sets the lattice constant) and the <b>band gap</b> stop changing. At 60 Ry the pressure is &minus;1216 kbar, off the chart: Pulay stress from an incomplete basis. All tests use PBE+U with U = 7 eV.</p>
-          <p>At the experimental lattice constant the converged pressure is +6.6 kbar. That sign is a check in itself: the PBE+U equilibrium lattice constant (6.000 &Aring;) is larger, so the cell is slightly compressed there, and with a 50 GPa bulk modulus a 0.5% compression corresponds to about +8 kbar.</p>
+          <p>EuS needs a much higher cutoff than silicon (140 Ry vs 40 Ry): the Eu pseudopotential carries 27 valence electrons, including the tightly bound 4d and 4f shells. The cutoff is set by when the <b>pressure</b> and the <b>band gap</b> stop changing. Hover a chart for values.</p>
+          <details class="more">
+            <summary>More on the convergence tests</summary>
+            <div class="more-body">
+              <p>The absolute energy converges too slowly to be a useful criterion here. At 60 Ry the pressure is &minus;1216 kbar, off the chart: Pulay stress from an incomplete basis. All tests use PBE+U with U = 7 eV.</p>
+              <p>At the experimental lattice constant the converged pressure is +6.6 kbar. That sign is a check in itself: the PBE+U equilibrium lattice constant (6.000 &Aring;) is larger, so the cell is slightly compressed there, and with a 50 GPa bulk modulus a 0.5% compression corresponds to about +8 kbar.</p>
+            </div>
+          </details>
         </div>
       </div>
     </div>
@@ -580,6 +636,21 @@ canvas{display:block;width:100%;height:auto;border-radius:2px}
   var EU = "#ff7052", S = "#6fabe2";   // the site's Eu and S accents, dark-mode values
 
   var el = function (id) { return document.getElementById(id); };
+  var REDUCED = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function ease(k) { return 1 - Math.pow(1 - k, 3); }
+
+  // count a readout from its current value to a new one (~300 ms)
+  function tweenText(node, to, fmt) {
+    var from = node._v == null ? to : node._v, t0 = performance.now();
+    node._v = to;
+    if (node._raf) cancelAnimationFrame(node._raf);
+    if (REDUCED || from === to) { node.textContent = fmt(to); return; }
+    (function step(t) {
+      var k = Math.min(1, (t - t0) / 300);
+      node.textContent = fmt(from + (to - from) * ease(k));
+      if (k < 1) node._raf = requestAnimationFrame(step);
+    })(t0);
+  }
 
   // ---------- canvas helpers (shared with the magnetism page) ----------
   function fit(canvas, aspect) {
@@ -752,10 +823,10 @@ canvas{display:block;width:100%;height:auto;border-radius:2px}
   // ======================================================================
   // PBE vs PBE+U
   // ======================================================================
-  var method = "pbeu";
+  var method = "pbeu", selT = 1, selAnim = null;   // selT: 0 = PBE emphasized, 1 = PBE+U
   var METHOD_TEXT = {
-    pbe: "<p><b>Plain PBE</b> puts the seven occupied 4f states right at the top of the valence band and the gap essentially closes, to 0.02 eV. The 4f electrons come out too spread out and join in bonding they should not, which also pulls the lattice in by 2%. Both are symptoms of self-interaction error. The moment is still close to 7 &mu;B, because the 4f shell stays almost fully spin-polarized.</p>",
-    pbeu: "<p><b>PBE+U</b> with U = 7 eV on the Eu 4f orbitals pushes the occupied 4f down to about 1.2 eV below the valence band top. The gap opens to 1.0 eV, the lattice constant comes within 0.5% of experiment, and the moment is the full 7 &mu;B of a 4f<sup>7</sup> ion.</p><p>The gap is still well short of 1.65 eV, and it is not quite the same gap: with the 4f pushed down, the valence band top is S 3p, so this is an S 3p &rarr; Eu 5d gap rather than the measured 4f &rarr; 5d edge. <b>Turning up U</b> shows how that happens.</p>"
+    pbe: "<p><b>Plain PBE</b> leaves the seven occupied 4f states at the top of the valence band, so the gap all but closes. The 4f electrons spread out and join in bonding they should not, which pulls the lattice in by 2%: the signature of self-interaction error. The moment stays near 7 &mu;B because the 4f shell remains almost fully spin-polarized.</p>",
+    pbeu: "<p><b>PBE+U</b> pushes the occupied 4f about 1.2 eV down. The gap opens to 1.0 eV, the lattice constant lands within 0.5% of experiment, and the moment is the full 7 &mu;B of a 4f<sup>7</sup> ion.</p><p>The gap is still short of 1.65 eV, and it is a different gap: the valence band top is now S 3p, not 4f. <b>Turning up U</b> shows how that happens.</p>"
   };
 
   // three rows, each on its own scale, PBE / PBE+U / experiment markers
@@ -800,18 +871,19 @@ canvas{display:block;width:100%;height:auto;border-radius:2px}
 
       // the two methods; the selected one drawn larger and labeled
       ["pbe", "pbeu"].forEach(function (m) {
-        var v = METHODS[m][r.key], sel = m === method;
+        var v = METHODS[m][r.key], wgt = m === "pbe" ? 1 - selT : selT;
         ctx.fillStyle = m === "pbe" ? TEAL : EU;
         ctx.strokeStyle = BG; ctx.lineWidth = 1.5;
-        ctx.globalAlpha = sel ? 1 : 0.45;
-        drawMarker(ctx, m === "pbe" ? "circle" : "square", X(v), ty, sel ? 6 : 4.5);
-        ctx.globalAlpha = 1;
-        if (sel) {
+        ctx.globalAlpha = 0.45 + 0.55 * wgt;
+        drawMarker(ctx, m === "pbe" ? "circle" : "square", X(v), ty, 4.5 + 1.5 * wgt);
+        if (wgt > 0.02) {
+          ctx.globalAlpha = wgt;
           ctx.fillStyle = TEXT; ctx.textBaseline = "bottom";
           var lx = X(v), label = v.toFixed(r.dec);
           ctx.textAlign = lx < padL + 30 ? "left" : lx > padL + pw - 30 ? "right" : "center";
           ctx.fillText(label, lx, ty - 9);
         }
+        ctx.globalAlpha = 1;
       });
       ctx.fillStyle = "rgba(0,0,0,0)"; ctx.strokeStyle = TEXT; ctx.lineWidth = 1.5;
       ctx.beginPath(); ctx.moveTo(ex, ty - 6); ctx.lineTo(ex + 5.5, ty); ctx.lineTo(ex, ty + 6); ctx.lineTo(ex - 5.5, ty); ctx.closePath(); ctx.stroke();
@@ -825,13 +897,23 @@ canvas{display:block;width:100%;height:auto;border-radius:2px}
     });
     var d = METHODS[m];
     el("methodNote").textContent = m === "pbe" ? "no correction on Eu 4f" : "U = 7 eV on Eu 4f";
-    el("gapValue").textContent = d.gap.toFixed(2) + " eV";
-    el("aValue").textContent = d.a.toFixed(3) + " Å";
-    el("aErr").textContent = signed(d.aErr, 2) + "%";
-    el("bValue").textContent = d.B.toFixed(1) + " GPa";
-    el("mValue").textContent = d.moment.toFixed(2) + " μB";
-    el("methodText").innerHTML = METHOD_TEXT[m];
-    drawCompare();
+    tweenText(el("gapValue"), d.gap, function (v) { return v.toFixed(2) + " eV"; });
+    tweenText(el("aValue"), d.a, function (v) { return v.toFixed(3) + " Å"; });
+    tweenText(el("aErr"), d.aErr, function (v) { return signed(v, 2) + "%"; });
+    tweenText(el("bValue"), d.B, function (v) { return v.toFixed(1) + " GPa"; });
+    tweenText(el("mValue"), d.moment, function (v) { return v.toFixed(2) + " μB"; });
+    var txt = el("methodText");
+    txt.innerHTML = METHOD_TEXT[m];
+    txt.classList.remove("fade-in"); void txt.offsetWidth; txt.classList.add("fade-in");
+    // blend the chart emphasis over ~300 ms
+    var from = selT, to = m === "pbe" ? 0 : 1, t0 = performance.now();
+    if (selAnim) cancelAnimationFrame(selAnim);
+    if (REDUCED) { selT = to; drawCompare(); return; }
+    (function step(t) {
+      var k = Math.min(1, (t - t0) / 300);
+      selT = from + (to - from) * ease(k); drawCompare();
+      selAnim = k < 1 ? requestAnimationFrame(step) : null;
+    })(t0);
   }
   document.querySelectorAll("#methodSeg button").forEach(function (b) {
     b.addEventListener("click", function () { setMethod(b.getAttribute("data-method")); });
@@ -860,8 +942,12 @@ canvas{display:block;width:100%;height:auto;border-radius:2px}
 
     // valence (below 0) and conduction (above the gap) regions
     var y0 = Y(0), yc = Y(shown.gap);
-    ctx.fillStyle = "rgba(111,171,226,.07)"; ctx.fillRect(padL, y0, pw, padT + ph - y0);
-    ctx.fillStyle = "rgba(242,181,68,.08)"; ctx.fillRect(padL, padT, pw, yc - padT);
+    var gv = ctx.createLinearGradient(0, y0, 0, padT + ph);
+    gv.addColorStop(0, "rgba(111,171,226,.12)"); gv.addColorStop(1, "rgba(111,171,226,.02)");
+    ctx.fillStyle = gv; ctx.fillRect(padL, y0, pw, padT + ph - y0);
+    var gc = ctx.createLinearGradient(0, padT, 0, yc);
+    gc.addColorStop(0, "rgba(242,181,68,.02)"); gc.addColorStop(1, "rgba(242,181,68,.13)");
+    ctx.fillStyle = gc; ctx.fillRect(padL, padT, pw, yc - padT);
 
     // energy axis
     var yt = ticks(yMin, yMax, 6);
@@ -878,7 +964,7 @@ canvas{display:block;width:100%;height:auto;border-radius:2px}
     var x0 = padL + pw * 0.06, x1 = padL + pw * (narrow ? 0.44 : 0.56), lx = x1 + 12;
 
     // band edges
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 2; ctx.lineCap = "round";
     ctx.strokeStyle = "rgba(231,237,243,.7)";
     ctx.beginPath(); ctx.moveTo(x0, Math.round(y0) + 0.5); ctx.lineTo(x1, Math.round(y0) + 0.5); ctx.stroke();
     ctx.strokeStyle = GOLD;
@@ -902,9 +988,12 @@ canvas{display:block;width:100%;height:auto;border-radius:2px}
       { e: shown.f, color: EU, label: "occupied Eu 4f center" }
     ];
     levels.forEach(function (l) {
-      var py = Math.round(Y(l.e)) + 0.5;
-      ctx.strokeStyle = l.color; ctx.lineWidth = 3;
+      var py = Y(l.e);
+      ctx.save();
+      ctx.shadowColor = l.color; ctx.shadowBlur = 10;
+      ctx.strokeStyle = l.color; ctx.lineWidth = 4; ctx.lineCap = "round";
       ctx.beginPath(); ctx.moveTo(x0 + (x1 - x0) * 0.32, py); ctx.lineTo(x1, py); ctx.stroke();
+      ctx.restore();
     });
 
     // labels on the right, nudged apart so they never overlap
@@ -939,10 +1028,10 @@ canvas{display:block;width:100%;height:auto;border-radius:2px}
     var i = uIndex, u = SCAN.U[i];
     el("uVal").textContent = u + " eV";
     el("ladderCap").textContent = "U = " + u + " eV";
-    el("uGap").textContent = SCAN.gap[i].toFixed(2) + " eV";
-    el("uF").textContent = signed(SCAN.f[i], 2) + " eV";
-    el("uP").textContent = signed(SCAN.p[i], 2) + " eV";
-    el("uFP").textContent = signed(SCAN.f[i] - SCAN.p[i], 2) + " eV";
+    tweenText(el("uGap"), SCAN.gap[i], function (v) { return v.toFixed(2) + " eV"; });
+    tweenText(el("uF"), SCAN.f[i], function (v) { return signed(v, 2) + " eV"; });
+    tweenText(el("uP"), SCAN.p[i], function (v) { return signed(v, 2) + " eV"; });
+    tweenText(el("uFP"), SCAN.f[i] - SCAN.p[i], function (v) { return signed(v, 2) + " eV"; });
     document.querySelectorAll("#uTicks span").forEach(function (s, k) { s.classList.toggle("on", k === i); });
   }
 
@@ -951,10 +1040,10 @@ canvas{display:block;width:100%;height:auto;border-radius:2px}
     uIndex = i; el("uSlider").value = i;
     updateUReadout(); drawUCharts();
     var from = { f: shown.f, p: shown.p, gap: shown.gap }, to = { f: SCAN.f[i], p: SCAN.p[i], gap: SCAN.gap[i] };
-    var t0 = performance.now(), dur = 350;
+    var t0 = performance.now(), dur = REDUCED ? 0 : 450;
     if (anim) cancelAnimationFrame(anim);
     function step(t) {
-      var k = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+      var k = dur ? Math.min(1, (t - t0) / dur) : 1, e = ease(k);
       shown.f = from.f + (to.f - from.f) * e; shown.p = from.p + (to.p - from.p) * e; shown.gap = from.gap + (to.gap - from.gap) * e;
       drawLadder();
       anim = k < 1 ? requestAnimationFrame(step) : null;
