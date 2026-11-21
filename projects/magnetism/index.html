@@ -1257,6 +1257,9 @@ function mcCore() {
     var crossings = [];
     for (var a = 0; a < curves.length; a++) for (var b = a + 1; b < curves.length; b++) {
       for (var q = 0; q < active.length - 1; q++) {
+        // only compare neighboring grid points: a jump across the gap
+        // between two separate active windows is not a crossing
+        if (active[q + 1] !== active[q] + 1) continue;
         var d0 = Math.sign(curves[a][active[q]] - curves[b][active[q]]);
         var d1 = Math.sign(curves[a][active[q + 1]] - curves[b][active[q + 1]]);
         if (d0 !== d1) crossings.push(Tf[active[q]]);
