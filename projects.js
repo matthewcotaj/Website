@@ -22,6 +22,11 @@ var PROJECTS = [
     slug: 'magnetism',
     title: 'Magnetic Ordering',
     note: 'Monte Carlo Heisenberg magnet & Curie temperature'
+  },
+  {
+    slug: 'eus',
+    title: 'EuS DFT',
+    note: 'First-principles 4f magnetism & the Hubbard U'
   }
   /* Next project goes here, e.g.:
   { slug: 'my-new-project', title: 'My New Project', note: 'One line about it' },
