@@ -759,7 +759,9 @@ canvas{display:block;width:100%;height:auto;border-radius:2px}
     var bands = computeBands(model, p, 90);
     drawBands(bandCanvas, bands);
 
-    var berry = computeBerryAndChern(model, p, 34);
+    // 36 is even (QWZ X and M points on the grid) and divisible by 3
+    // (Haldane K and K' on the grid, where its gap closes)
+    var berry = computeBerryAndChern(model, p, 36);
     drawHeatmap(curvCanvas, berry);
 
     var rounded = Math.round(berry.chern);
