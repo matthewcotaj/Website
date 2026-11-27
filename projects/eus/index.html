@@ -618,9 +618,9 @@ canvas{display:block;width:100%;height:auto;border-radius:2px}
   };
   var SCAN = {
     U:   [0, 2, 4, 6, 7, 8, 10],
-    gap: [0.025, 0.043, 0.151, 0.707, 0.926, 1.1, 1.333],
-    f:   [-0.181, -0.256, -0.64, -0.949, -1.178, -1.461, -2.156],
-    p:   [-3.654, -3.266, -2.92, -2.384, -2.171, -2.002, -1.775]
+    gap: [0.026, 0.043, 0.151, 0.707, 0.926, 1.1, 1.333],
+    f:   [-0.181, -0.257, -0.64, -0.949, -1.178, -1.461, -2.157],
+    p:   [-3.653, -3.266, -2.92, -2.384, -2.171, -2.002, -1.775]
   };
   var CONV = {
     cut: [60, 80, 100, 120, 140, 160],
@@ -1029,7 +1029,7 @@ canvas{display:block;width:100%;height:auto;border-radius:2px}
     var i = uIndex, u = SCAN.U[i];
     el("uVal").textContent = u + " eV";
     el("ladderCap").textContent = "U = " + u + " eV";
-    tweenText(el("uGap"), SCAN.gap[i], function (v) { return v.toFixed(2) + " eV"; });
+    el("uGap").textContent = shown.gap.toFixed(2) + " eV";
     tweenText(el("uF"), SCAN.f[i], function (v) { return signed(v, 2) + " eV"; });
     tweenText(el("uP"), SCAN.p[i], function (v) { return signed(v, 2) + " eV"; });
     tweenText(el("uFP"), SCAN.f[i] - SCAN.p[i], function (v) { return signed(v, 2) + " eV"; });
@@ -1046,6 +1046,8 @@ canvas{display:block;width:100%;height:auto;border-radius:2px}
     function step(t) {
       var k = dur ? Math.min(1, (t - t0) / dur) : 1, e = ease(k);
       shown.f = from.f + (to.f - from.f) * e; shown.p = from.p + (to.p - from.p) * e; shown.gap = from.gap + (to.gap - from.gap) * e;
+      if (k >= 1) { shown.f = to.f; shown.p = to.p; shown.gap = to.gap; }
+      el("uGap").textContent = shown.gap.toFixed(2) + " eV";   // same number the ladder draws
       drawLadder();
       anim = k < 1 ? requestAnimationFrame(step) : null;
     }
