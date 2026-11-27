@@ -161,7 +161,7 @@ nav{
 .nav-toggle:hover{color:var(--ink);border-color:var(--ink-2)}
 .nav-toggle[aria-expanded="true"]{color:var(--ink);border-color:var(--eu)}
 
-@media(max-width:1010px){
+@media(max-width:1080px){
   .nav-toggle{display:inline-block}
   .nav-links{
     display:none;position:absolute;top:60px;left:0;right:0;
@@ -188,6 +188,7 @@ section:last-of-type{border-bottom:0}
 .back-link{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:22px;display:inline-block}
 .back-link a{color:var(--ink-2);border-bottom-color:transparent}
 .back-link a:hover{color:var(--eu);border-bottom-color:var(--eu)}
+.src-link{font-family:"IBM Plex Mono",monospace;font-size:.72rem;letter-spacing:.06em}
 
 /* ---------- footer (shared with the main page) ---------- */
 footer{background:var(--paper);border-top:1px solid var(--rule);padding:clamp(56px,8vw,88px) 0 44px}
@@ -387,7 +388,7 @@ canvas{display:block;width:100%;height:auto;border-radius:2px}
       </div>
       <div>
         <p class="lede">Europium sulfide is a ferromagnetic semiconductor built on the half-filled 4f shell of Eu<sup>2+</sup>, exactly the kind of strongly localized electrons standard density functional theory struggles with. These are my Quantum ESPRESSO results: what plain PBE predicts, how much a Hubbard U on the 4f shell fixes, and what it cannot.</p>
-        <p class="sub" style="margin-top:18px">The <a href="../../index.html#thesis">EuGdCuS<sub>3</sub> nanorods</a> from my thesis owe their magnetism to the same Eu<sup>2+</sup> 4f<sup>7</sup> shell. Each calculation here takes minutes to hours on a laptop, so this page explores the computed results rather than rerunning them in the browser.</p>
+        <p class="sub" style="margin-top:18px">The <a href="../../index.html#thesis">EuGdCuS<sub>3</sub> nanorods</a> from my thesis owe their magnetism to the same Eu<sup>2+</sup> 4f<sup>7</sup> shell. Each calculation here takes minutes to hours on a laptop, so this page explores the computed results rather than rerunning them in the browser. <a class="src-link" href="https://github.com/matthewcotaj/eus-dft">Python source on GitHub &rarr;</a></p>
       </div>
     </div>
 
@@ -593,7 +594,7 @@ canvas{display:block;width:100%;height:auto;border-radius:2px}
         <ul class="contact-list">
           <li><span class="lab">Email</span><a href="mailto:cotajmatthew@gmail.com">cotajmatthew@gmail.com</a></li>
           <li><span class="lab">Based</span><span class="sub">NYC metro area</span></li>
-          <li><span class="lab">Now</span><span class="sub">Groton, CT &mdash; Pfizer Drug Product Design</span></li>
+          <li><span class="lab">Recent</span><span class="sub">Pfizer Drug Product Design, Groton, CT (Summer 2026)</span></li>
         </ul>
       </div>
     </div>

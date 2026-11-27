@@ -108,7 +108,7 @@ nav{
   backdrop-filter:blur(10px);
   border-bottom:1px solid var(--rule-soft);
 }
-.nav-in{display:flex;align-items:center;gap:22px;min-height:72px;padding:10px 0}
+.nav-in{display:flex;align-items:center;gap:22px;min-height:72px;padding-top:10px;padding-bottom:10px}
 .tile{
   width:34px;height:34px;flex:none;border:1px solid var(--ink);
   display:grid;align-content:center;justify-items:center;line-height:1;
@@ -172,7 +172,7 @@ nav{
 .nav-toggle:hover{color:var(--ink);border-color:var(--ink-2)}
 .nav-toggle[aria-expanded="true"]{color:var(--ink);border-color:var(--eu)}
 
-@media(max-width:1010px){
+@media(max-width:1080px){
   .nav-toggle{display:inline-block}
   .nav-links{
     display:none;position:absolute;top:60px;left:0;right:0;
@@ -309,7 +309,7 @@ canvas{display:block;width:100%;height:auto;border-radius:2px}
       </div>
       <div>
         <p class="lede">Live Bloch Hamiltonian diagonalization, Berry curvature by the Fukui&ndash;Hatsugai&ndash;Suzuki method, and the Chern number, for the Qi&ndash;Wu&ndash;Zhang and Haldane models.</p>
-        <p class="sub" style="margin-top:18px">The same band topology and Chern-number language mentioned under <a href="../../index.html#interests">Quantum materials</a> &mdash; worked out here on two lattices small enough to diagonalize live, in the browser, as you move the sliders. <a class="src-link" href="https://github.com/matthewcotaj/chern-number-calculator">Python source on GitHub &rarr;</a></p>
+        <p class="sub" style="margin-top:18px">The same band topology and Chern-number language mentioned under <a href="../../index.html#interests">Quantum materials</a>, worked out here on two lattices small enough to diagonalize live, in the browser, as you move the sliders. <a class="src-link" href="https://github.com/matthewcotaj/chern-number-calculator">Python source on GitHub &rarr;</a></p>
       </div>
     </div>
 
@@ -324,7 +324,7 @@ canvas{display:block;width:100%;height:auto;border-radius:2px}
           <div class="label">Chern number</div>
           <div class="value" id="chernValue">0</div>
           <div class="raw" id="chernRaw">computed: 0.000</div>
-          <div class="gapflag" id="gapFlag">Gap closed &mdash; near a topological transition, Chern number may be unreliable at this resolution.</div>
+          <div class="gapflag" id="gapFlag">Gap closed: near a topological transition the Chern number may be unreliable at this resolution.</div>
         </div>
         <div id="sliderHost"></div>
       </div>

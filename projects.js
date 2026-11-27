@@ -92,7 +92,7 @@ var ProjectsNav = (function () {
     });
   }
 
-  /* mobile: nav-links is hidden below 1010px by default; this toggle
+  /* mobile: nav-links is hidden on narrow screens by default; this toggle
      reveals it as a stacked panel, tap-to-expand rather than hover. */
   function wireMobileToggle(toggle, links) {
     if (!toggle || !links) return;

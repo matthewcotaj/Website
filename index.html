@@ -124,7 +124,7 @@ nav{
   backdrop-filter:blur(10px);
   border-bottom:1px solid var(--rule-soft);
 }
-.nav-in{display:flex;align-items:center;gap:22px;min-height:72px;padding:10px 0}
+.nav-in{display:flex;align-items:center;gap:22px;min-height:72px;padding-top:10px;padding-bottom:10px}
 .tile{
   width:34px;height:34px;flex:none;border:1px solid var(--ink);
   display:grid;align-content:center;justify-items:center;line-height:1;
@@ -189,7 +189,7 @@ nav{
 .nav-toggle:hover{color:var(--ink);border-color:var(--ink-2)}
 .nav-toggle[aria-expanded="true"]{color:var(--ink);border-color:var(--eu)}
 
-@media(max-width:1010px){
+@media(max-width:1080px){
   .nav-toggle{display:inline-block}
   .nav-links{
     display:none;position:absolute;top:60px;left:0;right:0;
@@ -212,7 +212,7 @@ header.hero{position:relative;overflow:hidden;border-bottom:1px solid var(--rule
   background:radial-gradient(ellipse 62% 78% at 14% 18%,var(--hero-glow),transparent 70%),var(--hero-bg)}
 #field{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 .hero-in{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.02fr);gap:clamp(28px,5vw,64px);
-  align-items:center;padding:clamp(52px,8vw,96px) 0 clamp(44px,6vw,72px)}
+  align-items:center;padding-top:clamp(52px,8vw,96px);padding-bottom:clamp(44px,6vw,72px)}
 @media(max-width:940px){.hero-in{grid-template-columns:1fr;gap:36px}}
 .hero h1{font-size:clamp(2.9rem,7.4vw,5.1rem);margin:14px 0 0}
 .hero h1 .given{display:block;color:var(--ink-2);font-size:.44em;letter-spacing:.01em;font-weight:300}
@@ -269,6 +269,11 @@ section:last-of-type{border-bottom:0}
 .arrow .above,.arrow .below{font-family:"IBM Plex Mono",monospace;font-size:.7rem;letter-spacing:.04em;color:var(--ink-2);text-align:center;line-height:1.45}
 .arrow .above{color:var(--ink)}
 .arrow svg{display:block;width:100%;height:12px}
+@media(max-width:640px){
+  .scheme-row{min-width:0;flex-wrap:wrap;gap:10px 14px}
+  .arrow{flex:1 1 100%;min-width:0;order:1}
+  .scheme-row > .species:last-child{order:2}
+}
 .scheme-note{font-family:"IBM Plex Mono",monospace;font-size:.68rem;line-height:1.7;color:var(--ink-3);margin-top:18px;padding-top:12px;border-top:1px solid var(--rule-soft)}
 
 /* ---------- element tiles ---------- */
@@ -368,6 +373,10 @@ footer{background:var(--paper);border-top:1px solid var(--rule);padding:clamp(56
 .viz-stage{position:relative;width:100%;aspect-ratio:16/9;min-height:300px;touch-action:pan-y}
 .viz-stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:grab}
 .viz-stage canvas:active{cursor:grabbing}
+@media(max-width:640px){
+  #lattice-stage{min-height:400px}
+  #lattice-stage canvas{top:84px;height:calc(100% - 84px)}
+}
 .viz-hud{
   position:absolute;top:16px;left:16px;pointer-events:none;
   font-family:"IBM Plex Mono",monospace;line-height:1.5;
@@ -449,7 +458,7 @@ footer{background:var(--paper);border-top:1px solid var(--rule);padding:clamp(56
     <div>
       <span class="eyebrow">Materials chemistry &middot; f-electron magnetism</span>
       <h1 class="display"><span class="given">Matthew A.</span>Cotaj</h1>
-      <p class="lede hero-lede measure">I grow lanthanide chalcogenide nanocrystals in a flask &mdash; and make their magnetism a question of composition rather than of size.</p>
+      <p class="lede hero-lede measure">I grow lanthanide chalcogenide nanocrystals in a flask and make their magnetism a question of composition rather than of size.</p>
       <div class="hero-meta">
         <span class="chip">B.S. Chemistry (Honors), Georgetown &middot; NYC metro</span>
         <span class="chip"><a href="mailto:cotajmatthew@gmail.com">cotajmatthew@gmail.com</a></span>
@@ -542,13 +551,13 @@ footer{background:var(--paper);border-top:1px solid var(--rule);padding:clamp(56
         <h2 class="sec-title">A hard acid, a soft base, and three years of getting them to agree</h2>
       </div>
       <div>
-        <p class="lede">Trivalent lanthanides are hard Lewis acids. Chalcogenides are soft bases. That mismatch is why colloidal Ln&ndash;S chemistry stays stubborn &mdash; and why the reaction would rather hand you an oxysulfide than the phase you asked for.</p>
+        <p class="lede">Trivalent lanthanides are hard Lewis acids. Chalcogenides are soft bases. That mismatch is why colloidal Ln&ndash;S chemistry stays stubborn, and why the reaction would rather hand you an oxysulfide than the phase you asked for.</p>
         <p class="sub" style="margin-top:18px">My thesis works around it with air-stable single-source dithiocarbamate precursors, an HSAB-informed choice of copper source, and a degassing protocol strict enough to keep Eu&#8322;O&#8322;S out of the pattern. The payoff is a lanthanide sublattice you can rewrite: put Gd&#179;&#8314; on the Eu&#179;&#8314; site and the magnetism follows.</p>
       </div>
     </div>
 
     <div class="figures">
-      <div class="fig"><span class="val">3.6 <small>K</small></span><span class="cap">Ferromagnetic ordering temperature <span class="k">T<sub>C</sub></span> of Eu&#8322;CuS&#8323; nanorods, by SQUID &mdash; against 3.4 K in the bulk</span></div>
+      <div class="fig"><span class="val">3.6 <small>K</small></span><span class="cap">Ferromagnetic ordering temperature <span class="k">T<sub>C</sub></span> of Eu&#8322;CuS&#8323; nanorods, by SQUID, vs. 3.4 K in the bulk</span></div>
       <div class="fig"><span class="val">+63 <small>%</small></span><span class="cap">Gain in magnetization at 7 T on Gd&#179;&#8314; substitution at the Eu(1) site</span></div>
       <div class="fig"><span class="val">1 : 1</span><span class="cap">Eu&#8239;:&#8239;Gd ratio of 1.00 &plusmn; 0.01 by ICP-MS; EDS confirms homogeneous distribution</span></div>
       <div class="fig"><span class="val">First</span><span class="cap">Colloidal synthesis and magnetic characterization of phase-pure EuGdCuS&#8323; nanorods</span></div>
@@ -585,7 +594,7 @@ footer{background:var(--paper);border-top:1px solid var(--rule);padding:clamp(56
     <div class="chain">
       <div class="node"><span class="t">PXRD</span><span class="d">Phase purity against PDF#04-016-1598 (Eu&#8322;CuS&#8323;) and PDF#04-019-4851 (EuGdCuS&#8323;), with the Eu&#8322;O&#8322;S impurity that dogged the early runs absent from the optimized patterns.</span></div>
       <div class="node"><span class="t">ICP-MS &amp; EDS</span><span class="d">Eu:Gd ratio of 1.00 &plusmn; 0.01 by ICP-MS; EDS maps show S, Eu, Gd and Cu co-localized across individual rods rather than phase-segregated.</span></div>
-      <div class="node"><span class="t">TEM / HRTEM</span><span class="d">Anisotropic rod morphology with resolved lattice fringes &mdash; crystalline product, not aggregated amorphous material.</span></div>
+      <div class="node"><span class="t">TEM / HRTEM</span><span class="d">Anisotropic rod morphology with resolved lattice fringes: crystalline product, not aggregated amorphous material.</span></div>
       <div class="node"><span class="t">SQUID</span><span class="d">&#967; vs. T from 2.8 K and M vs. H at 2 K to &plusmn;7 T: the ordering transition in Eu&#8322;CuS&#8323; and the magnetization increase that carries the compositional argument.</span></div>
     </div>
 
@@ -602,7 +611,7 @@ footer{background:var(--paper);border-top:1px solid var(--rule);padding:clamp(56
       </div>
       <div>
         <p class="lede">Eu&#8322;CuS&#8323; has two crystallographically distinct lanthanide sites. Only one of them is doing any magnetic work.</p>
-        <p class="sub" style="margin-top:18px">Eu&#178;&#8314; sits at the seven-coordinate Eu(2) site: 4f&#8311;, half-filled, S&nbsp;=&nbsp;7/2, and it carries the moment. Eu&#179;&#8314; sits at the six-coordinate Eu(1) site with a 4f&#8310; configuration whose J&nbsp;=&nbsp;0 ground state gives no first-order moment &mdash; a structural spectator. Gd&#179;&#8314; is also 4f&#8311;. Putting it on the Eu(1) site swaps the spectator for a second spin-active sublattice, which is why the magnetization goes up without the framework changing.</p>
+        <p class="sub" style="margin-top:18px">Eu&#178;&#8314; sits at the seven-coordinate Eu(2) site: 4f&#8311;, half-filled, S&nbsp;=&nbsp;7/2, and it carries the moment. Eu&#179;&#8314; sits at the six-coordinate Eu(1) site with a 4f&#8310; configuration whose J&nbsp;=&nbsp;0 ground state gives no first-order moment, so it is a structural spectator. Gd&#179;&#8314; is also 4f&#8311;. Putting it on the Eu(1) site swaps the spectator for a second spin-active sublattice, which is why the magnetization goes up without the framework changing.</p>
       </div>
     </div>
 
@@ -622,7 +631,7 @@ footer{background:var(--paper);border-top:1px solid var(--rule);padding:clamp(56
         </div>
         <button class="swap" id="swap-btn" type="button">Substitute Gd&#179;&#8314; at Eu(1)</button>
       </div>
-      <figcaption style="padding:0 16px 14px">Schematic of the two lanthanide sublattices &mdash; site occupancy after the thesis assignment, not a refined crystal structure: in the real Pnma lattice the Eu(1) octahedra and CuS&#8324; tetrahedra form layers, with Eu(2) between them. Arrows mark sites carrying a spin. After substitution the Gd&#179;&#8314; arrows are drawn antiparallel to Eu&#178;&#8314;, as in bulk EuGdCuS&#8323;, which orders ferrimagnetically near 5&#8239;K (Wakeshima et al., 2004); whether the nanorods do the same is the open question stated above, and the larger magnetization at 7 T suggests the field cants the two sublattices toward parallel alignment, but the present data do not establish this. The Cu&ndash;S framework is omitted for legibility. The site-ordered mixed-valent formulation shown here is the targeted composition; &#185;&#8309;&#185;Eu M&ouml;ssbauer spectroscopy is the test that would distinguish it from a statistical solid solution.</figcaption>
+      <figcaption style="padding:0 16px 14px">Schematic of the two lanthanide sublattices. Site occupancy follows the thesis assignment, not a refined crystal structure: in the real Pnma lattice the Eu(1) octahedra and CuS&#8324; tetrahedra form layers, with Eu(2) between them. Arrows mark sites carrying a spin. After substitution the Gd&#179;&#8314; arrows are drawn antiparallel to Eu&#178;&#8314;, as in bulk EuGdCuS&#8323;, which orders ferrimagnetically near 5&#8239;K (Wakeshima et al., 2004); whether the nanorods do the same is the open question stated above, and the larger magnetization at 7 T suggests the field cants the two sublattices toward parallel alignment, but the present data do not establish this. The Cu&ndash;S framework is omitted for legibility. The site-ordered mixed-valent formulation shown here is the targeted composition; &#185;&#8309;&#185;Eu M&ouml;ssbauer spectroscopy is the test that would distinguish it from a statistical solid solution.</figcaption>
     </figure>
 
     <h3 class="minor" style="margin-top:52px">Three of the seven 4f orbitals</h3>
@@ -635,7 +644,7 @@ footer{background:var(--paper);border-top:1px solid var(--rule);padding:clamp(56
         <div><b>4f<sub>xyz</sub></b><span>m = &plusmn;2</span></div>
         <div><b>4f<sub>x(x&#178;&#8722;3y&#178;)</sub></b><span>m = &plusmn;3</span></div>
       </div>
-      <figcaption style="padding:0 16px 14px">Angular parts of the 4f wavefunctions, colored by the sign of the lobe. These orbitals are spatially contracted and shielded by the filled 5s and 5p shells &mdash; which is exactly why neighboring lanthanide ions cannot couple directly.</figcaption>
+      <figcaption style="padding:0 16px 14px">Angular parts of the 4f wavefunctions, colored by the sign of the lobe. These orbitals are spatially contracted and shielded by the filled 5s and 5p shells, which is exactly why neighboring lanthanide ions cannot couple directly.</figcaption>
     </figure>
 
     <div class="configs">
@@ -650,7 +659,7 @@ footer{background:var(--paper);border-top:1px solid var(--rule);padding:clamp(56
           <rect class="box-cell" x="180.6" y="0.6" width="30" height="44"></rect><path class="box-arrow" d="M195.6 40 V8 M191.6 12 L195.6 8 L199.6 12"></path>
           <rect class="box-cell" x="216.6" y="0.6" width="28.8" height="44"></rect>
         </svg>
-        <div class="term"><b>&#8311;F&#8320;</b><span>L = 3, S = 3, J = 0 &mdash; no first-order moment. Contributes nothing to the ordered magnetization.</span></div>
+        <div class="term"><b>&#8311;F&#8320;</b><span>L = 3, S = 3, J = 0, so no first-order moment. Contributes nothing to the ordered magnetization.</span></div>
       </article>
       <article class="config" style="--cfg:var(--eu)">
         <div class="ion">Eu&#178;&#8314; and Gd&#179;&#8314; &middot; 4f&#8311;<em>Eu(2) and Eu(1) sites &middot; the carriers</em></div>
@@ -696,7 +705,7 @@ footer{background:var(--paper);border-top:1px solid var(--rule);padding:clamp(56
           <text x="700" y="146">spin carrier</text>
         </g>
       </svg>
-      <p class="scheme-note" style="margin-top:16px;padding-top:14px">Direct 4f&ndash;4f overlap between neighboring Eu&#178;&#8314; ions is negligible, so coupling has to run the long way round: the 4f spin polarizes a bridging S 3p orbital, passes through the diamagnetic Cu 3d&#185;&#8304; sublattice acting as a ligand bridge rather than a spin carrier, and out through a second S 3p bridge. A long chain of filled intermediate orbitals makes for weak exchange &mdash; and a correspondingly low ordering temperature.</p>
+      <p class="scheme-note" style="margin-top:16px;padding-top:14px">Direct 4f&ndash;4f overlap between neighboring Eu&#178;&#8314; ions is negligible, so coupling has to run the long way round: the 4f spin polarizes a bridging S 3p orbital, passes through the diamagnetic Cu 3d&#185;&#8304; sublattice acting as a ligand bridge rather than a spin carrier, and out through a second S 3p bridge. A long chain of filled intermediate orbitals makes for weak exchange and a correspondingly low ordering temperature.</p>
     </div>
   </div>
 </section>
@@ -708,7 +717,7 @@ footer{background:var(--paper);border-top:1px solid var(--rule);padding:clamp(56
         <span class="eyebrow">Research &amp; industry</span>
         <h2 class="sec-title">Where the work has been done</h2>
       </div>
-      <div><p class="lede">Four years across academic materials synthesis, pharmaceutical formulation, consumer product development and seed-stage biotech &mdash; the same analytical instinct, pointed at very different molecules.</p></div>
+      <div><p class="lede">Four years across academic materials synthesis, pharmaceutical formulation, consumer product development and seed-stage biotech. The same analytical instinct, pointed at very different molecules.</p></div>
     </div>
 
     <div class="entries">
@@ -781,7 +790,7 @@ footer{background:var(--paper);border-top:1px solid var(--rule);padding:clamp(56
         <div>
           <p class="role">Rare Disease Therapeutics R&amp;D Intern</p>
           <ul class="bullets">
-            <li>Researched alternative treatments for neurodegenerative disorders &mdash; Friedreich&rsquo;s ataxia and Fragile X syndrome &mdash; evaluating drug targets and biological pathways</li>
+            <li>Researched alternative treatments for neurodegenerative disorders (Friedreich&rsquo;s ataxia and Fragile X syndrome), evaluating drug targets and biological pathways</li>
             <li>Conducted scientific and intellectual-property research supporting seed-stage biotech strategy, weighing feasibility against IP ownership and clinical relevance</li>
           </ul>
         </div>
@@ -856,13 +865,13 @@ footer{background:var(--paper);border-top:1px solid var(--rule);padding:clamp(56
         <span class="eyebrow">Instrumentation &amp; methods</span>
         <h2 class="sec-title">Techniques used in my research</h2>
       </div>
-      <div><p class="lede">Hands-on across synthesis, characterization and analysis &mdash; from a Schlenk line at 330&#8239;&deg;C, to a SQUID at 2&#8239;K, to the long business of arguing with a diffraction pattern.</p></div>
+      <div><p class="lede">Hands-on across synthesis, characterization and analysis, from a Schlenk line at 330&#8239;&deg;C, to a SQUID at 2&#8239;K, to the long business of arguing with a diffraction pattern.</p></div>
     </div>
 
     <div class="tech-group">
       <div><h3>Synthesis &amp; fabrication</h3><span class="n">7 methods</span></div>
       <div class="tags">
-        <span class="tag">Air-free synthesis &mdash; Schlenk line</span><span class="tag">Glovebox</span><span class="tag">Colloidal nanomaterial synthesis</span><span class="tag">Single-source precursor design</span><span class="tag">CVD</span><span class="tag">Sputtering &amp; thin-film deposition</span><span class="tag">Photolithography &amp; etching</span>
+        <span class="tag">Air-free synthesis (Schlenk line)</span><span class="tag">Glovebox</span><span class="tag">Colloidal nanomaterial synthesis</span><span class="tag">Single-source precursor design</span><span class="tag">CVD</span><span class="tag">Sputtering &amp; thin-film deposition</span><span class="tag">Photolithography &amp; etching</span>
       </div>
     </div>
     <div class="tech-group">
@@ -905,13 +914,13 @@ footer{background:var(--paper);border-top:1px solid var(--rule);padding:clamp(56
         <span class="eyebrow">Intellectual interests</span>
         <h2 class="sec-title">The reading that pulls me forward</h2>
       </div>
-      <div><p class="lede">Where the curiosity actually sits &mdash; concentrated in the physics and chemistry of correlated and magnetic matter.</p></div>
+      <div><p class="lede">Where the curiosity actually sits: concentrated in the physics and chemistry of correlated and magnetic matter.</p></div>
     </div>
 
     <div class="interests">
       <article class="topic" style="--dot:var(--gd)">
         <h3>Quantum information systems</h3>
-        <p>Superconducting (transmon) and spin qubits, defect color centers, rare-earth-ion and molecular spin qubits; coherence and decoherence, spin-lattice (T&#8321;) and spin-spin (T&#8322;) relaxation, hyperfine and spin&ndash;orbit coupling, clock transitions and decoherence-free subspaces; entanglement and the DiVincenzo criteria, cavity and circuit QED coupling, error correction and surface codes &mdash; and the materials chemistry underneath platforms such as IBM Quantum.</p>
+        <p>Superconducting (transmon) and spin qubits, defect color centers, rare-earth-ion and molecular spin qubits; coherence and decoherence, spin-lattice (T&#8321;) and spin-spin (T&#8322;) relaxation, hyperfine and spin&ndash;orbit coupling, clock transitions and decoherence-free subspaces; entanglement and the DiVincenzo criteria, cavity and circuit QED coupling, error correction and surface codes, and the materials chemistry underneath platforms such as IBM Quantum.</p>
       </article>
       <article class="topic" style="--dot:var(--s)">
         <h3>Quantum materials</h3>
@@ -944,7 +953,7 @@ footer{background:var(--paper);border-top:1px solid var(--rule);padding:clamp(56
         <span class="eyebrow">Education &amp; honors</span>
         <h2 class="sec-title">Training</h2>
       </div>
-      <div><p class="lede">A chemistry major built deliberately toward materials &mdash; graduate-level synthesis, nanomaterials fabrication, and a semester of materials chemistry and physics on the other side of the world.</p></div>
+      <div><p class="lede">A chemistry major built deliberately toward materials: graduate-level synthesis, nanomaterials fabrication, and a semester of materials chemistry and physics on the other side of the world.</p></div>
     </div>
 
     <div class="edu">
@@ -961,7 +970,7 @@ footer{background:var(--paper);border-top:1px solid var(--rule);padding:clamp(56
       <div class="card">
         <span class="eyebrow">Sydney, Australia &middot; Jan &ndash; May 2025</span>
         <h3 class="school">University of New South Wales</h3>
-        <p class="deg">Study abroad &mdash; Chemistry of Materials, Physics&nbsp;1B, Advanced Field Biology, Financial Management</p>
+        <p class="deg">Study abroad: Chemistry of Materials, Physics&nbsp;1B, Advanced Field Biology, Financial Management</p>
         <div class="stat">
           <div><b>85</b><span class="eyebrow">Chemistry of Materials</span></div>
           <div><b>82</b><span class="eyebrow">Adv. Field Biology</span></div>
@@ -975,7 +984,7 @@ footer{background:var(--paper);border-top:1px solid var(--rule);padding:clamp(56
         <ul class="list-rule">
           <li><b>Graduate-Level Organic Synthesis</b> &middot; CHEM 5060</li>
           <li><b>Fabrication &amp; Characterization of Nanomaterials</b> &middot; PHYS 4751</li>
-          <li><b>Advanced Materials Chemistry</b> &mdash; nanomaterials, polymers, biomaterials, quantum materials</li>
+          <li><b>Advanced Materials Chemistry</b>: nanomaterials, polymers, biomaterials, quantum materials</li>
           <li><b>Physical Chemistry I &amp; II</b> and <b>Physical&ndash;Chemical Measurements</b></li>
           <li><b>Inorganic Chemistry</b> &middot; <b>Analytical Methods</b>, with laboratory</li>
           <li><b>Honors Research I&ndash;II</b> and <b>Honors Thesis</b> &middot; CHEM 4909, 4999</li>
@@ -990,13 +999,13 @@ footer{background:var(--paper);border-top:1px solid var(--rule);padding:clamp(56
           <li><b>First Honors</b>, Georgetown University &middot; Fall 2025</li>
           <li><b>Dean&rsquo;s List</b>, Georgetown University &middot; Fall 2024, Spring 2026</li>
           <li><b>Materials Science Undergraduate Research Fellow</b> &middot; Stoll Research Group</li>
-          <li><b>Government of Albania appointee</b> &mdash; Youth NATO Summit delegate, 2024</li>
+          <li><b>Government of Albania appointee</b>, Youth NATO Summit delegate, 2024</li>
         </ul>
         <h3 class="minor" style="margin-top:34px">Memberships &amp; languages</h3>
         <ul class="list-rule">
           <li><b>American Chemical Society</b> &middot; 2024&ndash;present</li>
           <li><b>Albanian Academic and Professional Association</b> &middot; 2023&ndash;present</li>
-          <li><b>Spanish</b> &mdash; spoken, written and comprehension</li>
+          <li><b>Spanish</b>: spoken, written and comprehension</li>
         </ul>
       </div>
     </div>
@@ -1010,17 +1019,17 @@ footer{background:var(--paper);border-top:1px solid var(--rule);padding:clamp(56
         <span class="eyebrow">Teaching, outreach &amp; service</span>
         <h2 class="sec-title">Explaining it to someone else</h2>
       </div>
-      <div><p class="lede">Five years of teaching &mdash; general chemistry labs, K&ndash;12 science across DC, and a free debate program founded in high school and run through college.</p></div>
+      <div><p class="lede">Five years of teaching: general chemistry labs, K&ndash;12 science across DC, and a free debate program founded in high school and run through college.</p></div>
     </div>
 
     <div class="two-col" style="margin-top:0">
       <div>
         <h3 class="minor">Teaching &amp; outreach</h3>
         <ul class="list-rule">
-          <li><b>General Chemistry I &amp; II Lab TA</b> &mdash; Georgetown Department of Chemistry &middot; Aug 2025&ndash;May 2026</li>
-          <li><b>Math &amp; Science Tutor</b>, GUMSHOE &mdash; hands-on tutoring in math, chemistry, biology and physics for K&ndash;12 students across Washington, DC &middot; Sep 2023&ndash;May 2026</li>
-          <li><b>Founder &amp; Instructor</b>, Dynamite Debate (Kids Helping Kids) &mdash; a free debate-education program for K&ndash;12 students from underserved communities, teaching multi-month courses in several competitive styles &middot; Sep 2021&ndash;Jan 2025</li>
-          <li><b>Student Tutor</b>, Varsity Tutors &mdash; math through pre-calculus, chemistry, biology, physics, SAT/ACT &middot; Jun 2022&ndash;Aug 2023</li>
+          <li><b>General Chemistry I &amp; II Lab TA</b>, Georgetown Department of Chemistry &middot; Aug 2025&ndash;May 2026</li>
+          <li><b>Math &amp; Science Tutor</b>, GUMSHOE: hands-on tutoring in math, chemistry, biology and physics for K&ndash;12 students across Washington, DC &middot; Sep 2023&ndash;May 2026</li>
+          <li><b>Founder &amp; Instructor</b>, Dynamite Debate (Kids Helping Kids): a free debate-education program for K&ndash;12 students from underserved communities, teaching multi-month courses in several competitive styles &middot; Sep 2021&ndash;Jan 2025</li>
+          <li><b>Student Tutor</b>, Varsity Tutors: math through pre-calculus, chemistry, biology, physics, SAT/ACT &middot; Jun 2022&ndash;Aug 2023</li>
         </ul>
       </div>
       <div>
@@ -1049,7 +1058,7 @@ footer{background:var(--paper);border-top:1px solid var(--rule);padding:clamp(56
         <ul class="contact-list">
           <li><span class="lab">Email</span><a href="mailto:cotajmatthew@gmail.com">cotajmatthew@gmail.com</a></li>
           <li><span class="lab">Based</span><span class="sub">NYC metro area</span></li>
-          <li><span class="lab">Recent</span><span class="sub">Pfizer Drug Product Design &mdash; Groton, CT (Summer 2026)</span></li>
+          <li><span class="lab">Recent</span><span class="sub">Pfizer Drug Product Design, Groton, CT (Summer 2026)</span></li>
         </ul>
       </div>
     </div>
@@ -1261,7 +1270,7 @@ footer{background:var(--paper);border-top:1px solid var(--rule);padding:clamp(56
     var api = build(root, scene);
 
     function resize(){
-      var box = canvas.parentNode.getBoundingClientRect();
+      var box = canvas.getBoundingClientRect();
       var w = Math.max(1, box.width), h = Math.max(1, box.height);
       renderer.setSize(w, h, false);
       if(camera.isPerspectiveCamera){
@@ -1332,7 +1341,7 @@ footer{background:var(--paper);border-top:1px solid var(--rule);padding:clamp(56
     return { retheme: api.retheme, render: function(){ renderer.render(scene, camera); } };
   }
 
-  /* 1 — the two lanthanide sublattices -------------------------------- */
+  /* 1: the two lanthanide sublattices -------------------------------- */
   var latticeCanvas = document.getElementById('lattice');
   var latticeView = null;
   if(latticeCanvas){
@@ -1461,7 +1470,7 @@ footer{background:var(--paper);border-top:1px solid var(--rule);padding:clamp(56
     });
   }
 
-  /* 2 — three of the seven 4f orbitals -------------------------------- */
+  /* 2: three of the seven 4f orbitals -------------------------------- */
   var orbCanvas = document.getElementById('orbitals');
   var orbView = null;
   if(orbCanvas){
